@@ -66,10 +66,10 @@ const Login = () => {
   return (
     <LoginWrapper container spacing={0}>
       <BannerGrid container item xs={12} md={5} direction="column">
-        <Logo href="">Tutorhuntz</Logo>
+        <Logo to="/">Tutorhuntz</Logo>
         <BannerHeading>Enjoy the Experience</BannerHeading>
         <IconCopyright />
-        <FormFooter>All rights reserved</FormFooter>
+        {/* <FormFooter>All rights reserved</FormFooter> To change to Heading then reduce size*/}
       </BannerGrid>
       <FormGrid container item xs={12} md={7} direction="column">
         <SignUpLink to="/register">Sign up now</SignUpLink>

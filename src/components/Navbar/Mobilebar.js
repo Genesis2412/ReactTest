@@ -30,7 +30,7 @@ const Mobilebar = ({ isOpen, toggle }) => {
             </MobilebarLink>
           </MobilebarMenu>
           <MobilebtnWrapper>
-            <MobilebarRoute to="/signin">Sign in</MobilebarRoute>
+            <MobilebarRoute to="/login">Sign in</MobilebarRoute>
           </MobilebtnWrapper>
         </MobilebarWrapper>
       </MobilebarContainer>

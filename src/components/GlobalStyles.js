@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 // Logo
-export const Logo = styled.a`
+export const Logo = styled(Link)`
   font-size: 2.4rem;
   font-family: "Kaushan Script", cursive;
   margin-left: 24px;
