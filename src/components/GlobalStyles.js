@@ -1,5 +1,5 @@
 import styled from "styled-components";
-// import { Link as LinkRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // Logo
 export const Logo = styled.a`
@@ -37,7 +37,7 @@ export const FormIcon = styled.img`
   }
 `;
 
-export const SignUpLink = styled.a`
+export const SignUpLink = styled(Link)`
   position: absolute;
   top: 24px;
   right: 24px;

@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+import { useUserAuth } from "../../Context/UserAuthContext";
 import {
   LoginWrapper,
   BannerGrid,
@@ -18,6 +20,7 @@ import {
   ForgotPassword,
   FormFooter,
 } from "../GlobalStyles";
+import { Alert, CircularProgress } from "@mui/material";
 
 const validationSchema = yup.object({
   email: yup
@@ -31,14 +34,32 @@ const validationSchema = yup.object({
 });
 
 const Login = () => {
+  const { logIn } = useUserAuth();
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values, onSubmitProps) => {
+      setError("");
+      console.log(values.email + " " + values.password);
+      try {
+        await logIn(values.email, values.password);
+        navigate("/register");
+        onSubmitProps.setSubmitting(false);
+      } catch (err) {
+        if (err.message.includes("user-not-found")) {
+          setError("User does not exist");
+        }
+        if (err.message.includes("wrong-pass")) {
+          setError("Invalid password");
+        }
+        console.log(err.message);
+      }
     },
   });
 
@@ -51,7 +72,7 @@ const Login = () => {
         <FormFooter>All rights reserved</FormFooter>
       </BannerGrid>
       <FormGrid container item xs={12} md={7} direction="column">
-        <SignUpLink href="">Sign up now</SignUpLink>
+        <SignUpLink to="/register">Sign up now</SignUpLink>
         <FormIcon src={LoginIcon} alt="Icon" />
         <form onSubmit={formik.handleSubmit}>
           <LoginField
@@ -75,8 +96,19 @@ const Login = () => {
             error={formik.touched.password && Boolean(formik.errors.password)}
             helperText={formik.touched.password && formik.errors.password}
           />
-          <LoginButton type="submit">Submit</LoginButton>
+          <LoginButton
+            type="submit"
+            disabled={formik.isSubmitting}
+            value="Login"
+          >
+            {formik.isSubmitting ? (
+              <CircularProgress color="secondary" />
+            ) : (
+              "Login"
+            )}
+          </LoginButton>
         </form>
+        {error && <Alert severity="error">{error}</Alert>}
         <ForgotPassword href="">Forgot Password?</ForgotPassword>
       </FormGrid>
     </LoginWrapper>

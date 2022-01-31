@@ -18,3 +18,5 @@ styled-components
 
 formik
 yup
+
+firebase
