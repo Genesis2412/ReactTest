@@ -59,13 +59,6 @@ export const SignUpLink = styled(Link)`
   }
 `;
 
-export const ForgotPassword = styled.a`
-  text-decoration: none;
-  color: #0b0c10;
-  cursor: pointer;
-  margin-top: 20px;
-`;
-
 export const FormFooter = styled.p`
   position: absolute;
   bottom: 10px;

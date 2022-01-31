@@ -9,7 +9,12 @@ import {
   FormGrid,
   LoginButton,
   LoginField,
+  ForgotPassword,
   IconCopyright,
+  ResetForm,
+  ResetWrapper,
+  EmailField,
+  EmailResetBtn,
 } from "./LoginElements";
 import LoginIcon from "../../images/LoginIcon.svg";
 import {
@@ -17,11 +22,11 @@ import {
   BannerHeading,
   FormIcon,
   SignUpLink,
-  ForgotPassword,
   FormFooter,
 } from "../GlobalStyles";
 import { Alert, CircularProgress } from "@mui/material";
 
+// Yup field Validation
 const validationSchema = yup.object({
   email: yup
     .string("Enter your email")
@@ -34,10 +39,31 @@ const validationSchema = yup.object({
 });
 
 const Login = () => {
+  //Modal
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const { resetPassword } = useUserAuth();
+  const [modalSuccess, setModalSuccess] = useState("");
+  const [modalError, setModalError] = useState("");
+  const [modalEmail, setModalEmail] = useState("");
+
   const { logIn } = useUserAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  //Firebase reset password
+  const handleReset = async () => {
+    try {
+      resetPassword(modalEmail).then(() => {
+        setModalSuccess("Email sent");
+      });
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  //Formik Form Submission and Validation
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -46,10 +72,10 @@ const Login = () => {
     validationSchema: validationSchema,
     onSubmit: async (values, onSubmitProps) => {
       setError("");
-      console.log(values.email + " " + values.password);
+      //Firebase Login
       try {
         await logIn(values.email, values.password);
-        navigate("/register");
+        navigate("/test");
         onSubmitProps.setSubmitting(false);
       } catch (err) {
         if (err.message.includes("user-not-found")) {
@@ -64,54 +90,77 @@ const Login = () => {
   });
 
   return (
-    <LoginWrapper container spacing={0}>
-      <BannerGrid container item xs={12} md={5} direction="column">
-        <Logo to="/">Tutorhuntz</Logo>
-        <BannerHeading>Enjoy the Experience</BannerHeading>
-        <IconCopyright />
-        {/* <FormFooter>All rights reserved</FormFooter> To change to Heading then reduce size*/}
-      </BannerGrid>
-      <FormGrid container item xs={12} md={7} direction="column">
-        <SignUpLink to="/register">Sign up now</SignUpLink>
-        <FormIcon src={LoginIcon} alt="Icon" />
-        <form onSubmit={formik.handleSubmit}>
-          <LoginField
-            fullWidth
-            id="email"
-            name="email"
+    <>
+      <LoginWrapper container spacing={0}>
+        <BannerGrid container item xs={12} md={5} direction="column">
+          <Logo to="/">Tutorhuntz</Logo>
+          <BannerHeading>Enjoy the Experience</BannerHeading>
+          <IconCopyright />
+          {/* <FormFooter>All rights reserved</FormFooter> To change to Heading then reduce size*/}
+        </BannerGrid>
+        <FormGrid container item xs={12} md={7} direction="column">
+          <SignUpLink to="/register">Sign up now</SignUpLink>
+          <FormIcon src={LoginIcon} alt="Icon" />
+          <form onSubmit={formik.handleSubmit}>
+            <LoginField
+              fullWidth
+              id="email"
+              name="email"
+              label="Email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+            <LoginField
+              fullWidth
+              id="password"
+              name="password"
+              label="Password"
+              type="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
+            <LoginButton
+              type="submit"
+              disabled={formik.isSubmitting}
+              value="Login"
+            >
+              {formik.isSubmitting ? (
+                <CircularProgress color="secondary" />
+              ) : (
+                "Login"
+              )}
+            </LoginButton>
+          </form>
+          {error && <Alert severity="error">{error}</Alert>}
+          <ForgotPassword onClick={handleOpen}>Forgot Password?</ForgotPassword>
+        </FormGrid>
+      </LoginWrapper>
+
+      {/* Modal */}
+      <ResetForm
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <ResetWrapper>
+          <EmailField
+            id="emailTemporary"
+            name="emailTemporary"
             label="Email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
-          />
-          <LoginField
-            fullWidth
-            id="password"
-            name="password"
-            label="Password"
-            type="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
-          />
-          <LoginButton
-            type="submit"
-            disabled={formik.isSubmitting}
-            value="Login"
-          >
-            {formik.isSubmitting ? (
-              <CircularProgress color="secondary" />
-            ) : (
-              "Login"
-            )}
-          </LoginButton>
-        </form>
-        {error && <Alert severity="error">{error}</Alert>}
-        <ForgotPassword href="">Forgot Password?</ForgotPassword>
-      </FormGrid>
-    </LoginWrapper>
+            type="email"
+            onChange={(e) => setModalEmail(e.target.value)}
+          ></EmailField>
+          <EmailResetBtn onClick={handleReset}>Reset Password</EmailResetBtn>
+          {modalError && <Alert severity="error">{modalError}</Alert>}
+          {modalSuccess && <Alert severity="success">{modalSuccess}</Alert>}
+        </ResetWrapper>
+      </ResetForm>
+    </>
   );
 };
 

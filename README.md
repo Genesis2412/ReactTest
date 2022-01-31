@@ -20,3 +20,11 @@ formik
 yup
 
 firebase
+
+## Fix bugs for firebase email reset -Errors are outputted on console
+
+## change p tag by h tag due to descendent problems - login form footer
+
+## position alert center modal
+
+## modify email template
