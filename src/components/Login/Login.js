@@ -44,6 +44,7 @@ const Login = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const { resetPassword } = useUserAuth();
+  const { checkSignIn } = useUserAuth();
   const [modalSuccess, setModalSuccess] = useState("");
   const [modalError, setModalError] = useState("");
   const [modalEmail, setModalEmail] = useState("");
@@ -54,13 +55,27 @@ const Login = () => {
 
   //Firebase reset password
   const handleReset = async () => {
-    try {
-      resetPassword(modalEmail).then(() => {
-        setModalSuccess("Email sent");
+    setModalSuccess("");
+    setModalError("");
+    checkSignIn(modalEmail)
+      .then((result) => {
+        if (result.length > 0) {
+          resetPassword(modalEmail)
+            .then(() => {
+              setModalSuccess("Email sent");
+            })
+            .catch((err) => {
+              if (err.message.includes("invalid-email")) {
+                setModalError("Enter valid email");
+              }
+            });
+        }
+      })
+      .catch((err) => {
+        if (err.message.includes("invalid-email")) {
+          setModalError("Enter valid email");
+        }
       });
-    } catch (err) {
-      alert(err);
-    }
   };
 
   //Formik Form Submission and Validation
@@ -75,7 +90,7 @@ const Login = () => {
       //Firebase Login
       try {
         await logIn(values.email, values.password);
-        navigate("/test");
+        navigate("/dashboard");
         onSubmitProps.setSubmitting(false);
       } catch (err) {
         if (err.message.includes("user-not-found")) {
@@ -96,7 +111,7 @@ const Login = () => {
           <Logo to="/">Tutorhuntz</Logo>
           <BannerHeading>Enjoy the Experience</BannerHeading>
           <IconCopyright />
-          {/* <FormFooter>All rights reserved</FormFooter> To change to Heading then reduce size*/}
+          <FormFooter>All rights reserved</FormFooter>
         </BannerGrid>
         <FormGrid container item xs={12} md={7} direction="column">
           <SignUpLink to="/register">Sign up now</SignUpLink>

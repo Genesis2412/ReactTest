@@ -3,9 +3,9 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
-  signOut,
-  signInWithPopup,
   sendPasswordResetEmail,
+  fetchSignInMethodsForEmail,
+  signOut,
 } from "firebase/auth";
 import { auth } from "../firebase-config";
 
@@ -28,6 +28,10 @@ export function UserAuthContextProvider({ children }) {
     return sendPasswordResetEmail(auth, email);
   }
 
+  function checkSignIn(email) {
+    return fetchSignInMethodsForEmail(auth, email);
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
       setUser(currentuser);
@@ -40,7 +44,7 @@ export function UserAuthContextProvider({ children }) {
 
   return (
     <userAuthContext.Provider
-      value={{ user, logIn, signUp, logOut, resetPassword }}
+      value={{ user, logIn, signUp, logOut, resetPassword, checkSignIn }}
     >
       {children}
     </userAuthContext.Provider>

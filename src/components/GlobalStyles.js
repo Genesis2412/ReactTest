@@ -59,10 +59,12 @@ export const SignUpLink = styled(Link)`
   }
 `;
 
-export const FormFooter = styled.p`
+export const FormFooter = styled.h1`
   position: absolute;
   bottom: 10px;
   left: 15%;
+  font-size: 15px;
+  font-weight: 100;
 
   @media screen and (max-width: 768px) {
     position: absolute;

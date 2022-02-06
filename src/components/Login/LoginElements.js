@@ -55,6 +55,11 @@ export const ForgotPassword = styled(Button)`
   color: #0b0c10;
   cursor: pointer;
   margin-top: 20px;
+
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+    margin-top: 5px;
+  }
 `;
 
 export const IconCopyright = styled(CopyrightIcon)`
@@ -82,11 +87,19 @@ export const ResetWrapper = styled(Box)`
   height: 30vh;
   background-color: rgba(241, 221, 231, 0.9);
   text-align: center;
+
+  @media screen and (max-width: 768px) {
+    width: 300px;
+  }
 `;
 
 export const EmailField = styled(TextField)`
   margin-top: 40px;
   width: 500px;
+
+  @media screen and (max-width: 768px) {
+    width: 250px;
+  }
 `;
 
 export const EmailResetBtn = styled(Button)`
@@ -98,5 +111,9 @@ export const EmailResetBtn = styled(Button)`
   &:hover {
     background-color: #c5c6c7;
     color: #0b0c10;
+  }
+
+  @media screen and (max-width: 768px) {
+    width: 250px;
   }
 `;
