@@ -26,3 +26,7 @@ firebase
 ## modify email template
 
 ## check sameSite attribute problem - it can cause cross-site-scripting issues
+
+## Look for noSql schema type -- design the relationship
+
+## validation of register form - check all steps
