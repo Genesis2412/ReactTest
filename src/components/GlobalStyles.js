@@ -28,6 +28,18 @@ export const BannerHeading = styled.h1`
   }
 `;
 
+export const BannerQuotes = styled.p`
+  color: "#c5c6c7";
+  margin-top: 24px;
+  margin-left: 24px;
+  font-size: 20px;
+  font-style: italic;
+
+  @media screen and (max-width: 768px) {
+    font-size: 18px;
+  }
+`;
+
 export const FormIcon = styled.img`
   width: 50%;
   height: auto;
