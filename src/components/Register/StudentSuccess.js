@@ -1,66 +1,70 @@
 import React from "react";
-import { FormItems, ListContainerOne, ListContainerTwo, ListContainerThree, ListContainer, StudentList, StudentListItem, StudentListItemText, RegisterButton } from "./RegisterElements";
+import { FormItems, ListContainerOne, ListContainerTwo, ListContainerThree, ListContainer, SuccessList, SuccessListItem, SuccessListItemText, RegisterButton } from "./RegisterElements";
 
 const StudentSuccess = (props) => {
   const handleSubmit = (values) => {
     props.next(values, true);
+    console.log(props.data);
   };
+
   return (
     <>
       <FormItems container item spacing={2}>
         <ListContainerOne item xs={12} sm="auto" md={4}>
-          <StudentList>
-            <StudentListItem>
-              <StudentListItemText primary="Title" secondary={props.data.title} />
-            </StudentListItem>
+          <SuccessList>
+            <SuccessListItem>
+              <SuccessListItemText primary="Title" secondary={props.data.title} />
+            </SuccessListItem>
 
-            <StudentListItem>
-              <StudentListItemText primary="Gender" secondary={props.data.gender} />
-            </StudentListItem>
+            <SuccessListItem>
+              <SuccessListItemText primary="Gender" secondary={props.data.gender} />
+            </SuccessListItem>
 
-            <StudentListItem>
-              <StudentListItemText primary="Full Name" secondary={props.data.firstName + " " + props.data.lastName} />
-            </StudentListItem>
+            <SuccessListItem>
+              <SuccessListItemText primary="Full Name" secondary={props.data.firstName + " " + props.data.lastName} />
+            </SuccessListItem>
 
-            <StudentListItem>
-              <StudentListItemText primary="Date of birth" secondary={props.data.day + " " + props.data.month + " " + props.data.year} />
-            </StudentListItem>
+            <SuccessListItem>
+              <SuccessListItemText primary="Date of birth" secondary={props.data.day + " " + props.data.month + " " + props.data.year} />
+            </SuccessListItem>
 
-            <StudentListItem>
-              <StudentListItemText primary="Nationality" secondary={props.data.nationality} />
-            </StudentListItem>
-          </StudentList>
+            <SuccessListItem>
+              <SuccessListItemText primary="Nationality" secondary={props.data.nationality} />
+            </SuccessListItem>
+          </SuccessList>
         </ListContainerOne>
 
         <ListContainerTwo item xs={12} sm="auto" md={4}>
-          <StudentList>
-            <StudentListItem>
-              <StudentListItemText primary="Address" secondary={props.data.streetAddress + " " + props.data.city + " " + props.data.district} />
-            </StudentListItem>
+          <SuccessList>
+            <SuccessListItem>
+              <SuccessListItemText primary="Address" secondary={props.data.streetAddress + " " + props.data.city + " " + props.data.district} />
+            </SuccessListItem>
 
-            <StudentListItem>
-              <StudentListItemText primary="Home Number" secondary={props.data.homeNumber} />
-            </StudentListItem>
+            <SuccessListItem>
+              <SuccessListItemText primary="Home Number" secondary={props.data.homeNumber} />
+            </SuccessListItem>
 
-            <StudentListItem>
-              <StudentListItemText primary="Mobile Number" secondary={props.data.mobileNumber} />
-            </StudentListItem>
+            <SuccessListItem>
+              <SuccessListItemText primary="Mobile Number" secondary={props.data.mobileNumber} />
+            </SuccessListItem>
 
-            <StudentListItem>
-              <StudentListItemText primary="Additional Number" secondary="Paul Pieer" />
-            </StudentListItem>
-          </StudentList>
+            {props.data.additionalNumber && (
+              <SuccessListItem>
+                <SuccessListItemText primary="Additional Number" secondary={props.data.additionalNumber} />
+              </SuccessListItem>
+            )}
+          </SuccessList>
         </ListContainerTwo>
 
         <ListContainerThree item xs={12} sm="auto" md={4}>
-          <StudentList>
-            <StudentListItem>
-              <StudentListItemText primary="Account Type" secondary={props.data.accountType} />
-            </StudentListItem>
-            <StudentListItem>
-              <StudentListItemText primary="Email" secondary={props.data.email} />
-            </StudentListItem>
-          </StudentList>
+          <SuccessList>
+            <SuccessListItem>
+              <SuccessListItemText primary="Account Type" secondary={props.data.accountType} />
+            </SuccessListItem>
+            <SuccessListItem>
+              <SuccessListItemText primary="Email" secondary={props.data.email} />
+            </SuccessListItem>
+          </SuccessList>
         </ListContainerThree>
       </FormItems>
 

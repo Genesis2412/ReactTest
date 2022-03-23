@@ -35,13 +35,14 @@ const Register = () => {
     password: "",
     confirmPassword: "",
 
-    // Tutors subjects and class they teach
+    // Tutors subjects they teach
     subjectOne: "",
     subjectTwo: "",
     subjectThree: "",
     subjectFour: "",
     subjectFive: "",
     subjectSix: "",
+    // Tutors classes they teach
     gradeSeven: "",
     gradeEight: "",
     gradeNine: "",
@@ -58,7 +59,7 @@ const Register = () => {
     employedInfo: "",
   });
 
-  const [currentStep, setCurrentStep] = useState(5); //**Hint: Do not forget do change to 0**
+  const [currentStep, setCurrentStep] = useState(6); //**Hint: Do not forget do change to 0**
 
   //captures new data from steps form and increment step counter
   const handleNextStep = (newData, final = false) => {

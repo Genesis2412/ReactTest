@@ -42,19 +42,32 @@ export const RegisterButton = styled(Button)`
 //Student Success
 
 export const ListContainerOne = styled(Grid)`
-  border-right: 1px dotted #000;
+  border-right: 1px dashed #000;
   margin-top: 15px;
 `;
 export const ListContainerTwo = styled(Grid)`
-  border-right: 1px dotted #000;
+  border-right: 1px dashed #000;
   margin-top: 15px;
 `;
 export const ListContainerThree = styled(Grid)`
   margin-top: 15px;
 `;
+
+export const ListContainerFour = styled(Grid)`
+  border-left: 1px dashed #000;
+  margin-top: 15px;
+`;
+
+export const ListContainerFive = styled(Grid)`
+  border-left: 1px dashed #000;
+  margin-top: 15px;
+`;
+
 export const ListContainer = styled(Grid)`
   margin-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
 `;
-export const StudentList = styled(List)``;
-export const StudentListItem = styled(ListItem)``;
-export const StudentListItemText = styled(ListItemText)``;
+export const SuccessList = styled(List)``;
+export const SuccessListItem = styled(ListItem)``;
+export const SuccessListItemText = styled(ListItemText)``;
