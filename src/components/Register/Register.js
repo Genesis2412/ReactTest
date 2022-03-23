@@ -5,6 +5,8 @@ import PersonalDetails from "./PersonalDetails";
 import ContactDetails from "./ContactDetails";
 import AccountDetails from "./AccountDetails";
 import StudentSuccess from "./StudentSuccess";
+import TutorSubjects from "./TutorSubjects";
+import TutorQualification from "./TutorQualification";
 import TutorSuccess from "./TutorSuccess";
 
 const Register = () => {
@@ -18,6 +20,7 @@ const Register = () => {
     month: "",
     year: "",
     nationality: "",
+
     // Contact Details
     streetAddress: "",
     city: "",
@@ -25,36 +28,37 @@ const Register = () => {
     homeNumber: "",
     mobileNumber: "",
     additionalNumber: "",
+
     // Account Details
     accountType: "",
     email: "",
     password: "",
     confirmPassword: "",
 
-    // Tutors/Students subjects
+    // Tutors subjects and class they teach
     subjectOne: "",
     subjectTwo: "",
     subjectThree: "",
     subjectFour: "",
     subjectFive: "",
     subjectSix: "",
+    gradeSeven: "",
+    gradeEight: "",
+    gradeNine: "",
+    gradeTen: "",
+    gradeEleven: "",
+    gradeTwelveThirteen: "",
 
     // Tutors Qualification
-    aLevelDegree: "",
-    aLevelDegreeInfo: "",
-    diplomaDegree: "",
-    diplomaDegreeInfo: "",
-    uploadCV: "",
-    uploadProfilePic: "",
-
-    // Tutors details
-    criminalProsecution: "",
-    criminalProsecutionWhat: "",
+    degree: "",
+    degreeInfo: "",
+    teacherQualification: "",
+    teacherQualificationInfo: "",
     employed: "",
-    employedWhere: "",
+    employedInfo: "",
   });
 
-  const [currentStep, setCurrentStep] = useState(0); //**Hint: Do not forget do change to 0**
+  const [currentStep, setCurrentStep] = useState(5); //**Hint: Do not forget do change to 0**
 
   //captures new data from steps form and increment step counter
   const handleNextStep = (newData, final = false) => {
@@ -74,11 +78,11 @@ const Register = () => {
       console.log("Form Submitted", data);
       return;
     }
-
+    console.log(newData);
     setCurrentStep((next) => next + 1);
   };
 
-  const steps = [<PersonalDetails next={handleNextStep} data={data} />, <ContactDetails next={handleNextStep} data={data} />, <AccountDetails next={handleNextStep} data={data} />, <StudentSuccess next={handleNextStep} data={data} />, <TutorSuccess next={handleNextStep} data={data} />];
+  const steps = [<PersonalDetails next={handleNextStep} data={data} />, <ContactDetails next={handleNextStep} data={data} />, <AccountDetails next={handleNextStep} data={data} />, <StudentSuccess next={handleNextStep} data={data} />, <TutorSubjects next={handleNextStep} data={data} />, <TutorQualification next={handleNextStep} data={data} />, <TutorSuccess next={handleNextStep} data={data} />];
 
   return (
     <>
