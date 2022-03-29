@@ -9,6 +9,9 @@ import TutorSubjects from "./TutorSubjects";
 import TutorQualification from "./TutorQualification";
 import TutorSuccess from "./TutorSuccess";
 import { Stepper, Step, StepLabel } from "@mui/material";
+import { db } from "../../firebase-config";
+import { collection, doc, setDoc } from "firebase/firestore";
+import Insert from "./Insert";
 
 const Register = () => {
   const [data, setData] = useState({
@@ -60,7 +63,61 @@ const Register = () => {
     employedInfo: "",
   });
 
-  const [currentStep, setCurrentStep] = useState(1); //**Hint: Do not forget do change to 0**
+  const [currentStep, setCurrentStep] = useState(0); //**Hint: Do not forget do change to 0**
+
+  //insert data in firestore
+  const createData = async () => {
+    const tutorsRef = collection(db, "tutors");
+    const studentsRef = collection(db, "students");
+
+    //checking where the data will be stored
+    if (data.accountType === "Tutor") {
+    }
+    if (data.accountType === "Student" || data.accountType === "Parent") {
+      await setDoc(doc(studentsRef), {
+        accountType: data.accountType,
+        email: data.email,
+        title: data.title,
+        gender: data.gender,
+        name: { firstName: data.firstName, lastName: data.lastName },
+        dateOfBith: { day: data.day, month: data.month, year: data.year },
+        nationality: data.nationality,
+        address: {
+          streetAddress: data.streetAddress,
+          city: data.city,
+          district: data.district,
+        },
+        contact: {
+          homeNumber: data.homeNumber,
+          mobileNumber: data.mobileNumber,
+          additionalNumber: data.additionalNumber,
+        },
+      });
+    }
+
+    // await setDoc(doc(finalCollection), {
+    //   accountType: data.accountType,
+    //   email: data.email,
+    //   title: data.title,
+    //   gender: data.gender,
+    //   name: { firstName: data.firstName, lastName: data.lastName },
+    //   dateOfBith: { day: data.day, month: data.month, year: data.year },
+    //   nationality: data.nationality,
+    //   address: {
+    //     streetAddress: data.streetAddress,
+    //     city: data.city,
+    //     district: data.district,
+    //   },
+    //   contact: { homeNumber: data.homeNumber, mobileNumber: data.mobileNumber },
+    //   subjects: ["Mathematics", "English"],
+    //   grades: [7, 8, 9, 11],
+    //   qualification: {
+    //     degree: true,
+    //     teacherQualification: true,
+    //     employed: false,
+    //   },
+    // });
+  };
 
   //captures new data from steps form and increment step counter
   const handleNextStep = (newData, final = false) => {
@@ -74,7 +131,7 @@ const Register = () => {
 
     //final submission
     if (final === true) {
-      console.log("Form Submitted", data);
+      createData();
       return;
     }
     console.log(newData);

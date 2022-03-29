@@ -6,6 +6,8 @@ import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
 import Home from "./Home";
 import Test from "../components/Test/Test";
+import Insert from "../components/Test/Insert";
+import Read from "../components/Test/Read";
 
 const Redirect = () => {
   return (
@@ -23,6 +25,9 @@ const Redirect = () => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          {/* Test routes */}
+          <Route path="/insert" element={<Insert />} />
+          <Route path="/read" element={<Read />} />
         </Routes>
       </UserAuthContextProvider>
     </>
