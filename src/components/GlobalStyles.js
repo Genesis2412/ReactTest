@@ -36,7 +36,7 @@ export const BannerQuotes = styled.p`
   font-style: italic;
 
   @media screen and (max-width: 768px) {
-    font-size: 18px;
+    font-size: 15px;
   }
 `;
 
@@ -64,6 +64,28 @@ export const SignUpLink = styled(Link)`
     position: absolute;
     top: 41%;
     left: 65%;
+
+    &:hover {
+      border: 0;
+    }
+  }
+`;
+
+export const LoginLink = styled(Link)`
+  position: absolute;
+  top: 35vh;
+  left: 40px;
+  text-decoration: none;
+  color: #0b0c10;
+
+  &:hover {
+    border-bottom: 2px solid #45a29e;
+  }
+
+  @media screen and (max-width: 768px) {
+    position: absolute;
+    top: 25vh;
+    left: 40px;
 
     &:hover {
       border: 0;

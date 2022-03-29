@@ -1,6 +1,17 @@
 import { styled } from "@mui/material/styles";
-import { Grid, TextField, Button, MenuItem, List, ListItem, ListItemText } from "@mui/material";
-import ImageBanner from "../../images/ImageBanner.jpg";
+import {
+  Grid,
+  TextField,
+  Button,
+  MenuItem,
+  List,
+  ListItem,
+  ListItemText,
+  Stepper,
+  Step,
+  StepLabel,
+} from "@mui/material";
+import ImageBanner from "../../images/registerBanner.png";
 
 export const BannerContainer = styled(Grid)``;
 
@@ -10,7 +21,7 @@ export const BannerItems = styled(Grid)`
   height: 40vh;
 
   @media screen and (max-width: 768px) {
-    height: 40vh;
+    height: 30vh;
   }
 `;
 
@@ -22,7 +33,12 @@ export const FormItems = styled(Grid)``;
 
 export const FormInput = styled(Grid)``;
 
-export const RegisterSelectItem = styled(MenuItem)``;
+export const RegisterSelectItem = styled(MenuItem)`
+  &:hover {
+    background-color: #c5c6c7;
+    color: #0b0c10;
+  }
+`;
 
 export const RegisterField = styled(TextField)``;
 
@@ -71,3 +87,9 @@ export const ListContainer = styled(Grid)`
 export const SuccessList = styled(List)``;
 export const SuccessListItem = styled(ListItem)``;
 export const SuccessListItemText = styled(ListItemText)``;
+
+export const Steppers = styled(Stepper)`
+  margin-top: 20px;
+`;
+export const Steps = styled(Step)``;
+export const StepLabels = styled(StepLabel)``;

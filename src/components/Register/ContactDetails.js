@@ -1,5 +1,12 @@
 import React from "react";
-import { FormContainer, FormItems, FormInput, RegisterSelectItem, RegisterField, RegisterButton } from "./RegisterElements";
+import {
+  FormContainer,
+  FormItems,
+  FormInput,
+  RegisterSelectItem,
+  RegisterField,
+  RegisterButton,
+} from "./RegisterElements";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
@@ -152,30 +159,91 @@ const ContactDetails = (props) => {
     "Ville Bague",
   ];
 
-  const districtArray = ["Flacq", "Grand Port", "Moka", "Pamplemousses", "Plaine Wilhems", "Port Louis", "Rivière du Rempart", "Rivière Noire", "Savanne"];
+  const districtArray = [
+    "Flacq",
+    "Grand Port",
+    "Moka",
+    "Pamplemousses",
+    "Plaine Wilhems",
+    "Port Louis",
+    "Rivière du Rempart",
+    "Rivière Noire",
+    "Savanne",
+  ];
 
   const validationSchema = Yup.object({
     streetAddress: Yup.string().required("Street address is required"),
     city: Yup.string().required("City is required"),
     district: Yup.string().required("District is required"),
-    homeNumber: Yup.string().required("Home number is required"),
-    mobileNumber: Yup.number().required("Mobile number is required"),
+    homeNumber: Yup.string()
+      .required("Home number is required")
+      .min(7, "Home number must be of 8 numbers")
+      .max(7, "Home valid home number")
+      .matches(
+        /^\d+$/,
+        "Home number cannot contain letters or special characters"
+      ),
+    mobileNumber: Yup.string()
+      .required("Mobile number is required")
+      .matches(
+        /\b5[0-9]{7}\b/,
+        "Mobile number should start with 5 and cannot contain letters or special characters"
+      ),
+    additionalNumber: Yup.string()
+      .min(7, "Additional number must be of 7 or 8 numbers")
+      .max(8, "Additional number must be of 7 or 8 numbers")
+      .matches(
+        /^\d+$/,
+        "Additional number cannot contain letters or special characters"
+      ),
   });
   return (
-    <Formik validationSchema={validationSchema} initialValues={props.data} onSubmit={handleSubmit}>
+    <Formik
+      validationSchema={validationSchema}
+      initialValues={props.data}
+      onSubmit={handleSubmit}
+    >
       {(formikProps) => (
         <Form>
           <FormContainer container direction="column" spacing={4}>
             <FormItems container item spacing={2}>
               <FormInput item xs={12} sm="auto" md={4}>
-                <Field as={RegisterField} name="streetAddress" label="Street Address" fullWidth error={formikProps.touched.streetAddress && Boolean(formikProps.errors.streetAddress)} helperText={formikProps.touched.streetAddress && formikProps.errors.streetAddress}></Field>
+                <Field
+                  as={RegisterField}
+                  name="streetAddress"
+                  label="Street Address"
+                  fullWidth
+                  error={
+                    formikProps.touched.streetAddress &&
+                    Boolean(formikProps.errors.streetAddress)
+                  }
+                  helperText={
+                    formikProps.touched.streetAddress &&
+                    formikProps.errors.streetAddress
+                  }
+                ></Field>
               </FormInput>
 
               <FormInput item xs={12} sm="auto" md={4}>
-                <Field as={RegisterField} name="city" label="City" select fullWidth error={formikProps.touched.city && Boolean(formikProps.errors.city)} helperText={formikProps.touched.city && formikProps.errors.city}>
+                <Field
+                  as={RegisterField}
+                  name="city"
+                  label="City"
+                  select
+                  fullWidth
+                  error={
+                    formikProps.touched.city && Boolean(formikProps.errors.city)
+                  }
+                  helperText={
+                    formikProps.touched.city && formikProps.errors.city
+                  }
+                >
                   {cityArray.map((showCityArray) => {
                     return (
-                      <RegisterSelectItem key={showCityArray} value={showCityArray}>
+                      <RegisterSelectItem
+                        key={showCityArray}
+                        value={showCityArray}
+                      >
                         {showCityArray}
                       </RegisterSelectItem>
                     );
@@ -184,10 +252,26 @@ const ContactDetails = (props) => {
               </FormInput>
 
               <FormInput item xs={12} sm="auto" md={4}>
-                <Field as={RegisterField} name="district" label="District" select fullWidth error={formikProps.touched.district && Boolean(formikProps.errors.district)} helperText={formikProps.touched.district && formikProps.errors.district}>
+                <Field
+                  as={RegisterField}
+                  name="district"
+                  label="District"
+                  select
+                  fullWidth
+                  error={
+                    formikProps.touched.district &&
+                    Boolean(formikProps.errors.district)
+                  }
+                  helperText={
+                    formikProps.touched.district && formikProps.errors.district
+                  }
+                >
                   {districtArray.map((showDistrictArray) => {
                     return (
-                      <RegisterSelectItem key={showDistrictArray} value={showDistrictArray}>
+                      <RegisterSelectItem
+                        key={showDistrictArray}
+                        value={showDistrictArray}
+                      >
                         {showDistrictArray}
                       </RegisterSelectItem>
                     );
@@ -198,16 +282,55 @@ const ContactDetails = (props) => {
 
             <FormItems container item spacing={2}>
               <FormInput item xs={12} sm="auto" md={6}>
-                <Field as={RegisterField} name="homeNumber" label="Home Number" fullWidth error={formikProps.touched.homeNumber && Boolean(formikProps.errors.homeNumber)} helperText={formikProps.touched.homeNumber && formikProps.errors.homeNumber}></Field>
+                <Field
+                  as={RegisterField}
+                  name="homeNumber"
+                  label="Home Number"
+                  fullWidth
+                  error={
+                    formikProps.touched.homeNumber &&
+                    Boolean(formikProps.errors.homeNumber)
+                  }
+                  helperText={
+                    formikProps.touched.homeNumber &&
+                    formikProps.errors.homeNumber
+                  }
+                ></Field>
               </FormInput>
 
               <FormInput item xs={12} sm="auto" md={6}>
-                <Field as={RegisterField} name="mobileNumber" label="Mobile Number" fullWidth error={formikProps.touched.mobileNumber && Boolean(formikProps.errors.mobileNumber)} helperText={formikProps.touched.mobileNumber && formikProps.errors.mobileNumber}></Field>
+                <Field
+                  as={RegisterField}
+                  name="mobileNumber"
+                  label="Mobile Number"
+                  fullWidth
+                  error={
+                    formikProps.touched.mobileNumber &&
+                    Boolean(formikProps.errors.mobileNumber)
+                  }
+                  helperText={
+                    formikProps.touched.mobileNumber &&
+                    formikProps.errors.mobileNumber
+                  }
+                ></Field>
               </FormInput>
             </FormItems>
 
             <FormInput item>
-              <Field as={RegisterField} name="additionalNumber" label="Additional Number" fullWidth error={formikProps.touched.additionalNumber && Boolean(formikProps.errors.additionalNumber)} helperText={formikProps.touched.additionalNumber && formikProps.errors.additionalNumber}></Field>
+              <Field
+                as={RegisterField}
+                name="additionalNumber"
+                label="Additional Number"
+                fullWidth
+                error={
+                  formikProps.touched.additionalNumber &&
+                  Boolean(formikProps.errors.additionalNumber)
+                }
+                helperText={
+                  formikProps.touched.additionalNumber &&
+                  formikProps.errors.additionalNumber
+                }
+              ></Field>
             </FormInput>
 
             <FormInput item>

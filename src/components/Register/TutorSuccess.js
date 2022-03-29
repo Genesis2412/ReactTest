@@ -12,6 +12,7 @@ import {
   SuccessListItemText,
   RegisterButton,
 } from "./RegisterElements";
+import { Alert, CircularProgress } from "@mui/material";
 
 const TutorSuccess = (props) => {
   const handleSubmit = (values) => {
@@ -40,22 +41,22 @@ const TutorSuccess = (props) => {
 
   var finalGrade = "";
   console.log("Grade: 7" + props.data.gradeSeven);
-  if (props.data.gradeSeven === "yes") {
+  if (props.data.gradeSeven === "Yes") {
     finalGrade += "Grade 7";
   }
-  if (props.data.gradeEight === "yes") {
+  if (props.data.gradeEight === "Yes") {
     finalGrade += ", 8";
   }
-  if (props.data.gradeNine === "yes") {
+  if (props.data.gradeNine === "Yes") {
     finalGrade += ", 9";
   }
-  if (props.data.gradeTen === "yes") {
+  if (props.data.gradeTen === "Yes") {
     finalGrade += ", 10";
   }
-  if (props.data.gradeEleven === "yes") {
+  if (props.data.gradeEleven === "Yes") {
     finalGrade += ", 11";
   }
-  if (props.data.gradeTwelveThirteen === "yes") {
+  if (props.data.gradeTwelveThirteen === "Yes") {
     finalGrade += ", 12, 13";
   }
 
@@ -220,7 +221,17 @@ const TutorSuccess = (props) => {
       </FormItems>
 
       <ListContainer item>
-        <RegisterButton onClick={handleSubmit}>Submit</RegisterButton>
+        <RegisterButton
+          disabled={props.isSubmitting}
+          value="Submit"
+          onClick={handleSubmit}
+        >
+          {props.isSubmitting ? (
+            <CircularProgress color="secondary" />
+          ) : (
+            "Submit"
+          )}
+        </RegisterButton>
       </ListContainer>
     </>
   );

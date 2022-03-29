@@ -73,9 +73,9 @@ const StudentSuccess = (props) => {
                 primary="Address"
                 secondary={
                   props.data.streetAddress +
-                  " " +
+                  ", " +
                   props.data.city +
-                  " " +
+                  ", " +
                   props.data.district
                 }
               />
@@ -125,7 +125,6 @@ const StudentSuccess = (props) => {
       </FormItems>
 
       {props.error && <Alert severity="error">{props.error}</Alert>}
-      {/* {modalSuccess && <Alert severity="success">{modalSuccess}</Alert>} */}
 
       <ListContainer item>
         <RegisterButton
