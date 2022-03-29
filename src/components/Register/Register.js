@@ -11,7 +11,6 @@ import TutorSuccess from "./TutorSuccess";
 import { Stepper, Step, StepLabel } from "@mui/material";
 import { db } from "../../firebase-config";
 import { collection, doc, setDoc } from "firebase/firestore";
-import Insert from "./Insert";
 
 const Register = () => {
   const [data, setData] = useState({
@@ -67,13 +66,46 @@ const Register = () => {
 
   //insert data in firestore
   const createData = async () => {
-    const tutorsRef = collection(db, "tutors");
-    const studentsRef = collection(db, "students");
+    //array for subjects
+
+    //array for grades
 
     //checking where the data will be stored
     if (data.accountType === "Tutor") {
+      const tutorsRef = collection(db, "tutors");
+      await setDoc(doc(tutorsRef), {
+        accountType: data.accountType,
+        email: data.email,
+        title: data.title,
+        gender: data.gender,
+        name: { firstName: data.firstName, lastName: data.lastName },
+        dateOfBith: { day: data.day, month: data.month, year: data.year },
+        nationality: data.nationality,
+        address: {
+          streetAddress: data.streetAddress,
+          city: data.city,
+          district: data.district,
+        },
+        contact: {
+          homeNumber: data.homeNumber,
+          mobileNumber: data.mobileNumber,
+          additionalNumber: data.additionalNumber ? "" : false,
+        },
+        subjects: ["Mathematics", "English"],
+        grades: [7, 8, 9, 11],
+        qualification: {
+          degree: data.degree ? "No" : false,
+          degreeInfo: data.degreeInfo ? "" : false,
+          teacherQualification: data.teacherQualification ? "No" : false,
+          teacherQualificationInfo: data.teacherQualificationInfo ? "" : false,
+          employed: data.employed ? "No" : false,
+          employedInfo: data.employedInfo ? "" : false,
+        },
+      });
     }
+
     if (data.accountType === "Student" || data.accountType === "Parent") {
+      const studentsRef = collection(db, "students");
       await setDoc(doc(studentsRef), {
         accountType: data.accountType,
         email: data.email,
@@ -90,33 +122,10 @@ const Register = () => {
         contact: {
           homeNumber: data.homeNumber,
           mobileNumber: data.mobileNumber,
-          additionalNumber: data.additionalNumber,
+          additionalNumber: data.additionalNumber ? "" : false,
         },
       });
     }
-
-    // await setDoc(doc(finalCollection), {
-    //   accountType: data.accountType,
-    //   email: data.email,
-    //   title: data.title,
-    //   gender: data.gender,
-    //   name: { firstName: data.firstName, lastName: data.lastName },
-    //   dateOfBith: { day: data.day, month: data.month, year: data.year },
-    //   nationality: data.nationality,
-    //   address: {
-    //     streetAddress: data.streetAddress,
-    //     city: data.city,
-    //     district: data.district,
-    //   },
-    //   contact: { homeNumber: data.homeNumber, mobileNumber: data.mobileNumber },
-    //   subjects: ["Mathematics", "English"],
-    //   grades: [7, 8, 9, 11],
-    //   qualification: {
-    //     degree: true,
-    //     teacherQualification: true,
-    //     employed: false,
-    //   },
-    // });
   };
 
   //captures new data from steps form and increment step counter
