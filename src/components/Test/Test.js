@@ -24,7 +24,7 @@ const Test = () => {
 
   return (
     <div>
-      Hello {user && user.emailVerified}
+      Hello {user.uid}
       <br />
       <br />
       <button onClick={handleLogout}>Logout</button>
