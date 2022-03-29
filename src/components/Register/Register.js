@@ -1,6 +1,12 @@
 import React, { useState } from "react";
-import { BannerContainer, BannerItems } from "./RegisterElements";
-import { Logo, BannerQuotes, SignUpLink } from "../GlobalStyles";
+import {
+  BannerContainer,
+  BannerItems,
+  Steppers,
+  Steps,
+  StepLabels,
+} from "./RegisterElements";
+import { Logo, BannerQuotes, LoginLink } from "../GlobalStyles";
 import PersonalDetails from "./PersonalDetails";
 import ContactDetails from "./ContactDetails";
 import AccountDetails from "./AccountDetails";
@@ -8,7 +14,6 @@ import StudentSuccess from "./StudentSuccess";
 import TutorSubjects from "./TutorSubjects";
 import TutorQualification from "./TutorQualification";
 import TutorSuccess from "./TutorSuccess";
-import { Stepper, Step, StepLabel } from "@mui/material";
 import { db } from "../../firebase-config";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { useUserAuth } from "../../Context/UserAuthContext";
@@ -81,11 +86,10 @@ const Register = () => {
     if (data.subjectTwo !== "") {
       subjectsArray.push(data.subjectTwo);
     }
-
     if (data.subjectThree !== "") {
       subjectsArray.push(data.subjectThree);
     }
-    if (data.Four !== "") {
+    if (data.subjectFour !== "") {
       subjectsArray.push(data.subjectFour);
     }
     if (data.subjectFive !== "") {
@@ -97,22 +101,22 @@ const Register = () => {
 
     //array for grades
     var gradesArray = [];
-    if (data.gradeSeven === "yes") {
+    if (data.gradeSeven === "Yes") {
       gradesArray.push(7);
     }
-    if (data.gradeEight === "yes") {
+    if (data.gradeEight === "Yes") {
       gradesArray.push(8);
     }
-    if (data.gradeNine === "yes") {
+    if (data.gradeNine === "Yes") {
       gradesArray.push(9);
     }
-    if (data.gradeTen === "yes") {
+    if (data.gradeTen === "Yes") {
       gradesArray.push(10);
     }
-    if (data.gradeEleven === "yes") {
+    if (data.gradeEleven === "Yes") {
       gradesArray.push(11);
     }
-    if (data.gradeTwelveThirteen === "yes") {
+    if (data.gradeTwelveThirteen === "Yes") {
       gradesArray.push(12);
       gradesArray.push(13);
     }
@@ -188,6 +192,12 @@ const Register = () => {
         }
       });
     } catch (err) {
+      if (err.message.includes("auth/invalid-email")) {
+        setError("Email is not valid");
+      }
+      if (err.message.includes("auth/email-already-in-use")) {
+        setError("Email is already taken");
+      }
       setError(err.message);
     }
   };
@@ -247,43 +257,52 @@ const Register = () => {
     <>
       <BannerContainer container direction="column">
         <BannerItems>
-          <Logo to="/">Tutorhuntz</Logo>
-          <SignUpLink to="/login">Login in now</SignUpLink>
-          <BannerQuotes>{quotes[currentStep]}</BannerQuotes>
-          {currentStep !== 0 && (
-            <Stepper activeStep={currentStep} alternativeLabel>
-              <Step key="AccountDetails">
-                <StepLabel>Account Details</StepLabel>
-              </Step>
+          <Logo to="/" style={{ color: "white" }}>
+            Tutorhuntz
+          </Logo>
 
-              <Step key="PersonalDetails">
-                <StepLabel>Personal Details</StepLabel>
-              </Step>
-
-              <Step key="ContactDetails">
-                <StepLabel>Contact Details</StepLabel>
-              </Step>
-
-              {data.accountType === "Tutor" && (
-                <Step key="Subjects">
-                  <StepLabel>Subjects</StepLabel>
-                </Step>
-              )}
-
-              {data.accountType === "Tutor" && (
-                <Step key="Qualification">
-                  <StepLabel>Qualification</StepLabel>
-                </Step>
-              )}
-
-              <Step key="VerifyDetails">
-                <StepLabel>Verify Details</StepLabel>
-              </Step>
-            </Stepper>
-          )}
+          <LoginLink to="/login" style={{ color: "white" }}>
+            Login in now
+          </LoginLink>
+          <BannerQuotes style={{ color: "white" }}>
+            {quotes[currentStep]}
+          </BannerQuotes>
         </BannerItems>
       </BannerContainer>
-      <div>{steps[currentStep]}</div>
+      <div>
+        {currentStep !== 0 && (
+          <Steppers activeStep={currentStep} alternativeLabel>
+            <Steps key="AccountDetails">
+              <StepLabels>Account Details</StepLabels>
+            </Steps>
+
+            <Steps key="PersonalDetails">
+              <StepLabels>Personal Details</StepLabels>
+            </Steps>
+
+            <Steps key="ContactDetails">
+              <StepLabels>Contact Details</StepLabels>
+            </Steps>
+
+            {data.accountType === "Tutor" && (
+              <Steps key="Subjects">
+                <StepLabels>Subjects</StepLabels>
+              </Steps>
+            )}
+
+            {data.accountType === "Tutor" && (
+              <Steps key="Qualification">
+                <StepLabels>Qualification</StepLabels>
+              </Steps>
+            )}
+
+            <Steps key="VerifyDetails">
+              <StepLabels>Verify Details</StepLabels>
+            </Steps>
+          </Steppers>
+        )}
+        {steps[currentStep]}
+      </div>
     </>
   );
 };
