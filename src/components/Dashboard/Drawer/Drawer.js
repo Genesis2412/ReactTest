@@ -16,6 +16,7 @@ import {
   Name,
   Logout,
   PowerMaterialIcon,
+  AddMaterialIcon,
 } from "./DrawerElements";
 
 const Sidebar = () => {
@@ -72,6 +73,14 @@ const Sidebar = () => {
           >
             <NotificationsMaterialIcon />
             <Text clicked={click}>Notifications</Text>
+          </Item>
+          <Item
+            onClick={() => setClick(false)}
+            activeClassName="active"
+            to="/formclasses"
+          >
+            <AddMaterialIcon />
+            <Text clicked={click}>Create Class</Text>
           </Item>
         </SlickBar>
 

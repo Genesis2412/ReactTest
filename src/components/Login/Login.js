@@ -87,7 +87,7 @@ const Login = () => {
       //Firebase Login
       try {
         await logIn(values.email, values.password);
-        navigate("/test");
+        navigate("/dashboard");
         onSubmitProps.setSubmitting(false);
       } catch (err) {
         if (err.message.includes("user-not-found")) {

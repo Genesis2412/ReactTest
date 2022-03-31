@@ -10,6 +10,7 @@ import Classes from "../components/Dashboard/Classes/Classes";
 import Chats from "../components/Dashboard/Chats/Chats";
 import Videocall from "../components/Dashboard/Videocall/Videocall";
 import Notifications from "../components/Dashboard/Notifications/Notifications";
+import FormClasses from "../components/Dashboard/FormClasses/FormClasses";
 
 // Testing
 import Test from "../components/Test/Test";
@@ -40,6 +41,7 @@ const Redirect = () => {
           <Route path="/Chats" element={<Chats />} />
           <Route path="/videocall" element={<Videocall />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/formclasses" element={<FormClasses />} />
           {/* </AnimatePresence> */}
 
           {/* Test routes */}

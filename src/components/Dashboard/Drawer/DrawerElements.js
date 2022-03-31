@@ -6,6 +6,7 @@ import ClassIcon from "@mui/icons-material/Class";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChatIcon from "@mui/icons-material/Chat";
+import AddIcon from "@mui/icons-material/Add";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
 export const HomeMaterialIcon = MaterialStyles(HomeIcon)`
@@ -35,6 +36,12 @@ export const ChatMaterialIcon = styled(ChatIcon)`
 `;
 export const PowerMaterialIcon = styled(PowerSettingsNewIcon)`
   color: red;
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+export const AddMaterialIcon = styled(AddIcon)`
   &:hover {
     opacity: 0.8;
   }

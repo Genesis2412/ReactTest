@@ -148,7 +148,7 @@ const Register = () => {
               additionalNumber: data.additionalNumber ? "" : false,
             },
           }).then(() => {
-            navigate("/test");
+            navigate("/dashboard");
             setIsSubmitting(false);
           });
         }
@@ -186,7 +186,7 @@ const Register = () => {
               employedInfo: data.employedInfo ? "" : false,
             },
           }).then(() => {
-            navigate("/test");
+            navigate("/dashboard");
             setIsSubmitting(false);
           });
         }
