@@ -69,7 +69,7 @@ const Register = () => {
     employedInfo: "",
   });
 
-  const { signUp, user } = useUserAuth();
+  const { signUp } = useUserAuth();
 
   //state for error
   const [error, setError] = useState("");
