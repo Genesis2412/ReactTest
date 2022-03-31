@@ -28,5 +28,3 @@ firebase
 ## check sameSite attribute problem - it can cause cross-site-scripting issues
 
 ### additional number problems - getting null
-
-### check array of subjects for tutor

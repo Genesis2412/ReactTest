@@ -208,12 +208,6 @@ const Register = () => {
   const handleNextStep = (newData, final = false) => {
     setData((next) => ({ ...next, ...newData }));
 
-    //if current step is AccountDetails (check for account type for form redirection as per accountType)
-    if (currentStep === 2 && newData.accountType === "Tutor") {
-      setCurrentStep((next) => next + 2);
-      return;
-    }
-
     //final submission
     if (final === true) {
       createData();
@@ -223,25 +217,34 @@ const Register = () => {
     setCurrentStep((next) => next + 1);
   };
 
-  const steps = [
+  var steps = [
     <AccountDetails next={handleNextStep} data={data} />,
     <PersonalDetails next={handleNextStep} data={data} />,
     <ContactDetails next={handleNextStep} data={data} />,
-    <StudentSuccess
-      next={handleNextStep}
-      data={data}
-      error={error}
-      isSubmitting={isSubmitting}
-    />,
-    <TutorSubjects next={handleNextStep} data={data} />,
-    <TutorQualification next={handleNextStep} data={data} />,
-    <TutorSuccess
-      next={handleNextStep}
-      data={data}
-      error={error}
-      isSubmitting={isSubmitting}
-    />,
   ];
+
+  if (data.accountType === "Tutor") {
+    steps.push(
+      <TutorSubjects next={handleNextStep} data={data} />,
+      <TutorQualification next={handleNextStep} data={data} />,
+      <TutorSuccess
+        next={handleNextStep}
+        data={data}
+        error={error}
+        isSubmitting={isSubmitting}
+      />
+    );
+  }
+  if (data.accountType === "Student" || data.accountType === "Parent") {
+    steps.push(
+      <StudentSuccess
+        next={handleNextStep}
+        data={data}
+        error={error}
+        isSubmitting={isSubmitting}
+      />
+    );
+  }
 
   const quotes = [
     '"Education is the most powerful weapon which you can use to change the world" - Nelson Mandela',
