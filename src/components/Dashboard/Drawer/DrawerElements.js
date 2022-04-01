@@ -140,14 +140,14 @@ export const Text = styled.span`
 `;
 
 export const Profile = styled.div`
-  width: ${(props) => (props.clicked ? "14rem" : "1.5rem")};
+  width: ${(props) => (props.clicked ? "16rem" : "1.5rem")};
   height: 3rem;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: ${(props) => (props.clicked ? "10rem" : "0")};
+  margin-left: ${(props) => (props.clicked ? "12rem" : "0")};
   background-color: #0b0c10;
   color: #c5c6c7;
   transition: all 0.3s ease;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   HomeMaterialIcon,
   ClassMaterialIcon,
@@ -19,8 +19,12 @@ import {
   AddMaterialIcon,
 } from "./DrawerElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
+import { db } from "../../../firebase-config";
+import { doc, getDoc } from "firebase/firestore";
 
 const Sidebar = () => {
+  const { logOut, user, setUserDetails, userDetails } = useUserAuth();
+
   const [click, setClick] = useState(false);
   const handleClick = () => setClick(!click);
 
@@ -29,9 +33,24 @@ const Sidebar = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { logOut, user } = useUserAuth();
+  useEffect(() => {
+    const getUserDetails = async () => {
+      if (user.uid) {
+        const docRef = doc(db, "tutors", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          // console.log("Document data:", docSnap.data());
+          setUserDetails(docSnap.data());
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+      }
+    };
+    getUserDetails();
+  }, []);
 
-  console.log(user);
+  console.log(userDetails);
 
   const handleLogout = async () => {
     try {
@@ -84,7 +103,11 @@ const Sidebar = () => {
           />
           <Details clicked={profileClick}>
             <Name>
-              <h4>Jhon&nbsp;Doe</h4>
+              <h4>
+                {userDetails?.name?.firstName +
+                  " " +
+                  userDetails?.name?.lastName}
+              </h4>
               <a href="/#">view&nbsp;profile</a>
             </Name>
 
