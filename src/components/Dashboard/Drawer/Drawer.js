@@ -31,12 +31,13 @@ const Sidebar = () => {
 
   const { logOut, user } = useUserAuth();
 
+  console.log(user);
+
   const handleLogout = async () => {
     try {
       setIsSubmitting(true);
-      await logOut().then(() => {
-        setIsSubmitting(false);
-      });
+      await logOut();
+      setIsSubmitting(false);
     } catch (err) {
       alert(err.message); //To check for error codes
     }

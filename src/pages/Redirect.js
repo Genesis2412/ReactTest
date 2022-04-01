@@ -23,26 +23,58 @@ const Redirect = () => {
       <UserAuthContextProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route
-            path="/test"
-            element={
-              <ProtectedRoute>
-                <Test />
-              </ProtectedRoute>
-            }
-          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Dashboard */}
-          {/* <AnimatePresence> */}
-          <Route path="/dashboard" element={<Home />} />
-          <Route path="/classes" element={<Classes />} />
-          <Route path="/Chats" element={<Chats />} />
-          <Route path="/videocall" element={<Videocall />} />
-          <Route path="/notifications" element={<Notifications />} />
-          <Route path="/formclasses" element={<FormClasses />} />
-          {/* </AnimatePresence> */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/classes"
+            element={
+              <ProtectedRoute>
+                <Classes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Chats"
+            element={
+              <ProtectedRoute>
+                <Chats />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/videocall"
+            element={
+              <ProtectedRoute>
+                <Videocall />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <Notifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/formclasses"
+            element={
+              <ProtectedRoute>
+                <FormClasses />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Test routes */}
           <Route path="/insert" element={<Insert />} />
