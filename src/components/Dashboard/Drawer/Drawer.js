@@ -18,6 +18,7 @@ import {
   PowerMaterialIcon,
   AddMaterialIcon,
 } from "./DrawerElements";
+import { useUserAuth } from "../../../Context/UserAuthContext";
 
 const Sidebar = () => {
   const [click, setClick] = useState(false);
@@ -26,6 +27,21 @@ const Sidebar = () => {
   const [profileClick, setprofileClick] = useState(false);
   const handleProfileClick = () => setprofileClick(!profileClick);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { logOut, user } = useUserAuth();
+
+  const handleLogout = async () => {
+    try {
+      setIsSubmitting(true);
+      await logOut().then(() => {
+        setIsSubmitting(false);
+      });
+    } catch (err) {
+      alert(err.message); //To check for error codes
+    }
+  };
+
   return (
     <Container>
       <Button clicked={click} onClick={() => handleClick()}>
@@ -33,52 +49,27 @@ const Sidebar = () => {
       </Button>
       <SidebarContainer>
         <SlickBar clicked={click}>
-          <Item
-            onClick={() => setClick(false)}
-            exact
-            activeClassName="active"
-            to="/dashboard"
-          >
+          <Item onClick={() => setClick(false)} to="/dashboard">
             <HomeMaterialIcon />
             <Text clicked={click}>Home</Text>
           </Item>
-          <Item
-            onClick={() => setClick(false)}
-            activeClassName="active"
-            to="/classes"
-          >
+          <Item onClick={() => setClick(false)} to="/classes">
             <ClassMaterialIcon />
             <Text clicked={click}>Classes</Text>
           </Item>
-          <Item
-            onClick={() => setClick(false)}
-            activeClassName="active"
-            to="/chats"
-          >
+          <Item onClick={() => setClick(false)} to="/chats">
             <ChatMaterialIcon />
             <Text clicked={click}>Chats</Text>
           </Item>
-          <Item
-            onClick={() => setClick(false)}
-            activeClassName="active"
-            to="/videocall"
-          >
+          <Item onClick={() => setClick(false)} to="/videocall">
             <VideoMaterialIcon />
             <Text clicked={click}>Videocall</Text>
           </Item>
-          <Item
-            onClick={() => setClick(false)}
-            activeClassName="active"
-            to="/notifications"
-          >
+          <Item onClick={() => setClick(false)} to="/notifications">
             <NotificationsMaterialIcon />
             <Text clicked={click}>Notifications</Text>
           </Item>
-          <Item
-            onClick={() => setClick(false)}
-            activeClassName="active"
-            to="/formclasses"
-          >
+          <Item onClick={() => setClick(false)} to="/formclasses">
             <AddMaterialIcon />
             <Text clicked={click}>Create Class</Text>
           </Item>
@@ -96,7 +87,7 @@ const Sidebar = () => {
               <a href="/#">view&nbsp;profile</a>
             </Name>
 
-            <Logout>
+            <Logout onClick={handleLogout} disabled={isSubmitting}>
               <PowerMaterialIcon fontSize="large" />
             </Logout>
           </Details>
