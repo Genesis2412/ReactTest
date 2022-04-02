@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  HomeMaterialIcon,
+  PeopleMaterialIcon,
   ClassMaterialIcon,
   ChatMaterialIcon,
   VideoMaterialIcon,
@@ -64,10 +64,18 @@ const Sidebar = () => {
             <NotificationsMaterialIcon />
             <Text clicked={click}>Notifications</Text>
           </Item>
-          <Item onClick={() => setClick(false)} to="/dashboard/create">
-            <AddMaterialIcon />
-            <Text clicked={click}>Create Class</Text>
-          </Item>
+          {userDetails?.accountType === "Tutor" && (
+            <Item onClick={() => setClick(false)} to="/dashboard/create">
+              <AddMaterialIcon />
+              <Text clicked={click}>Create Class</Text>
+            </Item>
+          )}
+          {userDetails?.accountType === "Student" && (
+            <Item onClick={() => setClick(false)} to="/dashboard/tutors">
+              <PeopleMaterialIcon />
+              <Text clicked={click}>Create Class</Text>
+            </Item>
+          )}
         </SlickBar>
 
         <Profile clicked={profileClick}>

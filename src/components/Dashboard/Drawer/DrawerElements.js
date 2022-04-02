@@ -8,6 +8,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import ChatIcon from "@mui/icons-material/Chat";
 import AddIcon from "@mui/icons-material/Add";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import PeopleIcon from "@mui/icons-material/People";
 
 export const HomeMaterialIcon = MaterialStyles(HomeIcon)`
   &:hover {
@@ -42,6 +43,12 @@ export const PowerMaterialIcon = styled(PowerSettingsNewIcon)`
 `;
 
 export const AddMaterialIcon = styled(AddIcon)`
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+export const PeopleMaterialIcon = styled(PeopleIcon)`
   &:hover {
     opacity: 0.8;
   }
