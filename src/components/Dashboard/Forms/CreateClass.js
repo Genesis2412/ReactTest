@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Box, Button, MenuItem, Modal, TextField } from "@mui/material";
 import createClassIcon from "../../../images/createClassIcon.svg";
+import { Image } from "./FormElements";
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
 
 const CreateClass = () => {
   const style = {
@@ -64,6 +67,14 @@ const CreateClass = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const validationSchema = Yup.object({
+    subject: Yup.string().required("Subject is required"),
+    grade: Yup.number().required("Grade is required"),
+    numberOfStudent: Yup.number().required("Number is required"),
+  });
+
+  const [isSubmitting, setisSubmitting] = useState(false);
+
   return (
     <>
       <Box
@@ -110,7 +121,7 @@ const CreateClass = () => {
           textAlign: "center",
         }}
       >
-        <img src={createClassIcon} alt="banner" style={{ width: "30%" }} />
+        <Image src={createClassIcon} alt="banner" />
       </Box>
 
       <Modal
@@ -120,36 +131,90 @@ const CreateClass = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <TextField
-            id="subject"
-            label="Subject (Required)"
-            variant="filled"
-            select
+          <Formik
+            validationSchema={validationSchema}
+            initialValues={{
+              subject: "",
+              grade: "",
+              numberOfStudent: "",
+            }}
+            onSubmit={async (values) => {
+              setisSubmitting(true);
+              await new Promise((r) => setTimeout(r, 500));
+              alert(JSON.stringify(values, null, 2));
+              setisSubmitting(false);
+            }}
           >
-            {subjects.map((subjectsName) => (
-              <MenuItem key={subjectsName} value={subjectsName}>
-                {subjectsName}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="grade"
-            label="Grade (Required)"
-            variant="filled"
-            select
-          >
-            {grades.map((gradesNumber) => (
-              <MenuItem key={gradesNumber} value={gradesNumber}>
-                {gradesNumber}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            id="numberOfStudent"
-            label="Number of students (Required)"
-            variant="filled"
-          />
-          <Button sx={buttonStyle}>Create Class</Button>
+            {(formikProps) => (
+              <Form>
+                <Field
+                  as={TextField}
+                  name="subject"
+                  label="Subject (Required)"
+                  select
+                  variant="filled"
+                  error={
+                    formikProps.touched.subject &&
+                    Boolean(formikProps.errors.subject)
+                  }
+                  helperText={
+                    formikProps.touched.subject && formikProps.errors.subject
+                  }
+                >
+                  {subjects.map((subject) => (
+                    <MenuItem key={subject} value={subject}>
+                      {subject}
+                    </MenuItem>
+                  ))}
+                </Field>
+
+                <Field
+                  as={TextField}
+                  name="grade"
+                  label="Grade (Required)"
+                  select
+                  variant="filled"
+                  error={
+                    formikProps.touched.grade &&
+                    Boolean(formikProps.errors.grade)
+                  }
+                  helperText={
+                    formikProps.touched.grade && formikProps.errors.grade
+                  }
+                >
+                  {grades.map((grade) => (
+                    <MenuItem key={grade} value={grade}>
+                      {grade}
+                    </MenuItem>
+                  ))}
+                </Field>
+
+                <Field
+                  as={TextField}
+                  name="numberOfStudent"
+                  label="Number of Student (Required)"
+                  variant="filled"
+                  error={
+                    formikProps.touched.numberOfStudent &&
+                    Boolean(formikProps.errors.numberOfStudent)
+                  }
+                  helperText={
+                    formikProps.touched.numberOfStudent &&
+                    formikProps.errors.numberOfStudent
+                  }
+                />
+
+                <Button
+                  fullWidth
+                  sx={buttonStyle}
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  Create Class
+                </Button>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Modal>
     </>
