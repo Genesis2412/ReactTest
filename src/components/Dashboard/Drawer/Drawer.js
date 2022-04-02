@@ -19,11 +19,9 @@ import {
   AddMaterialIcon,
 } from "./DrawerElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import { db } from "../../../firebase-config";
-import { doc, getDoc } from "firebase/firestore";
 
 const Sidebar = () => {
-  const { logOut, user, setUserDetails, userDetails } = useUserAuth();
+  const { logOut, userDetails } = useUserAuth();
 
   const [click, setClick] = useState(false);
   const handleClick = () => setClick(!click);
@@ -32,23 +30,6 @@ const Sidebar = () => {
   const handleProfileClick = () => setprofileClick(!profileClick);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    const getUserDetails = async () => {
-      if (user.uid) {
-        const docRef = doc(db, "tutors", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setUserDetails(docSnap.data());
-        } else {
-          console.log("No such document!");
-        }
-      }
-    };
-    getUserDetails();
-  }, []);
-
-  console.log(userDetails);
 
   const handleLogout = async () => {
     try {
@@ -67,27 +48,23 @@ const Sidebar = () => {
       </Button>
       <SidebarContainer>
         <SlickBar clicked={click}>
-          <Item onClick={() => setClick(false)} to="/dashboard">
-            <HomeMaterialIcon />
-            <Text clicked={click}>Home</Text>
-          </Item>
-          <Item onClick={() => setClick(false)} to="/classes">
+          <Item onClick={() => setClick(false)} to="/dashboard/classes">
             <ClassMaterialIcon />
             <Text clicked={click}>Classes</Text>
           </Item>
-          <Item onClick={() => setClick(false)} to="/chats">
+          <Item onClick={() => setClick(false)} to="/dashboard/chats">
             <ChatMaterialIcon />
             <Text clicked={click}>Chats</Text>
           </Item>
-          <Item onClick={() => setClick(false)} to="/videocall">
+          <Item onClick={() => setClick(false)} to="/dashboard/videocall">
             <VideoMaterialIcon />
             <Text clicked={click}>Videocall</Text>
           </Item>
-          <Item onClick={() => setClick(false)} to="/notifications">
+          <Item onClick={() => setClick(false)} to="/dashboard/notifications">
             <NotificationsMaterialIcon />
             <Text clicked={click}>Notifications</Text>
           </Item>
-          <Item onClick={() => setClick(false)} to="/formclasses">
+          <Item onClick={() => setClick(false)} to="/dashboard/create">
             <AddMaterialIcon />
             <Text clicked={click}>Create Class</Text>
           </Item>

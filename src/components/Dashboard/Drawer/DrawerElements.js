@@ -48,7 +48,8 @@ export const AddMaterialIcon = styled(AddIcon)`
 `;
 
 export const Container = styled.div`
-  position: fixed;
+  /* position: fixed; */
+  z-index: 20;
   .active {
     color: #66fcf1;
   }

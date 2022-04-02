@@ -11,10 +11,12 @@ import {
 } from "firebase/firestore";
 import { useUserAuth } from "../../Context/UserAuthContext";
 
+import { Box, Paper } from "@mui/material";
+
 const Read = () => {
   const { user, userDetails } = useUserAuth();
 
-  console.log(userDetails);
+  // console.log(userDetails);
 
   return (
     <>
@@ -25,6 +27,11 @@ const Read = () => {
           </div>
         );
       })} */}
+      <Box sx={{ display: "flex" }}>
+        <Box>
+          <Paper>Hello</Paper>
+        </Box>
+      </Box>
     </>
   );
 };
