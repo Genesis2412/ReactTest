@@ -11,7 +11,6 @@ import PersonalDetails from "./PersonalDetails";
 import ContactDetails from "./ContactDetails";
 import AccountDetails from "./AccountDetails";
 import StudentSuccess from "./StudentSuccess";
-import TutorSubjects from "./TutorSubjects";
 import TutorQualification from "./TutorQualification";
 import TutorSuccess from "./TutorSuccess";
 import { db } from "../../firebase-config";
@@ -45,21 +44,6 @@ const Register = () => {
     mobileNumber: "",
     additionalNumber: "",
 
-    // Tutors subjects they teach
-    subjectOne: "",
-    subjectTwo: "",
-    subjectThree: "",
-    subjectFour: "",
-    subjectFive: "",
-    subjectSix: "",
-    // Tutors classes they teach
-    gradeSeven: "",
-    gradeEight: "",
-    gradeNine: "",
-    gradeTen: "",
-    gradeEleven: "",
-    gradeTwelveThirteen: "",
-
     // Tutors Qualification
     degree: "",
     degreeInfo: "",
@@ -78,49 +62,6 @@ const Register = () => {
 
   //insert data in firestore
   const createData = async () => {
-    //array for subjects
-    var subjectsArray = [];
-    if (data.subjectOne !== "") {
-      subjectsArray.push(data.subjectOne);
-    }
-    if (data.subjectTwo !== "") {
-      subjectsArray.push(data.subjectTwo);
-    }
-    if (data.subjectThree !== "") {
-      subjectsArray.push(data.subjectThree);
-    }
-    if (data.subjectFour !== "") {
-      subjectsArray.push(data.subjectFour);
-    }
-    if (data.subjectFive !== "") {
-      subjectsArray.push(data.subjectFive);
-    }
-    if (data.subjectSix !== "") {
-      subjectsArray.push(data.subjectSix);
-    }
-
-    //array for grades
-    var gradesArray = [];
-    if (data.gradeSeven === "Yes") {
-      gradesArray.push(7);
-    }
-    if (data.gradeEight === "Yes") {
-      gradesArray.push(8);
-    }
-    if (data.gradeNine === "Yes") {
-      gradesArray.push(9);
-    }
-    if (data.gradeTen === "Yes") {
-      gradesArray.push(10);
-    }
-    if (data.gradeEleven === "Yes") {
-      gradesArray.push(11);
-    }
-    if (data.gradeTwelveThirteen === "Yes") {
-      gradesArray.push(12);
-      gradesArray.push(13);
-    }
-
     setIsSubmitting(true);
 
     //adding email and password to Firebase Auth
@@ -173,8 +114,7 @@ const Register = () => {
               mobileNumber: data.mobileNumber,
               additionalNumber: data.additionalNumber ? "" : false,
             },
-            subjects: subjectsArray,
-            grades: gradesArray,
+
             qualification: {
               degree: data.degree ? "No" : false,
               degreeInfo: data.degreeInfo ? "" : false,
@@ -225,7 +165,6 @@ const Register = () => {
 
   if (data.accountType === "Tutor") {
     steps.push(
-      <TutorSubjects next={handleNextStep} data={data} />,
       <TutorQualification next={handleNextStep} data={data} />,
       <TutorSuccess
         next={handleNextStep}
@@ -286,12 +225,6 @@ const Register = () => {
             <Steps key="ContactDetails">
               <StepLabels>Contact Details</StepLabels>
             </Steps>
-
-            {data.accountType === "Tutor" && (
-              <Steps key="Subjects">
-                <StepLabels>Subjects</StepLabels>
-              </Steps>
-            )}
 
             {data.accountType === "Tutor" && (
               <Steps key="Qualification">

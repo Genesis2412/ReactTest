@@ -19,62 +19,23 @@ const TutorSuccess = (props) => {
     props.next(values, true);
   };
 
-  var finalSubject = "";
-  if (props.data.subjectOne) {
-    finalSubject += props.data.subjectOne;
-  }
-  if (props.data.subjectTwo) {
-    finalSubject += ", " + props.data.subjectTwo;
-  }
-  if (props.data.subjectThree) {
-    finalSubject += ", " + props.data.subjectThree;
-  }
-  if (props.data.subjectFour) {
-    finalSubject += ", " + props.data.subjectFour;
-  }
-  if (props.data.subjectFive) {
-    finalSubject += ", " + props.data.subjectFive;
-  }
-  if (props.data.subjectSix) {
-    finalSubject += ", " + props.data.subjectSix;
-  }
-
-  var finalGrade = "";
-  console.log("Grade: 7" + props.data.gradeSeven);
-  if (props.data.gradeSeven === "Yes") {
-    finalGrade += "Grade 7";
-  }
-  if (props.data.gradeEight === "Yes") {
-    finalGrade += ", 8";
-  }
-  if (props.data.gradeNine === "Yes") {
-    finalGrade += ", 9";
-  }
-  if (props.data.gradeTen === "Yes") {
-    finalGrade += ", 10";
-  }
-  if (props.data.gradeEleven === "Yes") {
-    finalGrade += ", 11";
-  }
-  if (props.data.gradeTwelveThirteen === "Yes") {
-    finalGrade += ", 12, 13";
-  }
-
   var spacing = 0;
   if (
-    props.data.degree ||
-    props.data.teacherQualification ||
-    props.data.employed
+    props.data.degree === "" ||
+    props.data.teacherQualification === "" ||
+    props.data.employed === ""
   ) {
-    spacing = 2;
-  } else {
     spacing = 3;
+  } else {
+    spacing = 4;
   }
+
+  console.log(spacing);
 
   return (
     <>
       <FormItems container item spacing={2}>
-        <ListContainerOne item xs={12} sm="auto" md={3}>
+        <ListContainerOne item xs={12} sm="auto" md={spacing}>
           <SuccessList>
             <SuccessListItem>
               <SuccessListItemText
@@ -119,7 +80,7 @@ const TutorSuccess = (props) => {
           </SuccessList>
         </ListContainerOne>
 
-        <ListContainerTwo item xs={12} sm="auto" md={3}>
+        <ListContainerTwo item xs={12} sm="auto" md={spacing}>
           <SuccessList>
             <SuccessListItem>
               <SuccessListItemText
@@ -178,20 +139,6 @@ const TutorSuccess = (props) => {
 
         <ListContainerFour item xs={12} sm="auto" md={spacing}>
           <SuccessList>
-            <SuccessListItem>
-              <SuccessListItemText
-                primary="Subjects"
-                secondary={finalSubject}
-              />
-            </SuccessListItem>
-            <SuccessListItem>
-              <SuccessListItemText primary="Grades" secondary={finalGrade} />
-            </SuccessListItem>
-          </SuccessList>
-        </ListContainerFour>
-
-        <ListContainerFive item xs={12} sm="auto" md={spacing}>
-          <SuccessList>
             {props.data.degree === "Yes" && (
               <SuccessListItem>
                 <SuccessListItemText
@@ -217,7 +164,7 @@ const TutorSuccess = (props) => {
               </SuccessListItem>
             )}
           </SuccessList>
-        </ListContainerFive>
+        </ListContainerFour>
       </FormItems>
 
       <ListContainer item>
