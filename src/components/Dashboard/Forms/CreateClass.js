@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { Box, Button, MenuItem, Modal, TextField } from "@mui/material";
+import { Box, Button, MenuItem, Modal, TextField, Alert } from "@mui/material";
 import createClassIcon from "../../../images/createClassIcon.svg";
 import { Image } from "./FormElements";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { v4 as uuidv4 } from "uuid";
+import { db } from "../../../firebase-config";
+import { doc, setDoc, collection } from "firebase/firestore";
+import { useUserAuth } from "../../../Context/UserAuthContext";
 
 const CreateClass = () => {
   const style = {
@@ -73,6 +77,29 @@ const CreateClass = () => {
     numberOfStudent: Yup.number().required("Number is required"),
   });
 
+  const classId = uuidv4();
+  const { user, userDetails } = useUserAuth();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const createClass = async (subject, grade, numberOfStudent) => {
+    try {
+      const studentsRef = collection(db, "createdClasses");
+      setDoc(doc(studentsRef, classId), {
+        userUid: user.uid,
+        firstName: userDetails.name.firstName,
+        lastName: userDetails.name.lastName,
+        profilePic:
+          "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+        subject: subject,
+        grade: grade,
+        numberOfStudent: numberOfStudent,
+      });
+      setSuccess("Class Created");
+    } catch (err) {
+      setError("Class not created!");
+    }
+  };
+
   const [isSubmitting, setisSubmitting] = useState(false);
 
   return (
@@ -140,8 +167,7 @@ const CreateClass = () => {
             }}
             onSubmit={async (values) => {
               setisSubmitting(true);
-              await new Promise((r) => setTimeout(r, 500));
-              alert(JSON.stringify(values, null, 2));
+              createClass(values.subject, values.grade, values.numberOfStudent);
               setisSubmitting(false);
             }}
           >
@@ -212,6 +238,8 @@ const CreateClass = () => {
                 >
                   Create Class
                 </Button>
+                {error && <Alert severity="error">{error}</Alert>}
+                {success && <Alert severity="success">{success}</Alert>}
               </Form>
             )}
           </Formik>

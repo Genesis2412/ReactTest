@@ -16,22 +16,36 @@ import { Box, Paper } from "@mui/material";
 const Read = () => {
   const { user, userDetails } = useUserAuth();
 
-  // console.log(userDetails);
+  const uid = "541sc231";
+
+  const [classes, setClasses] = useState([]);
+
+  const q = query(
+    collection(db, "createdClasses"),
+    where("userUid", "==", user.uid)
+  );
+
+  useEffect(() => {
+    const read = async () => {
+      const data = await getDocs(q);
+      setClasses(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
+
+    read();
+  }, []);
 
   return (
     <>
-      {/* {tutors.map((tutor) => {
+      {classes.map((yes) => {
         return (
           <div>
-            <h1>{tutor.name.firstName + " " + tutor.name.lastName}</h1>
+            {yes.firstName}
+            <div>{yes.lastName}</div>
           </div>
         );
-      })} */}
-      <Box sx={{ display: "flex" }}>
-        <Box>
-          <Paper>Hello</Paper>
-        </Box>
-      </Box>
+      })}
+
+      {/* <button onClick={read}>Read</button> */}
     </>
   );
 };
