@@ -66,7 +66,11 @@ const Classes = () => {
                 <CardActionArea>
                   <Link
                     to={"/dashboard/classesdetails"}
-                    state={{ classState: showClass.id }}
+                    state={{
+                      classCode: showClass.id,
+                      classSubject: showClass.subject,
+                      classGrade: showClass.grade,
+                    }}
                     style={{ color: "#000", textDecoration: "none" }}
                   >
                     {userDetails?.accountType === "Tutor" && (
