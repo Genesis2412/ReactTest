@@ -16,13 +16,14 @@ const Insert = () => {
       // 2. if exist insert into JoinedClasses
       const joinedRef = collection(db, "JoinedClasses");
 
-      setDoc(doc(joinedRef, class_code), {
+      setDoc(doc(joinedRef), {
         TutorFirstName: classValues.data().firstName,
         TutorLastName: classValues.data().lastName,
         subject: classValues.data().subject,
         grade: classValues.data().grade,
         TutorProfilePic: classValues.data().profilePic,
         userUid: user.uid,
+        class_code: class_code,
       });
       console.log("Added Successfully");
     } else {
