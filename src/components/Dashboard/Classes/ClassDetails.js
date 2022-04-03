@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Paper, Grid, TextField, Button, Typography } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Grid,
+  TextField,
+  Button,
+  Typography,
+  LinearProgress,
+} from "@mui/material";
 import { storage } from "../../../firebase-config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { db } from "../../../firebase-config";
+import { doc, setDoc, collection } from "firebase/firestore";
 
 const ClassDetails = () => {
   const location = useLocation();
   const { classCode } = location.state;
   const { classSubject } = location.state;
   const { classGrade } = location.state;
-  console.log(classCode + " " + classSubject + " " + classGrade); // output: "the-page-id"
 
   const [images, setImages] = useState([]);
-  const [urls, setUrls] = useState([]);
+  const [announcementValue, setAnnoucementValue] = useState();
   const [progress, setProgress] = useState(0);
+
+  const fileInputRef = useRef();
 
   //getting images
   const handleChange = (e) => {
@@ -24,29 +35,73 @@ const ClassDetails = () => {
     }
   };
 
+  console.log(images);
+
   const handleUpload = () => {
-    images.map((image) => {
-      const storageRef = ref(storage, "/files/" + image.name);
-      const uploadTask = uploadBytesResumable(storageRef, image);
+    var storageRef = "";
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const prog = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgress(prog);
-        },
-        (err) => console.log(err),
-        // on Success
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((url) => setUrls(url));
+    if (announcementValue && images) {
+      images.map((image) => {
+        if (
+          image.type === "image/jpeg" ||
+          image.type === "image/jpg" ||
+          image.type === "image/png" ||
+          image.type === "image/gif" ||
+          image.type === "image/svg"
+        ) {
+          storageRef = ref(storage, "/images/" + image.name);
+        } else if (
+          image.type === "video/mp4" ||
+          image.type === "video/mov" ||
+          image.type === "video/wmv" ||
+          image.type === "video/flv" ||
+          image.type === "video/avi" ||
+          image.type === "video/mkv"
+        ) {
+          storageRef = ref(storage, "/videos/" + image.name);
+        } else {
+          storageRef = ref(storage, "/files/" + image.name);
         }
-      );
-    });
-  };
+        const uploadTask = uploadBytesResumable(storageRef, image);
 
-  //   console.log(urls);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const prog = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+            setProgress(prog);
+          },
+          (err) => console.log(err),
+          // on Success
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then((url) =>
+              setDoc(doc(collection(db, "announcements")), {
+                subject: classSubject,
+                grade: classGrade,
+                fileUrl: url,
+                classCode: classCode,
+                fileName: image.name,
+                format: image.type,
+                title: announcementValue,
+              })
+            );
+          }
+        );
+      });
+      setImages();
+      fileInputRef.current.value = "";
+    } else if (announcementValue && !images) {
+      setDoc(doc(collection(db, "announcements")), {
+        subject: classSubject,
+        grade: classGrade,
+        classCode: classCode,
+        title: announcementValue,
+      });
+    } else {
+      alert("Please enter Announcement");
+    }
+  };
 
   return (
     <>
@@ -71,8 +126,19 @@ const ClassDetails = () => {
 
       <Box sx={{ boxShadow: 5, mt: 1 }}>
         <Paper>
-          <TextField fullWidth label="Create Announcement" sx={{ mb: 1 }} />
-          <input accept="" multiple type="file" onChange={handleChange} />
+          <TextField
+            fullWidth
+            label="Create Announcement/ To add to Existing annoucement, enter exactly SAME Name"
+            sx={{ mb: 1 }}
+            value={announcementValue}
+            onChange={(e) => setAnnoucementValue(e.target.value)}
+          />
+          <input
+            multiple
+            type="file"
+            ref={fileInputRef}
+            onChange={handleChange}
+          />
         </Paper>
         <Button
           fullWidth
@@ -81,7 +147,8 @@ const ClassDetails = () => {
         >
           Create
         </Button>
-        <h3>Uploaded {progress}%</h3>
+
+        <LinearProgress variant="determinate" value={progress} />
       </Box>
 
       {/* Materials */}
@@ -103,14 +170,16 @@ const ClassDetails = () => {
             <Grid item xs={3}>
               <Box sx={{ boxShadow: 1 }}>
                 <Paper>
-                  <Box p={1}>
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1200px-PDF_file_icon.svg.png"
-                      alt="profile"
-                      width={40}
-                    />
-                    Profile
-                  </Box>
+                  <a href="" target="blank">
+                    <Box p={1}>
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1200px-PDF_file_icon.svg.png"
+                        alt="profile"
+                        width={40}
+                      />
+                      Profile
+                    </Box>
+                  </a>
                 </Paper>
               </Box>
             </Grid>

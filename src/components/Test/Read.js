@@ -57,6 +57,15 @@ const Read = () => {
       })} */}
 
       <button onClick={readOne}>Read</button>
+      <a
+        href="https://firebasestorage.googleapis.com/v0/b/tutorhuntz-dev-970e1.appspot.com/o/files%2Fcaudan.mp4?alt=media&token=8900d07d-4c07-4838-a409-137bb89bd5e7"
+        target="blank"
+      >
+        <img
+          src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
+          alt="Missing"
+        />
+      </a>
     </>
   );
 };
