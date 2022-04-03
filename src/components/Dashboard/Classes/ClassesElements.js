@@ -6,7 +6,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 export const AvatarContainer = styled(Avatar)`
   position: relative;
-  top: 50px;
+  top: 25px;
   left: 23%;
   width: 150px;
   height: auto;

@@ -15,6 +15,7 @@ export function UserAuthContextProvider({ children }) {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
   const [userDetails, setUserDetails] = useState({});
+  const [classes, setClasses] = useState([]);
 
   // login
   function logIn(email, password) {
@@ -53,6 +54,8 @@ export function UserAuthContextProvider({ children }) {
         user,
         userDetails,
         setUserDetails,
+        classes,
+        setClasses,
         logIn,
         signUp,
         logOut,
