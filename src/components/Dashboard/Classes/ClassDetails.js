@@ -9,8 +9,14 @@ import {
   Typography,
   LinearProgress,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { storage } from "../../../firebase-config";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+  deleteObject,
+} from "firebase/storage";
 import { db } from "../../../firebase-config";
 import {
   doc,
@@ -23,12 +29,17 @@ import {
   arrayUnion,
   onSnapshot,
   orderBy,
+  arrayRemove,
 } from "firebase/firestore";
 import ClassesDetailsBanner from "../../../images/ClassesDetailsBanner.jpg";
 import ImageIcon from "../../../images/ImageIcon.jpg";
 import PdfIcon from "../../../images/PdfIcon.jpg";
 import SheetIcon from "../../../images/SheetIcon.jpg";
 import VideoIcon from "../../../images/VideoIcon.jpg";
+import MusicIcon from "../../../images/MusicIcon.jpg";
+import PowerPointIcon from "../../../images/PowerPointIcon.jpg";
+import TextIcon from "../../../images/TextIcon.jpg";
+import WordIcon from "../../../images/WordIcon.jpg";
 
 const ClassDetails = () => {
   const location = useLocation();
@@ -108,7 +119,6 @@ const ClassDetails = () => {
                 if (response) {
                   const updateRef = doc(db, "announcements", response);
                   updateDoc(updateRef, {
-                    format: arrayUnion(image.type),
                     fileName: arrayUnion(image.name),
                     fileUrl: arrayUnion(url),
                   });
@@ -118,7 +128,6 @@ const ClassDetails = () => {
                     grade: classGrade,
                     title: announcementValue,
                     classCode: classCode,
-                    format: [image.type],
                     fileName: [image.name],
                     fileUrl: [url],
                   });
@@ -162,6 +171,62 @@ const ClassDetails = () => {
       setShowFiles(newFiles);
     });
   }, []);
+
+  const handleDelete = async (fileDocId, title, fileName, fileUrl) => {
+    let confirmAction = window.confirm(
+      "Are you sure to delete " + fileName + " from " + title
+    );
+
+    if (confirmAction) {
+      //delete from firestore
+      const deleteFirestoreRef = doc(db, "announcements", fileDocId);
+      await updateDoc(deleteFirestoreRef, {
+        fileName: arrayRemove(fileName),
+        fileUrl: arrayRemove(fileUrl),
+      });
+      // Create a reference to the file to delete
+      var desertRef = "";
+      if (
+        fileName.includes(".jpg") ||
+        fileName.includes(".jpeg") ||
+        fileName.includes(".png") ||
+        fileName.includes(".gif") ||
+        fileName.includes(".svg")
+      ) {
+        desertRef = ref(storage, "images/" + fileName);
+      } else if (
+        fileName.includes(".mp4") ||
+        fileName.includes(".mov") ||
+        fileName.includes(".wmv") ||
+        fileName.includes(".avi") ||
+        fileName.includes(".mkv")
+      ) {
+        desertRef = ref(storage, "videos/" + fileName);
+      } else if (
+        fileName.includes(".mp3") ||
+        fileName.includes(".aac") ||
+        fileName.includes(".ogg") ||
+        fileName.includes(".wav") ||
+        fileName.includes(".wma") ||
+        fileName.includes(".flac")
+      ) {
+        desertRef = ref(storage, "videos/" + fileName);
+      } else {
+        desertRef = ref(storage, "files/" + fileName);
+      }
+
+      // Delete the file
+      deleteObject(desertRef)
+        .then(() => {
+          alert("Deleted Successfully");
+        })
+        .catch((error) => {
+          alert("An error occurred");
+        });
+    } else {
+      alert("Action canceled");
+    }
+  };
 
   return (
     <>
@@ -224,7 +289,7 @@ const ClassDetails = () => {
       {/* Materials */}
       {showFiles.map((showFile) => {
         return (
-          <Box sx={{ boxShadow: 5, mt: 5 }} key={showFile.id}>
+          <Box sx={{ boxShadow: 5, mt: 5 }} key={showFile.id + 1}>
             <Paper>
               <Box>
                 <Paper>
@@ -236,45 +301,133 @@ const ClassDetails = () => {
               <Grid container spacing={2} sx={{ p: 2 }}>
                 {showFile.fileName.map((showFilesName, index) => {
                   return (
-                    <Grid item md={3} xs={12} key={showFilesName[index]}>
-                      <Box sx={{ boxShadow: 1, textAlign: "center" }}>
+                    <Grid item md={3} xs={12} key={index}>
+                      <Box
+                        sx={{
+                          boxShadow: 1,
+                          textAlign: "center",
+                        }}
+                      >
                         <Paper>
+                          <Button
+                            sx={{
+                              position: "relative",
+                              left: "45%",
+                              color: "red",
+                            }}
+                            onClick={() =>
+                              handleDelete(
+                                showFile.id,
+                                showFile.title,
+                                showFilesName,
+                                showFile.fileUrl[index]
+                              )
+                            }
+                          >
+                            <DeleteIcon
+                              sx={{
+                                color: "red",
+                                fontSize: 20,
+                              }}
+                            />
+                          </Button>
+
                           <a
                             href={showFile.fileUrl[index]}
                             target="_blank"
                             style={{ textDecoration: "none", color: "#000" }}
                           >
                             <Box p={1}>
-                              {/* Conditions */}
-                              {showFile.format[index].includes("image") && (
+                              {/* Images Icon */}
+                              {(showFilesName.includes(".jpg") ||
+                                showFilesName.includes(".jpeg") ||
+                                showFilesName.includes(".png") ||
+                                showFilesName.includes(".gif") ||
+                                showFilesName.includes(".svg")) && (
                                 <img
                                   src={ImageIcon}
                                   alt="thumbnail"
                                   height={40}
                                 />
                               )}
-                              {showFile.format[index].includes("video") && (
+                              {/* Video Icons */}
+                              {(showFilesName.includes(".mp4") ||
+                                showFilesName.includes(".mov") ||
+                                showFilesName.includes(".wmv") ||
+                                showFilesName.includes(".avi") ||
+                                showFilesName.includes(".mkv")) && (
                                 <img
                                   src={VideoIcon}
                                   alt="thumbnail"
                                   height={40}
                                 />
                               )}
-                              {showFile.format[index].includes("sheet") && (
+                              {/* SpreadSheet Icons */}
+                              {(showFilesName.includes(".xlsx") ||
+                                showFilesName.includes(".xlsm") ||
+                                showFilesName.includes(".xls") ||
+                                showFilesName.includes(".csv")) && (
                                 <img
                                   src={SheetIcon}
                                   alt="thumbnail"
                                   height={40}
                                 />
                               )}
-                              {showFile.format[index].includes("pdf") && (
+                              {/* PDF Icon */}
+                              {showFilesName.includes(".pdf") && (
                                 <img
                                   src={PdfIcon}
                                   alt="thumbnail"
                                   height={40}
                                 />
                               )}
-                              <Typography> {showFilesName}</Typography>
+
+                              {/* Text Icon */}
+                              {(showFilesName.includes(".txt") ||
+                                showFilesName.includes(".rtf")) && (
+                                <img
+                                  src={TextIcon}
+                                  alt="thumbnail"
+                                  height={40}
+                                />
+                              )}
+
+                              {/* Word Icon */}
+                              {(showFilesName.includes(".doc") ||
+                                showFilesName.includes(".docx") ||
+                                showFilesName.includes(".wpd")) && (
+                                <img
+                                  src={WordIcon}
+                                  alt="thumbnail"
+                                  height={40}
+                                />
+                              )}
+
+                              {/* Powerpoint Icon */}
+                              {(showFilesName.includes(".pptx") ||
+                                showFilesName.includes(".pptm") ||
+                                showFilesName.includes(".ppt")) && (
+                                <img
+                                  src={PowerPointIcon}
+                                  alt="thumbnail"
+                                  height={40}
+                                />
+                              )}
+
+                              {/* Music Icon */}
+                              {(showFilesName.includes(".mp3") ||
+                                showFilesName.includes(".aac") ||
+                                showFilesName.includes(".ogg") ||
+                                showFilesName.includes(".wav") ||
+                                showFilesName.includes(".wma") ||
+                                showFilesName.includes(".flac")) && (
+                                <img
+                                  src={MusicIcon}
+                                  alt="thumbnail"
+                                  height={40}
+                                />
+                              )}
+                              <Typography>{showFilesName}</Typography>
                             </Box>
                           </a>
                         </Paper>
