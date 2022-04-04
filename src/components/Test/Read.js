@@ -9,63 +9,58 @@ import {
   getDocs,
   collectionGroup,
   setDoc,
+  updateDoc,
+  arrayUnion,
 } from "firebase/firestore";
 import { useUserAuth } from "../../Context/UserAuthContext";
 
-import { Box, Paper } from "@mui/material";
+import { Box, Paper, Grid } from "@mui/material";
 
 const Read = () => {
-  // const { user, userDetails } = useUserAuth();
-  // const uid = "541sc231";
-  // const [classes, setClasses] = useState([]);
-  // const q = query(
-  //   collection(db, "createdClasses"),
-  //   where("userUid", "==", user.uid)
-  // );
-  // useEffect(() => {
-  //   const read = async () => {
-  //     const data = await getDocs(q);
-  //     setClasses(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-  //   };
-  //   read();
-  // }, []);
+  const title = "Lecture 3";
 
-  // Data- subject, grade, annoucement, file url, file name
+  const readOne = async () => {
+    var docId = "";
+    const q = query(
+      collection(db, "announcements"),
+      where("title", "==", title)
+    );
 
-  const annoucementRef = collection(db, "annoucements");
-  const readOne = () => {
-    setDoc(doc(annoucementRef), {
-      subject: "Hello",
-      grade: 8,
-      fileUrl:
-        "https://firebasestorage.googleapis.com/v0/b/tutorhuntz-dev-970e1.appspot.com/o/files%2Fbook.jpg?alt=media&token=461d967e-e522-45da-b2bc-07ed6394f9af",
-      classCode: "cwqgibkjnlkmqihguvhj",
-      fileName: "Yes, it is me",
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      docId = doc.id;
     });
-    console.log("Yes");
+    return docId;
+  };
+
+  //modify announcement
+  const createAll = async () => {
+    readOne().then((response) => {
+      if (response) {
+        const washingtonRef = doc(db, "announcements", response);
+        updateDoc(washingtonRef, {
+          fileName: arrayUnion("Test2"),
+        });
+        console.log("Updated");
+      } else {
+        setDoc(doc(collection(db, "announcements")), {
+          subject: "classSubject",
+          grade: "classGrade",
+          fileUrl: ["url"],
+          classCode: "classCode",
+          fileName: ["Test1"],
+          format: ["image.type"],
+          title: title,
+        });
+        console.log("New Created");
+      }
+    });
   };
 
   return (
     <>
-      {/* {classes.map((yes) => {
-        return (
-          <div>
-            {yes.firstName}
-            <div>{yes.lastName}</div>
-          </div>
-        );
-      })} */}
-
-      <button onClick={readOne}>Read</button>
-      <a
-        href="https://firebasestorage.googleapis.com/v0/b/tutorhuntz-dev-970e1.appspot.com/o/files%2Fcaudan.mp4?alt=media&token=8900d07d-4c07-4838-a409-137bb89bd5e7"
-        target="blank"
-      >
-        <img
-          src="https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg"
-          alt="Missing"
-        />
-      </a>
+      {/* <button onClick={createOne}>CreateOne</button> */}
+      <button onClick={createAll}>ReadOne</button>
     </>
   );
 };
