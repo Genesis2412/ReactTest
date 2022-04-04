@@ -24,6 +24,11 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
+import ClassesDetailsBanner from "../../../images/ClassesDetailsBanner.jpg";
+import ImageIcon from "../../../images/ImageIcon.jpg";
+import PdfIcon from "../../../images/PdfIcon.jpg";
+import SheetIcon from "../../../images/SheetIcon.jpg";
+import VideoIcon from "../../../images/VideoIcon.jpg";
 
 const ClassDetails = () => {
   const location = useLocation();
@@ -162,9 +167,9 @@ const ClassDetails = () => {
     <>
       <Box>
         <img
-          src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+          src={ClassesDetailsBanner}
           alt="bannerImg"
-          height={250}
+          height={360}
           width={"100%"}
         />
       </Box>
@@ -178,12 +183,17 @@ const ClassDetails = () => {
         </Paper>
       </Box>
       {/* OVERFLOW!!!! */}
-      <Box sx={{ boxShadow: 5, mt: 1 }}>
+      <Box sx={{ boxShadow: 5, mt: 3, p: 1 }}>
         <Paper>
+          <Typography xs={{ fontSize: 8 }}>
+            Create Announcement/ To add to{" "}
+            <span style={{ color: "red" }}>EXISTING</span> announcement, enter
+            exactly <span style={{ color: "red" }}>SAME ANNOUNCEMENT NAME</span>
+          </Typography>
           <Box>
             <TextField
               fullWidth
-              label="Create Announcement/ To add to EXISTING announcement, enter exactly SAME Name"
+              label=""
               sx={{ mb: 1 }}
               value={announcementValue}
               onChange={(e) => setAnnouncementValue(e.target.value)}
@@ -210,10 +220,11 @@ const ClassDetails = () => {
           value={progress}
         />
       </Box>
+
       {/* Materials */}
       {showFiles.map((showFile) => {
         return (
-          <Box sx={{ boxShadow: 5, mt: 5 }}>
+          <Box sx={{ boxShadow: 5, mt: 5 }} key={showFile.id}>
             <Paper>
               <Box>
                 <Paper>
@@ -225,7 +236,7 @@ const ClassDetails = () => {
               <Grid container spacing={2} sx={{ p: 2 }}>
                 {showFile.fileName.map((showFilesName, index) => {
                   return (
-                    <Grid item xs={3}>
+                    <Grid item md={3} xs={12} key={showFilesName[index]}>
                       <Box sx={{ boxShadow: 1, textAlign: "center" }}>
                         <Paper>
                           <a
@@ -235,11 +246,34 @@ const ClassDetails = () => {
                           >
                             <Box p={1}>
                               {/* Conditions */}
-                              <img
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/PDF_file_icon.svg/1200px-PDF_file_icon.svg.png"
-                                alt="profile"
-                                width={40}
-                              />
+                              {showFile.format[index].includes("image") && (
+                                <img
+                                  src={ImageIcon}
+                                  alt="thumbnail"
+                                  height={40}
+                                />
+                              )}
+                              {showFile.format[index].includes("video") && (
+                                <img
+                                  src={VideoIcon}
+                                  alt="thumbnail"
+                                  height={40}
+                                />
+                              )}
+                              {showFile.format[index].includes("sheet") && (
+                                <img
+                                  src={SheetIcon}
+                                  alt="thumbnail"
+                                  height={40}
+                                />
+                              )}
+                              {showFile.format[index].includes("pdf") && (
+                                <img
+                                  src={PdfIcon}
+                                  alt="thumbnail"
+                                  height={40}
+                                />
+                              )}
                               <Typography> {showFilesName}</Typography>
                             </Box>
                           </a>
