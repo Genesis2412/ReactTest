@@ -9,7 +9,7 @@ import {
   Typography,
   LinearProgress,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { storage } from "../../../firebase-config";
 import {
   getDownloadURL,
@@ -78,6 +78,9 @@ const ClassDetails = () => {
 
   const handleUpload = async () => {
     var storageRef = "";
+    if (images.length === 0) {
+      console.log("Zero");
+    }
 
     if (announcementValue && images) {
       images.map((image) => {
@@ -140,12 +143,15 @@ const ClassDetails = () => {
       setImages((prevState) => []);
       fileInputRef.current.value = "";
       setAnnouncementValue("");
-    } else if (announcementValue && !images) {
+    }
+    if (announcementValue && images.length === 0) {
       setDoc(doc(collection(db, "announcements")), {
         subject: classSubject,
         grade: classGrade,
         classCode: classCode,
         title: announcementValue,
+        fileName: [],
+        fileUrl: [],
       });
 
       setAnnouncementValue("");
@@ -253,7 +259,10 @@ const ClassDetails = () => {
           <Typography xs={{ fontSize: 8 }}>
             Create Announcement/ To add to{" "}
             <span style={{ color: "red" }}>EXISTING</span> announcement, enter
-            exactly <span style={{ color: "red" }}>SAME ANNOUNCEMENT NAME</span>
+            <span style={{ color: "red" }}>
+              {" "}
+              EXACTLY SAME ANNOUNCEMENT NAME
+            </span>
           </Typography>
           <Box>
             <TextField
@@ -273,7 +282,22 @@ const ClassDetails = () => {
         </Paper>
         <Button
           fullWidth
-          sx={{ backgroundColor: "#45a29e", color: "#fff", mt: 2 }}
+          // sx={{
+          //   backgroundColor: "#45a29e",
+          //   color: "#fff",
+          //   mt: 2,
+          // }}
+          sx={[
+            {
+              "&:hover": {
+                color: "#0b0c10",
+                backgroundColor: "#c5c6c7",
+              },
+              backgroundColor: "#45a29e",
+              color: "#fff",
+              mt: 2,
+            },
+          ]}
           onClick={handleUpload}
         >
           Create
@@ -324,7 +348,7 @@ const ClassDetails = () => {
                               )
                             }
                           >
-                            <DeleteIcon
+                            <RemoveCircleOutlineIcon
                               sx={{
                                 color: "red",
                                 fontSize: 20,
@@ -335,6 +359,7 @@ const ClassDetails = () => {
                           <a
                             href={showFile.fileUrl[index]}
                             target="_blank"
+                            rel="noreferrer"
                             style={{ textDecoration: "none", color: "#000" }}
                           >
                             <Box p={1}>
