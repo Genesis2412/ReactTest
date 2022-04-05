@@ -10,6 +10,7 @@ import {
   LinearProgress,
 } from "@mui/material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import CloseIcon from "@mui/icons-material/Close";
 import { storage } from "../../../firebase-config";
 import {
   getDownloadURL,
@@ -30,6 +31,7 @@ import {
   onSnapshot,
   orderBy,
   arrayRemove,
+  deleteDoc,
 } from "firebase/firestore";
 import ImageIcon from "../../../images/ImageIcon.jpg";
 import PdfIcon from "../../../images/PdfIcon.jpg";
@@ -39,12 +41,15 @@ import MusicIcon from "../../../images/MusicIcon.jpg";
 import PowerPointIcon from "../../../images/PowerPointIcon.jpg";
 import TextIcon from "../../../images/TextIcon.jpg";
 import WordIcon from "../../../images/WordIcon.jpg";
+import { useUserAuth } from "../../../Context/UserAuthContext";
 
 const Streams = () => {
   const location = useLocation();
   const { classCode } = location.state;
   const { classSubject } = location.state;
   const { classGrade } = location.state;
+
+  const { userDetails } = useUserAuth();
 
   const [images, setImages] = useState([]);
   var [announcementValue, setAnnouncementValue] = useState("");
@@ -61,7 +66,7 @@ const Streams = () => {
     }
   };
 
-  const readOne = async (announcement) => {
+  const readOne = async () => {
     var docId = "";
     const q = query(
       collection(db, "announcements"),
@@ -176,7 +181,47 @@ const Streams = () => {
     });
   }, []);
 
-  const handleDelete = async (fileDocId, title, fileName, fileUrl) => {
+  const handleStorageDelete = async (fileName) => {
+    var imagePathRef = "";
+    if (
+      fileName.includes(".jpg") ||
+      fileName.includes(".jpeg") ||
+      fileName.includes(".png") ||
+      fileName.includes(".gif") ||
+      fileName.includes(".svg")
+    ) {
+      imagePathRef = ref(storage, "images/" + fileName);
+    } else if (
+      fileName.includes(".mp4") ||
+      fileName.includes(".mov") ||
+      fileName.includes(".wmv") ||
+      fileName.includes(".avi") ||
+      fileName.includes(".mkv")
+    ) {
+      imagePathRef = ref(storage, "videos/" + fileName);
+    } else if (
+      fileName.includes(".mp3") ||
+      fileName.includes(".aac") ||
+      fileName.includes(".ogg") ||
+      fileName.includes(".wav") ||
+      fileName.includes(".wma") ||
+      fileName.includes(".flac")
+    ) {
+      imagePathRef = ref(storage, "videos/" + fileName);
+    } else {
+      imagePathRef = ref(storage, "files/" + fileName);
+    }
+
+    // Delete the file
+    deleteObject(imagePathRef)
+      .then(() => {})
+      .catch((error) => {
+        alert("An error occurred");
+      });
+  };
+
+  // Delete one material in a stream
+  const handleMaterialDelete = async (fileDocId, title, fileName, fileUrl) => {
     let confirmAction = window.confirm(
       "Are you sure to delete " + fileName + " from " + title
     );
@@ -184,106 +229,83 @@ const Streams = () => {
     if (confirmAction) {
       //delete from firestore
       const deleteFirestoreRef = doc(db, "announcements", fileDocId);
-      await updateDoc(deleteFirestoreRef, {
-        fileName: arrayRemove(fileName),
-        fileUrl: arrayRemove(fileUrl),
-      });
-      // Create a reference to the file to delete
-      var imagePathRef = "";
-      if (
-        fileName.includes(".jpg") ||
-        fileName.includes(".jpeg") ||
-        fileName.includes(".png") ||
-        fileName.includes(".gif") ||
-        fileName.includes(".svg")
-      ) {
-        imagePathRef = ref(storage, "images/" + fileName);
-      } else if (
-        fileName.includes(".mp4") ||
-        fileName.includes(".mov") ||
-        fileName.includes(".wmv") ||
-        fileName.includes(".avi") ||
-        fileName.includes(".mkv")
-      ) {
-        imagePathRef = ref(storage, "videos/" + fileName);
-      } else if (
-        fileName.includes(".mp3") ||
-        fileName.includes(".aac") ||
-        fileName.includes(".ogg") ||
-        fileName.includes(".wav") ||
-        fileName.includes(".wma") ||
-        fileName.includes(".flac")
-      ) {
-        imagePathRef = ref(storage, "videos/" + fileName);
-      } else {
-        imagePathRef = ref(storage, "files/" + fileName);
-      }
-
-      // Delete the file
-      deleteObject(imagePathRef)
-        .then(() => {
-          alert("Deleted Successfully");
-        })
-        .catch((error) => {
-          alert("An error occurred");
+      try {
+        await updateDoc(deleteFirestoreRef, {
+          fileName: arrayRemove(fileName),
+          fileUrl: arrayRemove(fileUrl),
         });
-    } else {
-      alert("Action canceled");
+        handleStorageDelete(fileName);
+        alert("Deleted Successfully");
+      } catch (err) {
+        alert("An error occurred");
+      }
+    }
+  };
+
+  // Delete a stream
+  const handleStreamsDelete = async (streamId, streamName) => {
+    let confirmAction = window.confirm("Are you sure to delete " + streamName);
+
+    if (confirmAction) {
+      try {
+        await deleteDoc(doc(db, "announcements", streamId));
+      } catch (err) {
+        alert("An error occurred, please try again!");
+      }
     }
   };
 
   return (
     <>
-      <Box sx={{ boxShadow: 5, mt: 3, p: 1 }}>
-        <Paper>
-          <Typography xs={{ fontSize: 8 }}>
-            Create Announcement/ To add to{" "}
-            <span style={{ color: "red" }}>EXISTING</span> announcement, enter
-            <span style={{ color: "red" }}>
-              {" "}
-              EXACTLY SAME ANNOUNCEMENT NAME
-            </span>
-          </Typography>
-          <Box>
-            <TextField
-              fullWidth
-              label=""
-              sx={{ mb: 1 }}
-              value={announcementValue}
-              onChange={(e) => setAnnouncementValue(e.target.value)}
-            />
-            <input
-              multiple
-              type="file"
-              ref={fileInputRef}
-              onChange={handleChange}
-            />
-          </Box>
-        </Paper>
-        <Button
-          fullWidth
-          sx={[
-            {
-              "&:hover": {
-                color: "#0b0c10",
-                backgroundColor: "#c5c6c7",
+      {userDetails?.accountType === "Tutor" && (
+        <Box sx={{ boxShadow: 5, mt: 3, p: 1 }}>
+          <Paper>
+            <Typography xs={{ fontSize: 8 }}>
+              Create Announcement/ Create Stream / To add to{" "}
+              <span style={{ color: "red" }}>EXISTING</span> announcement, enter
+              <span style={{ color: "red" }}> EXACTLY SAME STREAM NAME</span>
+            </Typography>
+            <Box>
+              <TextField
+                fullWidth
+                label=""
+                sx={{ mb: 1 }}
+                value={announcementValue}
+                onChange={(e) => setAnnouncementValue(e.target.value)}
+              />
+              <input
+                multiple
+                type="file"
+                ref={fileInputRef}
+                onChange={handleChange}
+              />
+            </Box>
+          </Paper>
+          <Button
+            fullWidth
+            sx={[
+              {
+                "&:hover": {
+                  color: "#0b0c10",
+                  backgroundColor: "#c5c6c7",
+                },
+                backgroundColor: "#45a29e",
+                color: "#fff",
+                mt: 2,
               },
-              backgroundColor: "#45a29e",
-              color: "#fff",
-              mt: 2,
-            },
-          ]}
-          onClick={handleUpload}
-        >
-          Create
-        </Button>
+            ]}
+            onClick={handleUpload}
+          >
+            Create
+          </Button>
 
-        <LinearProgress
-          color="secondary"
-          variant="determinate"
-          value={progress}
-        />
-      </Box>
+          <LinearProgress
+            color="secondary"
+            variant="determinate"
+            value={progress}
+          />
+        </Box>
+      )}
 
       {/* Materials */}
       {showFiles.map((showFile) => {
@@ -292,8 +314,23 @@ const Streams = () => {
             <Paper>
               <Box>
                 <Paper>
-                  <Box sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
-                    <h5>{showFile.title}</h5>
+                  <Box
+                    fullWidth
+                    sx={{
+                      p: 1,
+                      backgroundColor: "#c5c6c7",
+                      display: "flex",
+                    }}
+                  >
+                    <h5 style={{ flex: 1 }}>{showFile.title}</h5>
+                    {userDetails?.accountType === "Tutor" && (
+                      <CloseIcon
+                        sx={{ color: "#870000", cursor: "pointer" }}
+                        onClick={() => {
+                          handleStreamsDelete(showFile.id, showFile.title);
+                        }}
+                      />
+                    )}
                   </Box>
                 </Paper>
               </Box>
@@ -308,28 +345,29 @@ const Streams = () => {
                         }}
                       >
                         <Paper>
-                          <Button
-                            sx={{
-                              position: "relative",
-                              left: "45%",
-                              color: "red",
-                            }}
-                            onClick={() =>
-                              handleDelete(
-                                showFile.id,
-                                showFile.title,
-                                showFilesName,
-                                showFile.fileUrl[index]
-                              )
-                            }
-                          >
-                            <RemoveCircleOutlineIcon
+                          {userDetails?.accountType === "Tutor" && (
+                            <Button
                               sx={{
-                                color: "red",
-                                fontSize: 20,
+                                position: "relative",
+                                left: "45%",
                               }}
-                            />
-                          </Button>
+                              onClick={() =>
+                                handleMaterialDelete(
+                                  showFile.id,
+                                  showFile.title,
+                                  showFilesName,
+                                  showFile.fileUrl[index]
+                                )
+                              }
+                            >
+                              <RemoveCircleOutlineIcon
+                                sx={{
+                                  color: "red",
+                                  fontSize: 20,
+                                }}
+                              />
+                            </Button>
+                          )}
 
                           <a
                             href={showFile.fileUrl[index]}

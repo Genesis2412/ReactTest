@@ -88,6 +88,8 @@ const CreateClass = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const createClass = async (subject, grade, numberOfStudent) => {
+    setSuccess("");
+    setError("");
     try {
       // creating Class
       const tutorsRef = collection(db, "createdClasses");
@@ -95,7 +97,7 @@ const CreateClass = () => {
         userUid: user.uid,
         firstName: userDetails.name.firstName,
         lastName: userDetails.name.lastName,
-        profilePic: userDetails.profilePic,
+        profilePic: userDetails.profilePic ? userDetails.profilePic : "",
         subject: subject,
         grade: grade,
         numberOfStudent: numberOfStudent,

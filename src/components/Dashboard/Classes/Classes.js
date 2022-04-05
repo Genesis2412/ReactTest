@@ -23,6 +23,7 @@ import {
   deleteDoc,
   doc,
   onSnapshot,
+  getDocs,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 
@@ -58,11 +59,30 @@ const Classes = () => {
           });
         }
       } catch (err) {
-        return;
+        alert("An error occurred");
       }
     };
     read();
   }, []);
+
+  // read to delete announcements with class
+  const readToDelete = async (classCode) => {
+    // Query announcement to look for classId
+    const data = query(
+      collection(db, "announcements"),
+      where("classCode", "==", classCode)
+    );
+    const querySnapshot = await getDocs(data);
+    querySnapshot.forEach((doc) => {
+      try {
+        deleteDoc(doc(db, "createdClasses", classCode)).then(() => {
+          return true;
+        });
+      } catch (err) {
+        return false;
+      }
+    });
+  };
 
   const handleDelete = async (classId) => {
     try {
@@ -70,7 +90,11 @@ const Classes = () => {
       if (confirmAction) {
         if (userDetails.accountType === "Tutor") {
           await deleteDoc(doc(db, "createdClasses", classId));
-          alert("Deleted Successfully");
+          if (readToDelete(classId)) {
+            alert("Deleted Successfully");
+          } else {
+            alert("An error occurred");
+          }
         } else {
           await deleteDoc(doc(db, "JoinedClasses", classId));
           alert("Deleted Successfully");
@@ -166,18 +190,20 @@ const Classes = () => {
                     <VideoCallIcon />
                   </Link>
 
-                  <Button
-                    size="small"
-                    sx={{
-                      color: "red",
-                      ml: 2,
-                      position: "relative",
-                      left: "50%",
-                    }}
-                    onClick={() => handleDelete(showClass.id)}
-                  >
-                    <DeleteOutlineIcon />
-                  </Button>
+                  {userDetails?.accountType === "Tutor" && (
+                    <Button
+                      size="small"
+                      sx={{
+                        color: "red",
+                        ml: 2,
+                        position: "relative",
+                        left: "50%",
+                      }}
+                      onClick={() => handleDelete(showClass.id)}
+                    >
+                      <DeleteOutlineIcon />
+                    </Button>
+                  )}
                 </CardActions>
               </Card>
             </Grid>
