@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Drawer from "./Drawer/Drawer";
-import Paper from "@mui/material/Paper";
 import Classes from "./Classes/Classes";
 import ClassDetails from "./Classes/ClassDetails";
 import Chats from "./Chats/Chats";
@@ -48,7 +47,7 @@ const Dashboard = () => {
         >
           <Routes>
             <Route path="classes" element={<Classes />} />
-            <Route path="classesdetails" element={<ClassDetails />} />
+            <Route path="classesdetails/*" element={<ClassDetails />} />
             <Route path="chats" element={<Chats />} />
             <Route path="videocall" element={<Videocall />} />
             <Route path="notifications" element={<Notifications />} />

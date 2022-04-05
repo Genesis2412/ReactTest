@@ -10,12 +10,10 @@ import {
   Button,
 } from "@mui/material";
 import { AvatarContainer } from "./ClassesElements";
-
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import ChatIcon from "@mui/icons-material/Chat";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ClassesBanner from "../../../images/ClassesBanner.jpg";
-
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { db } from "../../../firebase-config";
 import {
@@ -98,7 +96,7 @@ const Classes = () => {
               >
                 <CardActionArea>
                   <Link
-                    to={"/dashboard/classesdetails"}
+                    to={"/dashboard/classesdetails/streams"}
                     state={{
                       classCode: showClass.id,
                       classSubject: showClass.subject,
