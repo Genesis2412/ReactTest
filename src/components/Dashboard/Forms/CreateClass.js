@@ -100,7 +100,7 @@ const CreateClass = () => {
         profilePic: userDetails.profilePic ? userDetails.profilePic : "",
         subject: subject,
         grade: grade,
-        numberOfStudent: numberOfStudent,
+        numberOfStudents: numberOfStudent,
       });
       setSuccess("Class Created");
     } catch (err) {

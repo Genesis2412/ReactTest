@@ -65,38 +65,16 @@ const Classes = () => {
     read();
   }, []);
 
-  // read to delete announcements with class
-  const readToDelete = async (classCode) => {
-    // Query announcement to look for classId
-    const data = query(
-      collection(db, "announcements"),
-      where("classCode", "==", classCode)
-    );
-    const querySnapshot = await getDocs(data);
-    querySnapshot.forEach((doc) => {
-      try {
-        deleteDoc(doc(db, "createdClasses", classCode)).then(() => {
-          return true;
-        });
-      } catch (err) {
-        return false;
-      }
-    });
-  };
-
   const handleDelete = async (classId) => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
       if (confirmAction) {
         if (userDetails.accountType === "Tutor") {
           await deleteDoc(doc(db, "createdClasses", classId));
-          if (readToDelete(classId)) {
-            alert("Deleted Successfully");
-          } else {
-            alert("An error occurred");
-          }
+          await deleteDoc(doc(db, "joinedClasses", classId));
+          alert("Deleted Successfully");
         } else {
-          await deleteDoc(doc(db, "JoinedClasses", classId));
+          await deleteDoc(doc(db, "joinedClasses", classId));
           alert("Deleted Successfully");
         }
       }

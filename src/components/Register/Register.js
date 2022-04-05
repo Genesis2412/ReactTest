@@ -89,8 +89,8 @@ const Register = () => {
               additionalNumber: data.additionalNumber
                 ? data.additionalNumber
                 : false,
-              profilePic: "",
             },
+            profilePic: "",
           }).then(() => {
             navigate("/dashboard");
             setIsSubmitting(false);
@@ -129,11 +129,11 @@ const Register = () => {
                 : false,
               employed: data.employed,
               employedInfo: data.employedInfo ? data.employedInfo : false,
-              profilePic: "",
-              subjects: [],
-              grades: [],
-              numberOfStudents: [],
             },
+            profilePic: "",
+            subjects: [],
+            grades: [],
+            numberOfStudents: [],
           }).then(() => {
             navigate("/dashboard");
             setIsSubmitting(false);
