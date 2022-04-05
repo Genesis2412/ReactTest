@@ -6,7 +6,13 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "../../../firebase-config";
-import { doc, setDoc, collection } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  collection,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
 const CreateClass = () => {
@@ -83,8 +89,9 @@ const CreateClass = () => {
   const [success, setSuccess] = useState("");
   const createClass = async (subject, grade, numberOfStudent) => {
     try {
-      const studentsRef = collection(db, "createdClasses");
-      setDoc(doc(studentsRef, classId), {
+      // creating Class
+      const tutorsRef = collection(db, "createdClasses");
+      setDoc(doc(tutorsRef, classId), {
         userUid: user.uid,
         firstName: userDetails.name.firstName,
         lastName: userDetails.name.lastName,
@@ -98,6 +105,13 @@ const CreateClass = () => {
     } catch (err) {
       setError("Class not created!");
     }
+    // Modifying tutors document
+    const tutorRef = doc(db, "tutors", user.uid);
+    await updateDoc(tutorRef, {
+      subjects: arrayUnion(subject),
+      grades: arrayUnion(grade),
+      numberOfStudents: arrayUnion(numberOfStudent),
+    });
   };
 
   const [isSubmitting, setisSubmitting] = useState(false);

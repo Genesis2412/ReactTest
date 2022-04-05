@@ -86,7 +86,10 @@ const Register = () => {
             contact: {
               homeNumber: data.homeNumber,
               mobileNumber: data.mobileNumber,
-              additionalNumber: data.additionalNumber ? "" : false,
+              additionalNumber: data.additionalNumber
+                ? data.additionalNumber
+                : false,
+              profilePic: "",
             },
           }).then(() => {
             navigate("/dashboard");
@@ -112,18 +115,24 @@ const Register = () => {
             contact: {
               homeNumber: data.homeNumber,
               mobileNumber: data.mobileNumber,
-              additionalNumber: data.additionalNumber ? "" : false,
+              additionalNumber: data.additionalNumber
+                ? data.additionalNumber
+                : false,
             },
 
             qualification: {
-              degree: data.degree ? "No" : false,
-              degreeInfo: data.degreeInfo ? "" : false,
-              teacherQualification: data.teacherQualification ? "No" : false,
+              degree: data.degree,
+              degreeInfo: data.degreeInfo ? data.degreeInfo : false,
+              teacherQualification: data.teacherQualification,
               teacherQualificationInfo: data.teacherQualificationInfo
-                ? ""
+                ? data.teacherQualificationInfo
                 : false,
-              employed: data.employed ? "No" : false,
-              employedInfo: data.employedInfo ? "" : false,
+              employed: data.employed,
+              employedInfo: data.employedInfo ? data.employedInfo : false,
+              profilePic: "",
+              subjects: [],
+              grades: [],
+              numberOfStudents: [],
             },
           }).then(() => {
             navigate("/dashboard");
@@ -153,7 +162,7 @@ const Register = () => {
       createData();
       return;
     }
-    console.log(newData);
+    // console.log(newData);
     setCurrentStep((next) => next + 1);
   };
 

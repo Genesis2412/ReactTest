@@ -143,8 +143,7 @@ const ClassDetails = () => {
       setImages((prevState) => []);
       fileInputRef.current.value = "";
       setAnnouncementValue("");
-    }
-    if (announcementValue && images.length === 0) {
+    } else if (announcementValue && images.length === 0) {
       setDoc(doc(collection(db, "announcements")), {
         subject: classSubject,
         grade: classGrade,

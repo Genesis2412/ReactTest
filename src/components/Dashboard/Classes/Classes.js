@@ -60,7 +60,7 @@ const Classes = () => {
                 variant="outlined"
                 style={{
                   backgroundColor: "#c5c6c7",
-                  borderRadius: 20,
+                  borderRadius: 10,
                 }}
               >
                 <CardActionArea>
