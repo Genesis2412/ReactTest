@@ -190,7 +190,7 @@ const ClassDetails = () => {
         fileUrl: arrayRemove(fileUrl),
       });
       // Create a reference to the file to delete
-      var desertRef = "";
+      var imagePathRef = "";
       if (
         fileName.includes(".jpg") ||
         fileName.includes(".jpeg") ||
@@ -198,7 +198,7 @@ const ClassDetails = () => {
         fileName.includes(".gif") ||
         fileName.includes(".svg")
       ) {
-        desertRef = ref(storage, "images/" + fileName);
+        imagePathRef = ref(storage, "images/" + fileName);
       } else if (
         fileName.includes(".mp4") ||
         fileName.includes(".mov") ||
@@ -206,7 +206,7 @@ const ClassDetails = () => {
         fileName.includes(".avi") ||
         fileName.includes(".mkv")
       ) {
-        desertRef = ref(storage, "videos/" + fileName);
+        imagePathRef = ref(storage, "videos/" + fileName);
       } else if (
         fileName.includes(".mp3") ||
         fileName.includes(".aac") ||
@@ -215,13 +215,13 @@ const ClassDetails = () => {
         fileName.includes(".wma") ||
         fileName.includes(".flac")
       ) {
-        desertRef = ref(storage, "videos/" + fileName);
+        imagePathRef = ref(storage, "videos/" + fileName);
       } else {
-        desertRef = ref(storage, "files/" + fileName);
+        imagePathRef = ref(storage, "files/" + fileName);
       }
 
       // Delete the file
-      deleteObject(desertRef)
+      deleteObject(imagePathRef)
         .then(() => {
           alert("Deleted Successfully");
         })
@@ -239,7 +239,7 @@ const ClassDetails = () => {
         <img
           src={ClassesDetailsBanner}
           alt="bannerImg"
-          height={360}
+          height={400}
           width={"100%"}
         />
       </Box>
@@ -281,11 +281,6 @@ const ClassDetails = () => {
         </Paper>
         <Button
           fullWidth
-          // sx={{
-          //   backgroundColor: "#45a29e",
-          //   color: "#fff",
-          //   mt: 2,
-          // }}
           sx={[
             {
               "&:hover": {

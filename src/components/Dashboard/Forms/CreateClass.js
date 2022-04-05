@@ -95,8 +95,7 @@ const CreateClass = () => {
         userUid: user.uid,
         firstName: userDetails.name.firstName,
         lastName: userDetails.name.lastName,
-        profilePic:
-          "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+        profilePic: userDetails.profilePic,
         subject: subject,
         grade: grade,
         numberOfStudent: numberOfStudent,

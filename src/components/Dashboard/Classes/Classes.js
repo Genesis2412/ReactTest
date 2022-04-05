@@ -9,15 +9,23 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
-import {
-  AvatarContainer,
-  VideoCallMaterialIcon,
-  ChatMaterialIcon,
-  HorizontalDotMaterialIcon,
-} from "./ClassesElements";
+import { AvatarContainer } from "./ClassesElements";
+
+import VideoCallIcon from "@mui/icons-material/VideoCall";
+import ChatIcon from "@mui/icons-material/Chat";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ClassesBanner from "../../../images/ClassesBanner.jpg";
+
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { db } from "../../../firebase-config";
-import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  deleteDoc,
+  doc,
+  onSnapshot,
+} from "firebase/firestore";
 import { Link } from "react-router-dom";
 
 const Classes = () => {
@@ -27,21 +35,29 @@ const Classes = () => {
     const read = async () => {
       try {
         if (userDetails?.accountType === "Tutor") {
-          const data = await getDocs(
-            query(
-              collection(db, "createdClasses"),
-              where("userUid", "==", user.uid)
-            )
+          const data = query(
+            collection(db, "createdClasses"),
+            where("userUid", "==", user.uid)
           );
-          setClasses(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+          const unsubscribe = onSnapshot(data, (querySnapshot) => {
+            const newFiles = querySnapshot.docs.map((doc) => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            setClasses(newFiles);
+          });
         } else {
-          const data = await getDocs(
-            query(
-              collection(db, "JoinedClasses"),
-              where("userUid", "==", user.uid)
-            )
+          const data = query(
+            collection(db, "JoinedClasses"),
+            where("userUid", "==", user.uid)
           );
-          setClasses(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+          const unsubscribe = onSnapshot(data, (querySnapshot) => {
+            const newFiles = querySnapshot.docs.map((doc) => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            setClasses(newFiles);
+          });
         }
       } catch (err) {
         return;
@@ -49,6 +65,23 @@ const Classes = () => {
     };
     read();
   }, []);
+
+  const handleDelete = async (classId) => {
+    try {
+      let confirmAction = window.confirm("Are you sure to delete?");
+      if (confirmAction) {
+        if (userDetails.accountType === "Tutor") {
+          await deleteDoc(doc(db, "createdClasses", classId));
+          alert("Deleted Successfully");
+        } else {
+          await deleteDoc(doc(db, "JoinedClasses", classId));
+          alert("Deleted Successfully");
+        }
+      }
+    } catch (err) {
+      alert("An error occurred, please try again");
+    }
+  };
 
   return (
     <>
@@ -77,7 +110,7 @@ const Classes = () => {
                       <CardMedia
                         component="img"
                         height="150"
-                        image="https://sbooks.net/wp-content/uploads/2021/10/old-book-flying-letters-magic-light-background-bookshelf-library-ancient-books-as-symbol-knowledge-history-218640948.jpg"
+                        image={ClassesBanner}
                         alt="picture"
                       />
                     )}
@@ -119,8 +152,33 @@ const Classes = () => {
                   </Link>
                 </CardActionArea>
                 <CardActions>
-                  <Button size="small" color="primary">
-                    <HorizontalDotMaterialIcon />
+                  <Link
+                    size="small"
+                    style={{ color: "#45a29e", marginLeft: "10px" }}
+                    to="/dashboard/chats"
+                  >
+                    <ChatIcon sx={{ fontSize: "20px" }} />
+                  </Link>
+
+                  <Link
+                    size="small"
+                    style={{ color: "#45a29e", marginLeft: "20px" }}
+                    to="/dashboard/videocall"
+                  >
+                    <VideoCallIcon />
+                  </Link>
+
+                  <Button
+                    size="small"
+                    sx={{
+                      color: "red",
+                      ml: 2,
+                      position: "relative",
+                      left: "50%",
+                    }}
+                    onClick={() => handleDelete(showClass.id)}
+                  >
+                    <DeleteOutlineIcon />
                   </Button>
                 </CardActions>
               </Card>
