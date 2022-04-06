@@ -4,14 +4,12 @@ import { UserAuthContextProvider } from "../Context/UserAuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
-import Landing from "./Home";
-import Classes from "../components/Dashboard/Classes/Classes";
+import Landing from "../pages/Home";
+import Dashboard from "../components/Dashboard/Dashboard";
 
 // Testing
-import Test from "../components/Test/Test";
 import Insert from "../components/Test/Insert";
 import Read from "../components/Test/Read";
-import Dashboard from "../components/Dashboard/Dashboard";
 
 const Redirect = () => {
   return (
