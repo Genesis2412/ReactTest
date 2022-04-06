@@ -131,9 +131,6 @@ const Register = () => {
               employedInfo: data.employedInfo ? data.employedInfo : false,
             },
             profilePic: "",
-            subjects: [],
-            grades: [],
-            numberOfStudents: [],
           }).then(() => {
             navigate("/dashboard");
             setIsSubmitting(false);
