@@ -65,22 +65,42 @@ const Classes = () => {
     read();
   }, []);
 
-  const handleDelete = async (classId) => {
+  const handleDelete = async (classCode) => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
+      readToDeleteAnnouncements(classCode);
       if (confirmAction) {
         if (userDetails.accountType === "Tutor") {
-          await deleteDoc(doc(db, "createdClasses", classId));
-          await deleteDoc(doc(db, "joinedClasses", classId));
+          await deleteDoc(doc(db, "createdClasses", classCode));
+          readToDeleteAnnouncements(classCode);
+          // Delete also the class from joinedClasses*
+          // await deleteDoc(doc(db, "joinedClasses", classCode));
           alert("Deleted Successfully");
         } else {
-          await deleteDoc(doc(db, "joinedClasses", classId));
+          // Delete class from joinedClasses for that student/parent*
+          await deleteDoc(doc(db, "joinedClasses", classCode));
           alert("Deleted Successfully");
         }
       }
     } catch (err) {
       alert("An error occurred, please try again");
     }
+  };
+
+  //read from firestore to get announcementId for that class
+  const readToDeleteAnnouncements = async (classCode) => {
+    const data = [];
+    const q = query(
+      collection(db, "announcements"),
+      where("classCode", "==", classCode)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      data.push(doc.id);
+    });
+    data.map(async (classId) => {
+      await deleteDoc(doc(db, "announcements", classId));
+    });
   };
 
   return (
