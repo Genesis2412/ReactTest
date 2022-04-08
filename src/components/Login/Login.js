@@ -104,13 +104,23 @@ const Login = () => {
   return (
     <>
       <LoginWrapper container spacing={0}>
-        <BannerGrid container item xs={12} md={5} direction="column">
+        <BannerGrid item xs={12} md={5}>
           <Logo to="/">Tutorhuntz</Logo>
           <BannerHeading>Enjoy the Experience</BannerHeading>
           <IconCopyright />
           <FormFooter>All rights reserved</FormFooter>
         </BannerGrid>
-        <FormGrid container item xs={12} md={7} direction="column">
+        <FormGrid
+          item
+          xs={12}
+          md={7}
+          sx={{
+            p: 2,
+            textAlign: "center",
+            justifyContent: "center",
+            alignSelf: "center",
+          }}
+        >
           <SignUpLink to="/register">Sign up now</SignUpLink>
           <FormIcon src={LoginIcon} alt="Icon" />
           <form onSubmit={formik.handleSubmit}>

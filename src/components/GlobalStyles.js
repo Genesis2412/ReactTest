@@ -43,10 +43,6 @@ export const BannerQuotes = styled.p`
 export const FormIcon = styled.img`
   width: 50%;
   height: auto;
-
-  @media screen and (max-width: 768px) {
-    margin-top: -30px;
-  }
 `;
 
 export const SignUpLink = styled(Link)`
@@ -62,7 +58,7 @@ export const SignUpLink = styled(Link)`
 
   @media screen and (max-width: 768px) {
     position: absolute;
-    top: 41%;
+    top: 45%;
     left: 65%;
 
     &:hover {
@@ -95,13 +91,12 @@ export const LoginLink = styled(Link)`
 
 export const FormFooter = styled.h1`
   position: absolute;
-  bottom: 10px;
+  bottom: 0;
   left: 15%;
   font-size: 15px;
   font-weight: 100;
 
   @media screen and (max-width: 768px) {
-    position: absolute;
-    left: 35%;
+    display: none;
   }
 `;

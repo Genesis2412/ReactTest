@@ -22,11 +22,9 @@ export const BannerGrid = styled(Grid)`
 
 export const FormGrid = styled(Grid)`
   background-color: #fff;
-  justify-content: center;
-  align-items: center;
 
   @media screen and (max-width: 768px) {
-    height: 60vh;
+    margin-top: 40px;
   }
 `;
 
@@ -35,7 +33,7 @@ export const LoginField = styled(TextField)`
 
   @media screen and (max-width: 768px) {
     display: block;
-    width: 300px;
+    width: 100%;
   }
 `;
 
@@ -64,12 +62,11 @@ export const ForgotPassword = styled(Button)`
 
 export const IconCopyright = styled(CopyrightIcon)`
   position: absolute;
-  bottom: 8px;
+  bottom: 0;
   left: 13%;
 
   @media screen and (max-width: 768px) {
-    position: absolute;
-    left: 27%;
+    display: none;
   }
 `;
 
