@@ -68,6 +68,8 @@ const Streams = () => {
 
   const readOne = async () => {
     var docId = "";
+
+    // Checking if there is already an announcement by that name
     const q = query(
       collection(db, "announcements"),
       where("title", "==", announcementValue)
@@ -82,11 +84,8 @@ const Streams = () => {
 
   const handleUpload = async () => {
     var storageRef = "";
-    if (images.length === 0) {
-      console.log("Zero");
-    }
 
-    if (announcementValue && images) {
+    if (announcementValue && images.length != 0) {
       images.map((image) => {
         if (
           image.type === "image/jpeg" ||
