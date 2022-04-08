@@ -102,6 +102,12 @@ const CreateClass = () => {
         grade: grade,
         numberOfStudents: numberOfStudent,
       });
+      const modifyTutorRef = doc(db, "tutors", user.uid);
+      await updateDoc(modifyTutorRef, {
+        subjects: arrayUnion(subject),
+        grades: arrayUnion(grade),
+        numberOfStudents: arrayUnion(numberOfStudent),
+      });
       setSuccess("Class Created");
     } catch (err) {
       setError("Class not created!");
