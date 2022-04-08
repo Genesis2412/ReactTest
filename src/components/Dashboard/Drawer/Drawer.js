@@ -21,7 +21,8 @@ import {
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
 const Sidebar = () => {
-  const { logOut, userDetails } = useUserAuth();
+  const { logOut, userDetails, setUserDetails, setUser, setClasses } =
+    useUserAuth();
 
   const [click, setClick] = useState(false);
   const handleClick = () => setClick(!click);
@@ -36,6 +37,11 @@ const Sidebar = () => {
       setIsSubmitting(true);
       await logOut();
       setIsSubmitting(false);
+
+      //emptying maps
+      setUserDetails({});
+      setUser({});
+      setClasses([]);
     } catch (err) {
       alert(err.message); //To check for error codes
     }

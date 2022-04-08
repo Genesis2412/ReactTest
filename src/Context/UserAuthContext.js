@@ -53,6 +53,7 @@ export function UserAuthContextProvider({ children }) {
       value={{
         user,
         userDetails,
+        setUser,
         setUserDetails,
         classes,
         setClasses,
