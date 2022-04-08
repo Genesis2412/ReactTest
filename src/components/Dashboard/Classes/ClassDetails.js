@@ -6,6 +6,8 @@ import { NavLink, Routes, Route } from "react-router-dom";
 import Streams from "./Streams";
 import Assignments from "./Assignments";
 import People from "./People";
+import { Image } from "./ClassesElements";
+import { Logo } from "../../GlobalStyles";
 
 const ClassDetails = () => {
   const location = useLocation();
@@ -24,12 +26,13 @@ const ClassDetails = () => {
   return (
     <>
       <Box>
-        <img
-          src={ClassesDetailsBanner}
-          alt="bannerImg"
-          height={400}
-          width={"100%"}
-        />
+        <Logo
+          to="/dashboard/classes"
+          style={{ position: "absolute", color: "#fff" }}
+        >
+          Tutorhuntz
+        </Logo>
+        <Image src={ClassesDetailsBanner} alt="bannerImg" />
       </Box>
       <Box>
         <Paper>
