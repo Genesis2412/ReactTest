@@ -106,13 +106,6 @@ const CreateClass = () => {
     } catch (err) {
       setError("Class not created!");
     }
-    // Modifying tutors document
-    const tutorRef = doc(db, "tutors", user.uid);
-    await updateDoc(tutorRef, {
-      subjects: arrayUnion(subject),
-      grades: arrayUnion(grade),
-      numberOfStudents: arrayUnion(numberOfStudent),
-    });
   };
 
   const [isSubmitting, setisSubmitting] = useState(false);
