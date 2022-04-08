@@ -5,7 +5,6 @@ import {
   ListContainerTwo,
   ListContainerThree,
   ListContainerFour,
-  ListContainerFive,
   ListContainer,
   SuccessList,
   SuccessListItem,
@@ -25,9 +24,9 @@ const TutorSuccess = (props) => {
     props.data.teacherQualification === "" ||
     props.data.employed === ""
   ) {
-    spacing = 3;
-  } else {
     spacing = 4;
+  } else {
+    spacing = 3;
   }
 
   console.log(spacing);

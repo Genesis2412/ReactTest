@@ -74,11 +74,6 @@ export const ListContainerFour = styled(Grid)`
   margin-top: 15px;
 `;
 
-export const ListContainerFive = styled(Grid)`
-  border-left: 1px dashed #000;
-  margin-top: 15px;
-`;
-
 export const ListContainer = styled(Grid)`
   margin-top: 10px;
   padding-left: 10px;
