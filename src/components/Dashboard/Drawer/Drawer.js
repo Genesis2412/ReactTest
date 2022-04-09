@@ -4,7 +4,6 @@ import {
   ClassMaterialIcon,
   ChatMaterialIcon,
   VideoMaterialIcon,
-  NotificationsMaterialIcon,
   Container,
   Button,
   SidebarContainer,
@@ -17,6 +16,7 @@ import {
   Logout,
   PowerMaterialIcon,
   AddMaterialIcon,
+  ContactMaterialCalendarIcon,
 } from "./DrawerElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
@@ -66,10 +66,7 @@ const Sidebar = () => {
             <VideoMaterialIcon />
             <Text clicked={click}>Videocall</Text>
           </Item>
-          <Item onClick={() => setClick(false)} to="/dashboard/notifications">
-            <NotificationsMaterialIcon />
-            <Text clicked={click}>Notifications</Text>
-          </Item>
+
           {userDetails?.accountType === "Tutor" && (
             <Item onClick={() => setClick(false)} to="/dashboard/create">
               <AddMaterialIcon />
@@ -79,9 +76,14 @@ const Sidebar = () => {
           {userDetails?.accountType === "Student" && (
             <Item onClick={() => setClick(false)} to="/dashboard/tutors">
               <PeopleMaterialIcon />
-              <Text clicked={click}>Create Class</Text>
+              <Text clicked={click}>Tutor Profiles</Text>
             </Item>
           )}
+
+          <Item onClick={() => setClick(false)} to="/dashboard/bookings">
+            <ContactMaterialCalendarIcon />
+            <Text clicked={click}>Tutor Profiles</Text>
+          </Item>
         </SlickBar>
 
         <Profile clicked={profileClick}>

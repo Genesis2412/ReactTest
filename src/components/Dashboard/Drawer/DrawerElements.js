@@ -4,11 +4,12 @@ import { NavLink } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import ClassIcon from "@mui/icons-material/Class";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+
 import ChatIcon from "@mui/icons-material/Chat";
 import AddIcon from "@mui/icons-material/Add";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import PeopleIcon from "@mui/icons-material/People";
+import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 
 export const HomeMaterialIcon = MaterialStyles(HomeIcon)`
   &:hover {
@@ -25,11 +26,7 @@ export const VideoMaterialIcon = MaterialStyles(VideoCallIcon)`
     color: #66fcf1;
   }
 `;
-export const NotificationsMaterialIcon = MaterialStyles(NotificationsIcon)`
-  &:hover {
-    color: #66fcf1;
-  }
-`;
+
 export const ChatMaterialIcon = styled(ChatIcon)`
   &:hover {
     color: #66fcf1;
@@ -49,6 +46,12 @@ export const AddMaterialIcon = styled(AddIcon)`
 `;
 
 export const PeopleMaterialIcon = styled(PeopleIcon)`
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+export const ContactMaterialCalendarIcon = styled(PermContactCalendarIcon)`
   &:hover {
     opacity: 0.8;
   }
