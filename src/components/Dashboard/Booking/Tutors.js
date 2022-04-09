@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Box, Paper, Avatar, Typography, Button } from "@mui/material";
-import ChatIcon from "@mui/icons-material/Chat";
 import { collection, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { Link } from "react-router-dom";
+import { Logo } from "../../GlobalStyles";
 
 const Booking = () => {
   const [profiles, setProfiles] = useState([]);
@@ -22,6 +22,14 @@ const Booking = () => {
 
   return (
     <>
+      <Typography textAlign={"right"}>
+        <Logo
+          to="/dashboard/classes"
+          style={{ textAlign: "left", color: "#2f3c7e", fontSize: 30 }}
+        >
+          Tutorhuntz
+        </Logo>
+      </Typography>
       {profiles.map((profile) => {
         return (
           <Grid container spacing={2}>
@@ -48,11 +56,16 @@ const Booking = () => {
                   sx={{
                     height: "100%",
                     p: 2,
-                    boxShadow: 5,
+                    boxShadow: 15,
                     textAlign: "center",
+                    backgroundColor: "#1f2833",
+                    borderRadius: 3,
                   }}
                 >
-                  <Typography variant={"h3"} sx={{ fontSize: 18 }}>
+                  <Typography
+                    variant={"h3"}
+                    sx={{ fontSize: 18, color: "#c5c6c7" }}
+                  >
                     {profile.title +
                       " " +
                       profile.name.firstName +
@@ -65,7 +78,7 @@ const Booking = () => {
                       return (
                         <>
                           <Typography
-                            sx={{ fontSize: 14, pl: 1, color: "#45a29e" }}
+                            sx={{ fontSize: 14, pl: 1, color: "#66fcf1" }}
                           >
                             {subject}, Grade {profile.grades[index]}{" "}
                           </Typography>
