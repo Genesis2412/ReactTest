@@ -9,7 +9,7 @@ import Videocall from "./Videocall/Videocall";
 import Notifications from "./Notifications/Notifications";
 import CreateClass from "./Forms/CreateClass";
 import Tutors from "./Booking/Tutors";
-import BookingOne from "./Booking/BookingOne";
+import TutorProfile from "./Booking/TutorProfile";
 
 import { useUserAuth } from "../../Context/UserAuthContext";
 import { db } from "../../firebase-config";
@@ -55,7 +55,7 @@ const Dashboard = () => {
             <Route path="notifications" element={<Notifications />} />
             <Route path="create" element={<CreateClass />} />
             <Route path="tutors/*" element={<Tutors />} />
-            <Route path="tutors/tutor" element={<BookingOne />} />
+            <Route path="tutors/tutor" element={<TutorProfile />} />
           </Routes>
         </Box>
       </Box>
