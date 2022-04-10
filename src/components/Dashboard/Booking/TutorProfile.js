@@ -87,10 +87,13 @@ const BookingOne = () => {
               subject: classSubject,
               grade: classGrade,
               dateOfBooking: serverTimestamp(),
+              status: "Pending",
+              firstName: userDetails?.name?.firstName,
+              lastName: userDetails?.name?.lastName,
             });
             alert("Booked Successfully");
           } catch (err) {
-            alert("An error occured, please try again");
+            alert(err);
           }
         } else {
           alert(
