@@ -82,7 +82,7 @@ const Sidebar = () => {
 
           <Item onClick={() => setClick(false)} to="/dashboard/bookings">
             <ContactMaterialCalendarIcon />
-            <Text clicked={click}>Tutor Profiles</Text>
+            <Text clicked={click}>Bookings</Text>
           </Item>
         </SlickBar>
 

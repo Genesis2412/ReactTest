@@ -10,6 +10,7 @@ import Notifications from "./Notifications/Notifications";
 import CreateClass from "./Forms/CreateClass";
 import Tutors from "./Booking/Tutors";
 import TutorProfile from "./Booking/TutorProfile";
+import Bookings from "./Booking/Bookings";
 
 import { useUserAuth } from "../../Context/UserAuthContext";
 import { db } from "../../firebase-config";
@@ -56,6 +57,7 @@ const Dashboard = () => {
             <Route path="create" element={<CreateClass />} />
             <Route path="tutors/*" element={<Tutors />} />
             <Route path="tutors/tutor" element={<TutorProfile />} />
+            <Route path="bookings" element={<Bookings />} />
           </Routes>
         </Box>
       </Box>
