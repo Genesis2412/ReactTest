@@ -14,14 +14,14 @@ const Insert = () => {
     if (classValues.exists()) {
       // console.log("Document data:", classValues.data());
       // 2. if exist insert into JoinedClasses
-      const joinedRef = collection(db, "JoinedClasses");
+      const joinedRef = collection(db, "joinedClasses");
 
       setDoc(doc(joinedRef), {
         TutorFirstName: classValues.data().firstName,
         TutorLastName: classValues.data().lastName,
         subject: classValues.data().subject,
-        grade: classValues.data().grade,
         TutorProfilePic: classValues.data().profilePic,
+        grade: classValues.data().grade,
         userUid: user.uid,
         class_code: class_code,
       });

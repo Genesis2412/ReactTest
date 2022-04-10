@@ -90,10 +90,11 @@ const BookingOne = () => {
               status: "Pending",
               firstName: userDetails?.name?.firstName,
               lastName: userDetails?.name?.lastName,
+              studentEmail: userDetails?.email,
             });
             alert("Booked Successfully");
           } catch (err) {
-            alert(err);
+            alert("An error occurred, please try again");
           }
         } else {
           alert(

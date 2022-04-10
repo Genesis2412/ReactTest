@@ -47,8 +47,8 @@ const Classes = () => {
           });
         } else {
           const data = query(
-            collection(db, "JoinedClasses"),
-            where("userUid", "==", user.uid)
+            collection(db, "joinedClasses"),
+            where("studentEmail", "==", userDetails?.email)
           );
           const unsubscribe = onSnapshot(data, (querySnapshot) => {
             const newFiles = querySnapshot.docs.map((doc) => ({
@@ -120,7 +120,7 @@ const Classes = () => {
                   <Link
                     to={"/dashboard/classesdetails/streams"}
                     state={{
-                      classCode: showClass.id,
+                      classCode: showClass.classCode,
                       classSubject: showClass.subject,
                       classGrade: showClass.grade,
                     }}
