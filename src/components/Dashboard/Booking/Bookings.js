@@ -22,17 +22,19 @@ import {
   Button,
   Typography,
   Box,
+  Snackbar,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import { Logo } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import BookingBanner from "../../../images/BookingBanner.svg";
 import { Image } from "./BookingElements";
 
 const Bookings = () => {
   const { user, userDetails } = useUserAuth();
   const [userBookings, setUserBookings] = useState([]);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   const HeaderStyle = {
     color: "#66fcf1",
@@ -48,6 +50,13 @@ const Bookings = () => {
       color: "#0b0c10",
       backgroundColor: "#c5c6c7",
     },
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
   };
 
   //reading all tutors details
@@ -89,9 +98,11 @@ const Bookings = () => {
     if (confirmAction) {
       try {
         await deleteDoc(doc(db, "bookings", bookingId));
-        alert("Deleted Successfully");
+        setSnackBarOpen(true);
+        setMessage("Deleted Successfully");
       } catch (err) {
-        alert("An error occurred, please try again");
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
       }
     }
   };
@@ -104,9 +115,11 @@ const Bookings = () => {
         await updateDoc(bookingsRef, {
           status: "Rejected",
         });
-        alert("Rejected Successfully");
+        setSnackBarOpen(true);
+        setMessage("Rejected Successfully");
       } catch (err) {
-        alert("An error occurred, please try again");
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
       }
     }
   };
@@ -118,7 +131,6 @@ const Bookings = () => {
       where("subject", "==", subject),
       where("grade", "==", grade)
     );
-
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       classCode = doc.id;
@@ -146,10 +158,12 @@ const Bookings = () => {
           updateDoc(bookingsRef, {
             status: "Joined",
           });
-          alert("Added to Class");
+          setSnackBarOpen(true);
+          setMessage("Added to Class");
         });
       } catch (err) {
-        alert("An error occurred, please try again");
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
       }
     }
   };
@@ -297,6 +311,14 @@ const Bookings = () => {
           </Table>
         </TableContainer>
       )}
+
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </>
   );
 };

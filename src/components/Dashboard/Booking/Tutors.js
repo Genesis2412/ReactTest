@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { Logo } from "../../GlobalStyles";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 
-const Booking = () => {
+const Tutors = () => {
   const [profiles, setProfiles] = useState([]);
 
   //reading all tutors details
@@ -31,8 +31,6 @@ const Booking = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [hideTextField, setHideTextField] = useState(false);
-
-  console.log(hideTextField);
 
   return (
     <>
@@ -105,7 +103,7 @@ const Booking = () => {
         })
         .map((profile) => {
           return (
-            <Grid container spacing={2}>
+            <Grid container spacing={2} key={profile.email}>
               <Grid item xs={12} md={4}>
                 <Link
                   to="tutor"
@@ -149,13 +147,12 @@ const Booking = () => {
                     <Box>
                       {profile.subjects.map((subject, index) => {
                         return (
-                          <>
-                            <Typography
-                              sx={{ fontSize: 14, pl: 1, color: "#66fcf1" }}
-                            >
-                              {subject}, Grade {profile.grades[index]}{" "}
-                            </Typography>
-                          </>
+                          <Typography
+                            sx={{ fontSize: 14, pl: 1, color: "#66fcf1" }}
+                            key={index++}
+                          >
+                            {subject}, Grade {profile.grades[index]}{" "}
+                          </Typography>
                         );
                       })}
                     </Box>
@@ -169,4 +166,4 @@ const Booking = () => {
   );
 };
 
-export default Booking;
+export default Tutors;

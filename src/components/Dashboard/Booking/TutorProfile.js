@@ -10,7 +10,15 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { useLocation } from "react-router-dom";
-import { Grid, Box, Paper, Avatar, Typography, Button } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Paper,
+  Avatar,
+  Typography,
+  Button,
+  Snackbar,
+} from "@mui/material";
 import ChatIcon from "@mui/icons-material/Chat";
 import { Logo } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
@@ -20,11 +28,11 @@ const BookingOne = () => {
   const location = useLocation();
   const { email } = location.state;
   const [profiles, setProfiles] = useState([]);
-
   const { user, userDetails } = useUserAuth();
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   //Styling
-
   const LinkStyles = {
     color: "#45a29e",
     textDecoration: "none",
@@ -34,6 +42,13 @@ const BookingOne = () => {
       color: "#0b0c10",
       backgroundColor: "#c5c6c7",
     },
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
   };
 
   //reading all tutors details
@@ -92,12 +107,15 @@ const BookingOne = () => {
               lastName: userDetails?.name?.lastName,
               studentEmail: userDetails?.email,
             });
-            alert("Booked Successfully");
+            setSnackBarOpen(true);
+            setMessage("Booked Successfully");
           } catch (err) {
-            alert("An error occurred, please try again");
+            setSnackBarOpen(true);
+            setMessage("An error occurred, please try again");
           }
         } else {
-          alert(
+          setSnackBarOpen(true);
+          setMessage(
             "You have already booked this tutor, check bookings to check status"
           );
         }
@@ -118,7 +136,7 @@ const BookingOne = () => {
 
       {profiles.map((profile) => {
         return (
-          <Box key={profile?.email} mt={5}>
+          <Box mt={5} key={profile?.email}>
             <Grid container spacing={4}>
               <Grid item md={4} xs={12}>
                 <Avatar
@@ -241,6 +259,13 @@ const BookingOne = () => {
           </Box>
         );
       })}
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </>
   );
 };
