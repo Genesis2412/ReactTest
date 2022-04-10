@@ -8,6 +8,7 @@ import {
   Button,
   Typography,
   LinearProgress,
+  Snackbar,
 } from "@mui/material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import CloseIcon from "@mui/icons-material/Close";
@@ -48,14 +49,20 @@ const Streams = () => {
   const { classCode } = location.state;
   const { classSubject } = location.state;
   const { classGrade } = location.state;
-
   const { userDetails } = useUserAuth();
-
   const [images, setImages] = useState([]);
   var [announcementValue, setAnnouncementValue] = useState("");
   const [progress, setProgress] = useState(0);
-
   const fileInputRef = useRef();
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
 
   //getting images
   const handleChange = (e) => {
@@ -159,7 +166,8 @@ const Streams = () => {
       setAnnouncementValue("");
       setProgress(100);
     } else {
-      alert("Please enter Announcement");
+      setSnackBarOpen(true);
+      setMessage("Please enter Announcement");
     }
   };
 
@@ -215,7 +223,8 @@ const Streams = () => {
     deleteObject(imagePathRef)
       .then(() => {})
       .catch((error) => {
-        alert("An error occurred");
+        setSnackBarOpen(true);
+        setMessage("An error occurred");
       });
   };
 
@@ -234,9 +243,11 @@ const Streams = () => {
           fileUrl: arrayRemove(fileUrl),
         });
         handleStorageDelete(fileName);
-        alert("Deleted Successfully");
+        setSnackBarOpen(true);
+        setMessage("Deleted Successfully");
       } catch (err) {
-        alert("An error occurred");
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
       }
     }
   };
@@ -248,8 +259,11 @@ const Streams = () => {
     if (confirmAction) {
       try {
         await deleteDoc(doc(db, "announcements", streamId));
+        setSnackBarOpen(true);
+        setMessage("Deleted Successfully");
       } catch (err) {
-        alert("An error occurred, please try again!");
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
       }
     }
   };
@@ -477,6 +491,13 @@ const Streams = () => {
           </Box>
         );
       })}
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </>
   );
 };
