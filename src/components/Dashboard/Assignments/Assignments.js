@@ -41,6 +41,8 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { useLocation } from "react-router-dom";
+import { useUserAuth } from "../../../Context/UserAuthContext";
+import ViewAssignmentsStudent from "./ViewAssignmentsStudent";
 
 const Assignments = () => {
   const [images, setImages] = useState([]);
@@ -57,6 +59,7 @@ const Assignments = () => {
   const [message, setMessage] = useState("");
   const [assignments, setAssignments] = useState([]);
   const [assignmentId, setAssignmentId] = useState("");
+  const { userDetails } = useUserAuth();
 
   const HeaderStyle = {
     color: "#66fcf1",
@@ -285,202 +288,217 @@ const Assignments = () => {
 
   return (
     <>
-      <Box sx={{ boxShadow: 5, mt: 3, p: 1 }}>
-        <Paper>
-          <Typography sx={{ fontSize: 15 }}>Create Assignments</Typography>
-          <Box>
-            <TextField
-              multiline
+      {userDetails.accountType === "Tutor" && (
+        <>
+          <Box sx={{ boxShadow: 5, mt: 3, p: 1 }}>
+            <Paper>
+              <Typography sx={{ fontSize: 15 }}>Create Assignments</Typography>
+              <Box>
+                <TextField
+                  multiline
+                  fullWidth
+                  sx={{ mb: 1 }}
+                  value={assignmentValue}
+                  onChange={(e) => setAssignmentValue(e.target.value)}
+                />
+
+                <Grid container spacing={1}>
+                  <Grid md={6} xs={12} item>
+                    <Typography sx={{ fontSize: 15 }}>
+                      Enter Start Date
+                    </Typography>
+                    <TextField
+                      type={"date"}
+                      fullWidth
+                      sx={{ mb: 1 }}
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid md={6} xs={12} item>
+                    <Typography sx={{ fontSize: 15 }}>
+                      Enter Start Time
+                    </Typography>
+                    <TextField
+                      type={"time"}
+                      fullWidth
+                      sx={{ mb: 1 }}
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={1}>
+                  <Grid md={6} xs={12} item>
+                    <Typography sx={{ fontSize: 15 }}>
+                      Enter End Date
+                    </Typography>
+                    <TextField
+                      type={"date"}
+                      fullWidth
+                      sx={{ mb: 1 }}
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid md={6} xs={12} item>
+                    <Typography sx={{ fontSize: 15 }}>
+                      Enter End Time
+                    </Typography>
+                    <TextField
+                      type={"time"}
+                      fullWidth
+                      sx={{ mb: 1 }}
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+                <input
+                  type={"file"}
+                  multiple
+                  ref={fileInputRef}
+                  onChange={handleChange}
+                />
+              </Box>
+            </Paper>
+            <Button
               fullWidth
-              sx={{ mb: 1 }}
-              value={assignmentValue}
-              onChange={(e) => setAssignmentValue(e.target.value)}
-            />
-
-            <Grid container spacing={1}>
-              <Grid md={6} xs={12} item>
-                <Typography sx={{ fontSize: 15 }}>Enter Start Date</Typography>
-                <TextField
-                  type={"date"}
-                  fullWidth
-                  sx={{ mb: 1 }}
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-              </Grid>
-              <Grid md={6} xs={12} item>
-                <Typography sx={{ fontSize: 15 }}>Enter Start Time</Typography>
-                <TextField
-                  type={"time"}
-                  fullWidth
-                  sx={{ mb: 1 }}
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={1}>
-              <Grid md={6} xs={12} item>
-                <Typography sx={{ fontSize: 15 }}>Enter End Date</Typography>
-                <TextField
-                  type={"date"}
-                  fullWidth
-                  sx={{ mb: 1 }}
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </Grid>
-              <Grid md={6} xs={12} item>
-                <Typography sx={{ fontSize: 15 }}>Enter End Time</Typography>
-                <TextField
-                  type={"time"}
-                  fullWidth
-                  sx={{ mb: 1 }}
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-            <input
-              type={"file"}
-              multiple
-              ref={fileInputRef}
-              onChange={handleChange}
+              sx={[
+                {
+                  "&:hover": {
+                    color: "#0b0c10",
+                    backgroundColor: "#c5c6c7",
+                  },
+                  backgroundColor: "#45a29e",
+                  color: "#fff",
+                  mt: 2,
+                },
+              ]}
+              onClick={() => {
+                handleUpload();
+              }}
+            >
+              Create
+            </Button>
+            <LinearProgress
+              color="secondary"
+              variant="determinate"
+              value={progress}
             />
           </Box>
-        </Paper>
-        <Button
-          fullWidth
-          sx={[
-            {
-              "&:hover": {
-                color: "#0b0c10",
-                backgroundColor: "#c5c6c7",
-              },
-              backgroundColor: "#45a29e",
-              color: "#fff",
-              mt: 2,
-            },
-          ]}
-          onClick={() => {
-            handleUpload();
-          }}
-        >
-          Create
-        </Button>
-        <LinearProgress
-          color="secondary"
-          variant="determinate"
-          value={progress}
-        />
-      </Box>
-
-      <TableContainer
-        component={Paper}
-        sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
-      >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead
-            sx={{
-              backgroundColor: "#1f2833",
-              fontWeight: "bold",
-            }}
+          <TableContainer
+            component={Paper}
+            sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
           >
-            <TableRow>
-              <TableCell style={HeaderStyle}>Start Date/Time</TableCell>
-              <TableCell style={HeaderStyle}>End Date/Time</TableCell>
-              <TableCell style={HeaderStyle}>Assignment Description</TableCell>
-              <TableCell style={HeaderStyle}>Assignment Contents</TableCell>
-              <TableCell style={HeaderStyle}>View Submissions</TableCell>
-              <TableCell style={HeaderStyle}>Update</TableCell>
-              <TableCell style={HeaderStyle}>Delete</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {assignments.map((assignment, index) => {
-              return (
-                <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
-                  <TableCell>
-                    {assignment.startDate + ", " + assignment.startTime}
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead
+                sx={{
+                  backgroundColor: "#1f2833",
+                  fontWeight: "bold",
+                }}
+              >
+                <TableRow>
+                  <TableCell style={HeaderStyle}>Start Date/Time</TableCell>
+                  <TableCell style={HeaderStyle}>End Date/Time</TableCell>
+                  <TableCell style={HeaderStyle}>
+                    Assignment Description
                   </TableCell>
-                  <TableCell>
-                    {assignment.endDate + ", " + assignment.endTime}
-                  </TableCell>
-                  <TableCell>{assignment.title}</TableCell>
-                  <TableCell key={index}>
-                    {assignment.fileName.map((file, index) => {
-                      return (
-                        <Grid container key={index}>
-                          <Grid item xs={6}>
-                            <a
-                              href={assignment.fileUrl[index]}
-                              style={LinkStyles}
-                              target="blank"
-                            >
-                              {file}
-                            </a>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Button
-                              sx={{
-                                position: "relative",
-                                bottom: 4,
-                                color: "red",
-                              }}
-                              onClick={() => {
-                                handleDeleteObject(
-                                  assignment.id,
-                                  file,
-                                  assignment.fileUrl[index]
-                                );
-                              }}
-                            >
-                              <RemoveCircleIcon sx={{ fontSize: 16 }} />
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      );
-                    })}
-                  </TableCell>
-
-                  <TableCell>
-                    <Button>
-                      <PageviewIcon sx={{ color: "green" }} />
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() => {
-                        handleUpdate(
-                          assignment.id,
-                          assignment.title,
-                          assignment.startDate,
-                          assignment.startTime,
-                          assignment.endDate,
-                          assignment.endTime
-                        );
-                      }}
-                    >
-                      <ChangeCircleIcon />
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      sx={{ color: "red" }}
-                      onClick={() => {
-                        handleDeleteAssignment(assignment.id);
-                      }}
-                    >
-                      <CloseIcon />
-                    </Button>
-                  </TableCell>
+                  <TableCell style={HeaderStyle}>Assignment Contents</TableCell>
+                  <TableCell style={HeaderStyle}>View Submissions</TableCell>
+                  <TableCell style={HeaderStyle}>Update</TableCell>
+                  <TableCell style={HeaderStyle}>Delete</TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              </TableHead>
+              <TableBody>
+                {assignments.map((assignment, index) => {
+                  return (
+                    <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
+                      <TableCell>
+                        {assignment.startDate + ", " + assignment.startTime}
+                      </TableCell>
+                      <TableCell>
+                        {assignment.endDate + ", " + assignment.endTime}
+                      </TableCell>
+                      <TableCell>{assignment.title}</TableCell>
+                      <TableCell key={index}>
+                        {assignment.fileName.map((file, index) => {
+                          return (
+                            <Grid container key={index}>
+                              <Grid item xs={6}>
+                                <a
+                                  href={assignment.fileUrl[index]}
+                                  style={LinkStyles}
+                                  target="blank"
+                                >
+                                  {file}
+                                </a>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Button
+                                  sx={{
+                                    position: "relative",
+                                    bottom: 4,
+                                    color: "red",
+                                  }}
+                                  onClick={() => {
+                                    handleDeleteObject(
+                                      assignment.id,
+                                      file,
+                                      assignment.fileUrl[index]
+                                    );
+                                  }}
+                                >
+                                  <RemoveCircleIcon sx={{ fontSize: 16 }} />
+                                </Button>
+                              </Grid>
+                            </Grid>
+                          );
+                        })}
+                      </TableCell>
+
+                      <TableCell>
+                        <Button>
+                          <PageviewIcon sx={{ color: "green" }} />
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          onClick={() => {
+                            handleUpdate(
+                              assignment.id,
+                              assignment.title,
+                              assignment.startDate,
+                              assignment.startTime,
+                              assignment.endDate,
+                              assignment.endTime
+                            );
+                          }}
+                        >
+                          <ChangeCircleIcon />
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          sx={{ color: "red" }}
+                          onClick={() => {
+                            handleDeleteAssignment(assignment.id);
+                          }}
+                        >
+                          <CloseIcon />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      )}
+
+      {userDetails.accountType === "Student" && <ViewAssignmentsStudent />}
 
       <Snackbar
         open={snackBarOpen}
