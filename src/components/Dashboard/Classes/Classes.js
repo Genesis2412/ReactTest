@@ -166,14 +166,16 @@ const Classes = () => {
                     {userDetails?.accountType === "Student" && (
                       <CardContent
                         sx={{
-                          background: "rgb(2,0,36)",
-                          background:
-                            "linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%)",
+                          backgroundImage:
+                            "url(https://wallpaperaccess.com/full/187161.jpg)",
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
                         }}
                       >
                         <AvatarContainer
                           alt="Remy Sharp"
-                          src={userDetails.profilePic}
+                          src={showClass.profilePic}
                         />
                       </CardContent>
                     )}

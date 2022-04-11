@@ -7,10 +7,12 @@ export const AvatarContainer = MaterialStyles(Avatar)`
   top: 25px;
   left: 23%;
   width: 150px;
-  height: auto;
+  height: 150px;
   @media screen and (max-width: 768px) {
+    
+    left: 25%;
     width: 120px;
-    height: auto;
+    height: 120px;
   }
 `;
 
