@@ -12,6 +12,9 @@ import {
   collection,
   updateDoc,
   arrayUnion,
+  getDocs,
+  where,
+  query,
 } from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
@@ -80,39 +83,56 @@ const CreateClass = () => {
   const validationSchema = Yup.object({
     subject: Yup.string().required("Subject is required"),
     grade: Yup.number().required("Grade is required"),
-    numberOfStudent: Yup.number().required("Number is required"),
   });
 
   const classId = uuidv4();
   const { user, userDetails } = useUserAuth();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const createClass = async (subject, grade, numberOfStudent) => {
+
+  // check if class already exists
+  const readClass = async (subject, grade) => {
+    var classExists = "";
+    const q = query(
+      collection(db, "createdClasses"),
+      where("subject", "==", subject),
+      where("grade", "==", grade)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      classExists = doc.id;
+    });
+    return classExists;
+  };
+
+  const createClass = async (subject, grade) => {
     setSuccess("");
     setError("");
-    try {
-      // creating Class
-      const tutorsRef = collection(db, "createdClasses");
-      setDoc(doc(tutorsRef, classId), {
-        classCode: classId,
-        userUid: user.uid,
-        firstName: userDetails.name.firstName,
-        lastName: userDetails.name.lastName,
-        profilePic: userDetails.profilePic ? userDetails.profilePic : "",
-        subject: subject,
-        grade: grade,
-        numberOfStudents: numberOfStudent,
-      });
-      const modifyTutorRef = doc(db, "tutors", user.uid);
-      await updateDoc(modifyTutorRef, {
-        subjects: arrayUnion(subject),
-        grades: arrayUnion(grade),
-        numberOfStudents: arrayUnion(numberOfStudent),
-      });
-      setSuccess("Class Created");
-    } catch (err) {
-      setError("Class not created!");
-    }
+    readClass(subject, grade).then(async (value) => {
+      try {
+        if (!value) {
+          // creating Class
+          const tutorsRef = collection(db, "createdClasses");
+          setDoc(doc(tutorsRef, classId), {
+            classCode: classId,
+            userUid: user.uid,
+            firstName: userDetails.name.firstName,
+            lastName: userDetails.name.lastName,
+            profilePic: userDetails.profilePic ? userDetails.profilePic : "",
+            subject: subject,
+            grade: grade,
+          });
+          const modifyTutorRef = doc(db, "tutors", user.uid);
+          await updateDoc(modifyTutorRef, {
+            subjects: arrayUnion(subject),
+            grades: arrayUnion(grade),
+          });
+          setSuccess("Class Created");
+        } else setError("Class exists");
+      } catch (err) {
+        setError("Class not created!");
+      }
+    });
   };
 
   const [isSubmitting, setisSubmitting] = useState(false);
@@ -178,11 +198,10 @@ const CreateClass = () => {
             initialValues={{
               subject: "",
               grade: "",
-              numberOfStudent: "",
             }}
             onSubmit={async (values) => {
               setisSubmitting(true);
-              createClass(values.subject, values.grade, values.numberOfStudent);
+              createClass(values.subject, values.grade);
               setisSubmitting(false);
             }}
           >
@@ -229,21 +248,6 @@ const CreateClass = () => {
                     </MenuItem>
                   ))}
                 </Field>
-
-                <Field
-                  as={TextField}
-                  name="numberOfStudent"
-                  label="Number of Student (Required)"
-                  variant="filled"
-                  error={
-                    formikProps.touched.numberOfStudent &&
-                    Boolean(formikProps.errors.numberOfStudent)
-                  }
-                  helperText={
-                    formikProps.touched.numberOfStudent &&
-                    formikProps.errors.numberOfStudent
-                  }
-                />
 
                 <Button
                   fullWidth

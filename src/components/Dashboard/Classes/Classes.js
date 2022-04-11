@@ -8,6 +8,7 @@ import {
   CardMedia,
   CardActions,
   Button,
+  Snackbar,
 } from "@mui/material";
 import { AvatarContainer } from "./ClassesElements";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
@@ -29,6 +30,15 @@ import { Link } from "react-router-dom";
 
 const Classes = () => {
   const { user, userDetails, classes, setClasses } = useUserAuth();
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
 
   useEffect(() => {
     const read = async () => {
@@ -59,33 +69,12 @@ const Classes = () => {
           });
         }
       } catch (err) {
-        alert("An error occurred");
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
       }
     };
     read();
   }, []);
-
-  const handleDelete = async (classCode) => {
-    try {
-      let confirmAction = window.confirm("Are you sure to delete?");
-      readToDeleteAnnouncements(classCode);
-      if (confirmAction) {
-        if (userDetails.accountType === "Tutor") {
-          await deleteDoc(doc(db, "createdClasses", classCode));
-          readToDeleteAnnouncements(classCode);
-          // Delete also the class from joinedClasses*
-          // await deleteDoc(doc(db, "joinedClasses", classCode));
-          alert("Deleted Successfully");
-        } else {
-          // Delete class from joinedClasses for that student/parent*
-          await deleteDoc(doc(db, "joinedClasses", classCode));
-          alert("Deleted Successfully");
-        }
-      }
-    } catch (err) {
-      alert("An error occurred, please try again");
-    }
-  };
 
   //read from firestore to get announcementId for that class
   const readToDeleteAnnouncements = async (classCode) => {
@@ -101,6 +90,47 @@ const Classes = () => {
     data.map(async (classId) => {
       await deleteDoc(doc(db, "announcements", classId));
     });
+  };
+
+  // read to delete from joinedClasses
+  const readToDeleteJoinedClassesTutor = async (classCode) => {
+    const data = [];
+    const q = query(
+      collection(db, "joinedClasses"),
+      where("classCode", "==", classCode)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      data.push(doc.id);
+    });
+    data.map(async (joinedClassesId) => {
+      await deleteDoc(doc(db, "joinedClasses", joinedClassesId));
+    });
+  };
+
+  const handleDelete = async (classCode) => {
+    try {
+      let confirmAction = window.confirm("Are you sure to delete?");
+      readToDeleteAnnouncements(classCode);
+      if (confirmAction) {
+        if (userDetails.accountType === "Tutor") {
+          await deleteDoc(doc(db, "createdClasses", classCode));
+          readToDeleteAnnouncements(classCode);
+          readToDeleteJoinedClassesTutor(classCode);
+          setSnackBarOpen(true);
+          setMessage("Deleted Successfully");
+        } else {
+          console.log("Delete");
+          // Delete class from joinedClasses for that student/parent*
+          // await deleteDoc(doc(db, "joinedClasses", classCode));
+          // setSnackBarOpen(true);
+          // setMessage("Deleted Successfully");
+        }
+      }
+    } catch (err) {
+      setSnackBarOpen(true);
+      setMessage("An error occurred, please try again");
+    }
   };
 
   return (
@@ -188,26 +218,31 @@ const Classes = () => {
                     <VideoCallIcon />
                   </Link>
 
-                  {userDetails?.accountType === "Tutor" && (
-                    <Button
-                      size="small"
-                      sx={{
-                        color: "red",
-                        ml: 2,
-                        position: "relative",
-                        left: "50%",
-                      }}
-                      onClick={() => handleDelete(showClass.id)}
-                    >
-                      <DeleteOutlineIcon />
-                    </Button>
-                  )}
+                  <Button
+                    size="small"
+                    sx={{
+                      color: "red",
+                      ml: 2,
+                      position: "relative",
+                      left: "50%",
+                    }}
+                    onClick={() => handleDelete(showClass.id)}
+                  >
+                    <DeleteOutlineIcon />
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
           );
         })}
       </Grid>
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </>
   );
 };
