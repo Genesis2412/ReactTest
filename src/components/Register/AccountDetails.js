@@ -63,9 +63,6 @@ const AccountDetails = (props) => {
                 <RegisterSelectItem key="Student" value="Student">
                   Student
                 </RegisterSelectItem>
-                <RegisterSelectItem key="Parent" value="Parent">
-                  Parent
-                </RegisterSelectItem>
               </Field>
             </FormInput>
 

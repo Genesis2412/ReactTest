@@ -68,7 +68,7 @@ const Register = () => {
     try {
       await signUp(data.email, data.password).then((cred) => {
         //inserting students/parents data in firestore
-        if (data.accountType === "Student" || data.accountType === "Parent") {
+        if (data.accountType === "Student") {
           const studentsRef = collection(db, "students");
           setDoc(doc(studentsRef, cred.user.uid), {
             accountType: data.accountType,
@@ -180,7 +180,7 @@ const Register = () => {
       />
     );
   }
-  if (data.accountType === "Student" || data.accountType === "Parent") {
+  if (data.accountType === "Student") {
     steps.push(
       <StudentSuccess
         next={handleNextStep}
