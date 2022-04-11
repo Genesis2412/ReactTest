@@ -120,11 +120,9 @@ const Classes = () => {
           setSnackBarOpen(true);
           setMessage("Deleted Successfully");
         } else {
-          console.log("Delete");
-          // Delete class from joinedClasses for that student/parent*
-          // await deleteDoc(doc(db, "joinedClasses", classCode));
-          // setSnackBarOpen(true);
-          // setMessage("Deleted Successfully");
+          await deleteDoc(doc(db, "joinedClasses", classCode));
+          setSnackBarOpen(true);
+          setMessage("Unenrolled Successfully");
         }
       }
     } catch (err) {
