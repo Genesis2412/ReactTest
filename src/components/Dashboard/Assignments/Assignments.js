@@ -498,7 +498,9 @@ const Assignments = () => {
         </>
       )}
 
-      {userDetails.accountType === "Student" && <ViewAssignmentsStudent />}
+      {userDetails.accountType === "Student" && (
+        <ViewAssignmentsStudent classCode={classCode} />
+      )}
 
       <Snackbar
         open={snackBarOpen}

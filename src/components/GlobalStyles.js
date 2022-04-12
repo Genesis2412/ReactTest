@@ -100,3 +100,12 @@ export const FormFooter = styled.h1`
     display: none;
   }
 `;
+
+export const AssignmentIcon = styled.img`
+  width: 20%;
+  height: auto;
+  @media screen and (max-width: 768px) {
+    margin-top: 10px;
+    width: 80%;
+  }
+`;
