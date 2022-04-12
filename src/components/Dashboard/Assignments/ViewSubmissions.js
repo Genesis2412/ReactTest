@@ -38,7 +38,8 @@ const ViewSubmissions = () => {
   const { classCode } = location.state;
   const { assignmentId } = location.state;
   const [submittedAssignments, setSubmittedAssignments] = useState([]);
-  const [joinedUsers, setJoinedUsers] = useState([]);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   const HeaderStyle = {
     color: "#66fcf1",
@@ -54,6 +55,52 @@ const ViewSubmissions = () => {
       color: "#0b0c10",
       backgroundColor: "#c5c6c7",
     },
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
+
+  const addMarks = async (submittedId, firstName, lastName) => {
+    let marks = prompt("Please enter marks for " + firstName + " " + lastName);
+    let updatedMarks = marks.toString();
+
+    if (updatedMarks != null) {
+      try {
+        const marksRef = doc(db, "submittedAssignments", submittedId);
+        await updateDoc(marksRef, {
+          marks: updatedMarks,
+        });
+        setSnackBarOpen(true);
+        setMessage("Marks added successfully");
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      }
+    }
+  };
+
+  const deleteMarks = async (submittedId, firstName, lastName) => {
+    let confirmAction = window.confirm(
+      "Are you sure to delete marks of " + firstName + " " + lastName + "?"
+    );
+
+    if (confirmAction) {
+      try {
+        const marksRef = doc(db, "submittedAssignments", submittedId);
+        await updateDoc(marksRef, {
+          marks: "",
+        });
+        setSnackBarOpen(true);
+        setMessage("Marks deleted successfully");
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      }
+    }
   };
 
   // reading all submitted assignments
@@ -72,117 +119,127 @@ const ViewSubmissions = () => {
     });
   }, []);
 
-  //   list all users in that class
-  useEffect(() => {
-    const q = query(
-      collection(db, "joinedClasses"),
-      where("classCode", "==", classCode)
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      {
-        setJoinedUsers(data);
-      }
-    });
-  }, []);
-
   if (submittedAssignments.length !== 0) {
     return (
-      <Box>
-        <TableContainer
-          component={Paper}
-          sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
-        >
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead
-              sx={{
-                backgroundColor: "#1f2833",
-                fontWeight: "bold",
-              }}
-            >
-              <TableRow>
-                <TableCell style={HeaderStyle}></TableCell>
-                <TableCell style={HeaderStyle}>Student Name</TableCell>
-                <TableCell style={HeaderStyle}>Student Email</TableCell>
-                <TableCell style={HeaderStyle}>View Submitted Files</TableCell>
-                <TableCell style={HeaderStyle}>Submission Status</TableCell>
-                <TableCell style={HeaderStyle}>Add marks</TableCell>
-                <TableCell style={HeaderStyle}>Delete marks</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {submittedAssignments.map((submittedAssignment, index) => {
-                return (
-                  <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>
-                      {submittedAssignment.studentFirstName +
-                        " " +
-                        submittedAssignment.studentlastName}
-                    </TableCell>
-                    <TableCell>{submittedAssignment.studentEmail}</TableCell>
-                    <TableCell>
-                      {submittedAssignment.submittedFileName.map(
-                        (fileName, index) => {
-                          return (
-                            <Box key={index}>
-                              <a
-                                href={
-                                  submittedAssignment.submittedFileUrl[index]
-                                }
-                                target={"blank"}
-                                style={LinkStyles}
-                              >
-                                {fileName}
-                              </a>
-                            </Box>
-                          );
-                        }
-                      )}
-                    </TableCell>
-                    <TableCell>{submittedAssignment.status}</TableCell>
-                    <TableCell>
-                      <Button
-                        sx={[
-                          {
-                            "&:hover": {
-                              backgroundColor: "#c5c6c7",
-                              color: "#000",
+      <>
+        <Box>
+          <TableContainer
+            component={Paper}
+            sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
+          >
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead
+                sx={{
+                  backgroundColor: "#1f2833",
+                  fontWeight: "bold",
+                }}
+              >
+                <TableRow>
+                  <TableCell style={HeaderStyle}></TableCell>
+                  <TableCell style={HeaderStyle}>Student Name</TableCell>
+                  <TableCell style={HeaderStyle}>Student Email</TableCell>
+                  <TableCell style={HeaderStyle}>
+                    View Submitted Files
+                  </TableCell>
+                  <TableCell style={HeaderStyle}>Submission Status</TableCell>
+                  <TableCell style={HeaderStyle}>Marks</TableCell>
+                  <TableCell style={HeaderStyle}>Add marks</TableCell>
+                  <TableCell style={HeaderStyle}>Delete marks</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {submittedAssignments.map((submittedAssignment, index) => {
+                  return (
+                    <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>
+                        {submittedAssignment.studentFirstName +
+                          " " +
+                          submittedAssignment.studentlastName}
+                      </TableCell>
+                      <TableCell>{submittedAssignment.studentEmail}</TableCell>
+                      <TableCell>
+                        {submittedAssignment.submittedFileName.map(
+                          (fileName, index) => {
+                            return (
+                              <Box key={index}>
+                                <a
+                                  href={
+                                    submittedAssignment.submittedFileUrl[index]
+                                  }
+                                  target={"blank"}
+                                  style={LinkStyles}
+                                >
+                                  {fileName}
+                                </a>
+                              </Box>
+                            );
+                          }
+                        )}
+                      </TableCell>
+                      <TableCell>{submittedAssignment.status}</TableCell>
+                      <TableCell>{submittedAssignment.marks}</TableCell>
+                      <TableCell>
+                        <Button
+                          sx={[
+                            {
+                              "&:hover": {
+                                backgroundColor: "#c5c6c7",
+                                color: "#000",
+                              },
+                              backgroundColor: "#45a29e",
+                              color: "#fff",
                             },
-                            backgroundColor: "#45a29e",
-                            color: "#fff",
-                          },
-                        ]}
-                      >
-                        Add
-                      </Button>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        sx={[
-                          {
-                            "&:hover": {
-                              backgroundColor: "#c5c6c7",
-                              color: "#000",
+                          ]}
+                          onClick={() => {
+                            addMarks(
+                              submittedAssignment.id,
+                              submittedAssignment.studentFirstName,
+                              submittedAssignment.studentlastName
+                            );
+                          }}
+                        >
+                          Add
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          sx={[
+                            {
+                              "&:hover": {
+                                backgroundColor: "#c5c6c7",
+                                color: "#000",
+                              },
+                              backgroundColor: "red",
+                              color: "#fff",
                             },
-                            backgroundColor: "red",
-                            color: "#fff",
-                          },
-                        ]}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+                          ]}
+                          onClick={() => {
+                            deleteMarks(
+                              submittedAssignment.id,
+                              submittedAssignment.studentFirstName,
+                              submittedAssignment.studentlastName
+                            );
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+        <Snackbar
+          open={snackBarOpen}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          message={message}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        />
+      </>
     );
   } else {
     return (

@@ -144,6 +144,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                     submittedFileUrl: [url],
                     submittedTimestamp: today,
                     status: status,
+                    marks: "",
                   });
                 }
               });
@@ -404,10 +405,25 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                     <Grid item xs={12} md={4}>
                       <Box sx={{ boxShadow: 3 }}>
                         <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
-                          <Typography>
-                            Your Marks:{" "}
-                            <span style={{ color: "blue" }}>50\100</span>
-                          </Typography>
+                          {submittedAssignments
+                            .filter((submittedAssignment) => {
+                              if (
+                                assignment?.id ===
+                                submittedAssignment.assignmentCode
+                              ) {
+                                return submittedAssignment;
+                              }
+                            })
+                            .map((submittedAssignment, index) => {
+                              return (
+                                <Typography>
+                                  Your Marks:{" "}
+                                  <span style={{ color: "blue" }}>
+                                    {submittedAssignment.marks}
+                                  </span>
+                                </Typography>
+                              );
+                            })}
                         </Paper>
                         <Paper sx={{ p: 2 }}>
                           <Typography sx={{ fontSize: 15 }}>
