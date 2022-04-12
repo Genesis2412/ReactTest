@@ -222,6 +222,8 @@ const ViewAssignmentsStudent = ({ classCode }) => {
     });
   }, []);
 
+  console.log(assignments);
+
   useEffect(() => {
     const q = query(
       collection(db, "submittedAssignments"),
@@ -554,7 +556,12 @@ const ViewAssignmentsStudent = ({ classCode }) => {
               </Box>
             );
           } else {
-            return <h1>No assignments</h1>;
+            return (
+              <Box sx={{ textAlign: "center" }}>
+                <AssignmentIcon src={NoAssignmentsIcon} alt="icon" />
+                <Typography>Woohoo, no assignments</Typography>
+              </Box>
+            );
           }
         })}
         <Snackbar
