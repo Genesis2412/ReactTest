@@ -138,7 +138,14 @@ const Bookings = () => {
     return classCode;
   };
 
-  const addToClass = async (bookingId, subject, grade, email) => {
+  const addToClass = async (
+    bookingId,
+    subject,
+    grade,
+    email,
+    studentFirstName,
+    studentLastName
+  ) => {
     let confirmAction = window.confirm("Are you sure to add this student?");
     if (confirmAction) {
       try {
@@ -153,6 +160,8 @@ const Bookings = () => {
             grade: grade,
             studentEmail: email,
             classCode: classCode,
+            studentFirstName: studentFirstName,
+            studentLastName: studentLastName,
           });
           const bookingsRef = doc(db, "bookings", bookingId);
           updateDoc(bookingsRef, {
@@ -287,7 +296,9 @@ const Bookings = () => {
                             bookings.id,
                             bookings.subject,
                             bookings.grade,
-                            bookings.studentEmail
+                            bookings.studentEmail,
+                            bookings.firstName,
+                            bookings.lastName
                           );
                         }}
                       >
