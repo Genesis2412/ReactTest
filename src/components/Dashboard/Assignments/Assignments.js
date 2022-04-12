@@ -40,7 +40,7 @@ import {
   deleteDoc,
   getDocs,
 } from "firebase/firestore";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ViewAssignmentsStudent from "./ViewAssignmentsStudent";
 
@@ -459,9 +459,15 @@ const Assignments = () => {
                       </TableCell>
 
                       <TableCell>
-                        <Button>
+                        <Link
+                          to="viewsubmissions"
+                          state={{
+                            classCode: classCode,
+                            assignmentId: assignment.id,
+                          }}
+                        >
                           <PageviewIcon sx={{ color: "green" }} />
-                        </Button>
+                        </Link>
                       </TableCell>
                       <TableCell>
                         <Button
