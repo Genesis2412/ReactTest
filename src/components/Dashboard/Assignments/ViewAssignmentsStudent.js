@@ -166,10 +166,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data().submittedFileName);
       filesArray = docSnap.data().submittedFileName;
-    } else {
-      console.log("No such document!");
     }
     return filesArray;
   };
@@ -221,8 +218,6 @@ const ViewAssignmentsStudent = ({ classCode }) => {
       setAssignments(data);
     });
   }, []);
-
-  console.log(assignments);
 
   useEffect(() => {
     const q = query(

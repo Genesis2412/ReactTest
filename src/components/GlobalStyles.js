@@ -109,3 +109,12 @@ export const AssignmentIcon = styled.img`
     width: 80%;
   }
 `;
+
+export const ViewSubmissionsImg = styled.img`
+  width: 40%;
+  height: auto;
+  @media screen and (max-width: 768px) {
+    margin-top: 20vh;
+    width: 95%;
+  }
+`;

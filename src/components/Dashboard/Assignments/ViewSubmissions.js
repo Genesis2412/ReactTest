@@ -30,6 +30,8 @@ import {
   deleteDoc,
   getDocs,
 } from "firebase/firestore";
+import { ViewSubmissionsImg } from "../../GlobalStyles";
+import ViewSubmissionIcon from "../../../images/ViewSubmissionIcon.svg";
 
 const ViewSubmissions = () => {
   const location = useLocation();
@@ -70,22 +72,6 @@ const ViewSubmissions = () => {
     });
   }, []);
 
-  var emailsArray = [];
-
-  if (joinedUsers && submittedAssignments) {
-    {
-      joinedUsers.map((value) => {
-        {
-          submittedAssignments.map((val) => {
-            if (value.studentEmail !== val.studentEmail) {
-              emailsArray.push(value.studentEmail);
-            }
-          });
-        }
-      });
-    }
-  }
-
   //   list all users in that class
   useEffect(() => {
     const q = query(
@@ -103,141 +89,61 @@ const ViewSubmissions = () => {
     });
   }, []);
 
-  return (
-    <Box>
-      <TableContainer
-        component={Paper}
-        sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
-      >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead
-            sx={{
-              backgroundColor: "#1f2833",
-              fontWeight: "bold",
-            }}
-          >
-            <TableRow>
-              <TableCell style={HeaderStyle}></TableCell>
-              <TableCell style={HeaderStyle}>Student Name</TableCell>
-              <TableCell style={HeaderStyle}>Student Email</TableCell>
-              <TableCell style={HeaderStyle}>View Submitted Files</TableCell>
-              <TableCell style={HeaderStyle}>Submission Status</TableCell>
-              <TableCell style={HeaderStyle}>Add marks</TableCell>
-              <TableCell style={HeaderStyle}>Delete marks</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {submittedAssignments.map((submittedAssignment, index) => {
-              return (
-                <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>
-                    {submittedAssignment.studentFirstName +
-                      " " +
-                      submittedAssignment.studentlastName}
-                  </TableCell>
-                  <TableCell>{submittedAssignment.studentEmail}</TableCell>
-                  <TableCell>
-                    {submittedAssignment.submittedFileName.map(
-                      (fileName, index) => {
-                        return (
-                          <Box key={index}>
-                            <a
-                              href={submittedAssignment.submittedFileUrl[index]}
-                              target={"blank"}
-                              style={LinkStyles}
-                            >
-                              {fileName}
-                            </a>
-                          </Box>
-                        );
-                      }
-                    )}
-                  </TableCell>
-                  <TableCell>{submittedAssignment.status}</TableCell>
-                  <TableCell>
-                    <Button
-                      sx={[
-                        {
-                          "&:hover": {
-                            backgroundColor: "#c5c6c7",
-                            color: "#000",
-                          },
-                          backgroundColor: "#45a29e",
-                          color: "#fff",
-                        },
-                      ]}
-                    >
-                      Add
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      sx={[
-                        {
-                          "&:hover": {
-                            backgroundColor: "#c5c6c7",
-                            color: "#000",
-                          },
-                          backgroundColor: "red",
-                          color: "#fff",
-                        },
-                      ]}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/*  Users */}
-
-      <TableContainer
-        component={Paper}
-        sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
-      >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead
-            sx={{
-              backgroundColor: "#1f2833",
-              fontWeight: "bold",
-            }}
-          >
-            <TableRow>
-              <TableCell style={HeaderStyle}></TableCell>
-              <TableCell style={HeaderStyle}>Student Name</TableCell>
-              <TableCell style={HeaderStyle}>Student Email</TableCell>
-              <TableCell style={HeaderStyle}>View Submitted Files</TableCell>
-              <TableCell style={HeaderStyle}>Submission Status</TableCell>
-              <TableCell style={HeaderStyle}>Add marks</TableCell>
-              <TableCell style={HeaderStyle}>Delete marks</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {joinedUsers
-              .filter((joinedUser) => {
-                {
-                  if (emailsArray.includes(joinedUser.studentEmail)) {
-                    return joinedUser;
-                  }
-                }
-              })
-              .map((joinedUser, index) => {
+  if (submittedAssignments.length !== 0) {
+    return (
+      <Box>
+        <TableContainer
+          component={Paper}
+          sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
+        >
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead
+              sx={{
+                backgroundColor: "#1f2833",
+                fontWeight: "bold",
+              }}
+            >
+              <TableRow>
+                <TableCell style={HeaderStyle}></TableCell>
+                <TableCell style={HeaderStyle}>Student Name</TableCell>
+                <TableCell style={HeaderStyle}>Student Email</TableCell>
+                <TableCell style={HeaderStyle}>View Submitted Files</TableCell>
+                <TableCell style={HeaderStyle}>Submission Status</TableCell>
+                <TableCell style={HeaderStyle}>Add marks</TableCell>
+                <TableCell style={HeaderStyle}>Delete marks</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {submittedAssignments.map((submittedAssignment, index) => {
                 return (
                   <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>
-                      {joinedUser.studentFirstName +
+                      {submittedAssignment.studentFirstName +
                         " " +
-                        joinedUser.studentLastName}
+                        submittedAssignment.studentlastName}
                     </TableCell>
-                    <TableCell>{joinedUser.studentEmail}</TableCell>
-                    <TableCell>Null</TableCell>
-                    <TableCell>Null</TableCell>
+                    <TableCell>{submittedAssignment.studentEmail}</TableCell>
+                    <TableCell>
+                      {submittedAssignment.submittedFileName.map(
+                        (fileName, index) => {
+                          return (
+                            <Box key={index}>
+                              <a
+                                href={
+                                  submittedAssignment.submittedFileUrl[index]
+                                }
+                                target={"blank"}
+                                style={LinkStyles}
+                              >
+                                {fileName}
+                              </a>
+                            </Box>
+                          );
+                        }
+                      )}
+                    </TableCell>
+                    <TableCell>{submittedAssignment.status}</TableCell>
                     <TableCell>
                       <Button
                         sx={[
@@ -273,11 +179,19 @@ const ViewSubmissions = () => {
                   </TableRow>
                 );
               })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
-  );
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    );
+  } else {
+    return (
+      <Box sx={{ textAlign: "center", mt: 10 }}>
+        <ViewSubmissionsImg src={ViewSubmissionIcon} alt="icon" />
+        <Typography>No Submissions yet</Typography>
+      </Box>
+    );
+  }
 };
 
 export default ViewSubmissions;
