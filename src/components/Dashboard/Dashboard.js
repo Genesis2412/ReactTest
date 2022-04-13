@@ -8,11 +8,10 @@ import Chats from "./Chats/Chats";
 import Videocall from "./Videocall/Videocall";
 import Notifications from "./Notifications/Notifications";
 import CreateClass from "./Forms/CreateClass";
-import Tutors from "./Booking/Tutors";
-import TutorProfile from "./Booking/TutorProfile";
+import Tutors from "./TutorProfiles/Tutors";
+import TutorProfile from "./TutorProfiles/TutorProfile";
 import Bookings from "./Booking/Bookings";
 import ViewSubmissions from "./Assignments/ViewSubmissions";
-
 import { useUserAuth } from "../../Context/UserAuthContext";
 import { db } from "../../firebase-config";
 import { doc, getDoc } from "firebase/firestore";
