@@ -17,6 +17,8 @@ import {
   PowerMaterialIcon,
   AddMaterialIcon,
   ContactMaterialCalendarIcon,
+  ViewProfileLink,
+  AvatarMaterial,
 } from "./DrawerElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
@@ -87,10 +89,10 @@ const Sidebar = () => {
         </SlickBar>
 
         <Profile clicked={profileClick}>
-          <img
+          <AvatarMaterial
             onClick={() => handleProfileClick()}
-            src="https://picsum.photos/200"
-            alt="Profile"
+            src={userDetails?.profilePic}
+            alt={userDetails?.name?.firstName}
           />
           <Details clicked={profileClick}>
             <Name>
@@ -99,7 +101,12 @@ const Sidebar = () => {
                   " " +
                   userDetails?.name?.lastName}
               </h4>
-              <a href="/#">view&nbsp;profile</a>
+              <ViewProfileLink
+                onClick={() => setprofileClick(false)}
+                to="/dashboard/viewprofile"
+              >
+                view profile
+              </ViewProfileLink>
             </Name>
 
             <Logout onClick={handleLogout} disabled={isSubmitting}>

@@ -13,6 +13,7 @@ import TutorProfile from "./TutorProfiles/TutorProfile";
 import Bookings from "./Booking/Bookings";
 import ViewSubmissions from "./Assignments/ViewSubmissions";
 import { useUserAuth } from "../../Context/UserAuthContext";
+import ViewProfile from "./ViewProfile/ViewProfile";
 import { db } from "../../firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -49,6 +50,7 @@ const Dashboard = () => {
           sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
         >
           <Routes>
+            <Route path="viewprofile" element={<ViewProfile />} />
             <Route path="classes" element={<Classes />} />
             <Route path="classesdetails/*" element={<ClassDetails />} />
             <Route path="chats" element={<Chats />} />

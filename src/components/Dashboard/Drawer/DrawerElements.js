@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { styled as MaterialStyles } from "@mui/material/styles";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import ClassIcon from "@mui/icons-material/Class";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
-
+import { Avatar } from "@mui/material";
 import ChatIcon from "@mui/icons-material/Chat";
 import AddIcon from "@mui/icons-material/Add";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
@@ -27,35 +27,41 @@ export const VideoMaterialIcon = MaterialStyles(VideoCallIcon)`
   }
 `;
 
-export const ChatMaterialIcon = styled(ChatIcon)`
+export const ChatMaterialIcon = MaterialStyles(ChatIcon)`
   &:hover {
     color: #66fcf1;
   }
 `;
-export const PowerMaterialIcon = styled(PowerSettingsNewIcon)`
+export const PowerMaterialIcon = MaterialStyles(PowerSettingsNewIcon)`
   color: red;
   &:hover {
-    opacity: 0.8;
+    color: #66fcf1;
   }
 `;
 
-export const AddMaterialIcon = styled(AddIcon)`
+export const AddMaterialIcon = MaterialStyles(AddIcon)`
   &:hover {
-    opacity: 0.8;
+    color: #66fcf1;
   }
 `;
 
-export const PeopleMaterialIcon = styled(PeopleIcon)`
+export const PeopleMaterialIcon = MaterialStyles(PeopleIcon)`
   &:hover {
-    opacity: 0.8;
+    color: #66fcf1;
   }
 `;
 
-export const ContactMaterialCalendarIcon = styled(PermContactCalendarIcon)`
+export const ContactMaterialCalendarIcon = MaterialStyles(
+  PermContactCalendarIcon
+)`
   &:hover {
-    opacity: 0.8;
+    color: #66fcf1;
   }
 `;
+
+export const AvatarMaterial = MaterialStyles(Avatar)`
+  cursor:pointer;
+  `;
 
 export const Container = styled.div`
   /* position: fixed; */
@@ -139,6 +145,11 @@ export const Item = styled(NavLink)`
   padding-left: 1rem;
 `;
 
+export const ViewProfileLink = styled(Link)`
+  text-decoration: none;
+  color: #c5c6c7;
+`;
+
 export const Text = styled.span`
   width: ${(props) => (props.clicked ? "100%" : "0")};
   overflow: hidden;
@@ -158,7 +169,7 @@ export const Profile = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: ${(props) => (props.clicked ? "12rem" : "0")};
+  margin-left: ${(props) => (props.clicked ? "13rem" : "0")};
   background-color: #0b0c10;
   color: #c5c6c7;
   transition: all 0.3s ease;
