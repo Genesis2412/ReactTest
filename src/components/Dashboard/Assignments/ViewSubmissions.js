@@ -157,7 +157,14 @@ const ViewSubmissions = () => {
                           " " +
                           submittedAssignment.studentlastName}
                       </TableCell>
-                      <TableCell>{submittedAssignment.studentEmail}</TableCell>
+                      <TableCell>
+                        <a
+                          href={"mailto:" + submittedAssignment.studentEmail}
+                          style={LinkStyles}
+                        >
+                          {submittedAssignment.studentEmail}
+                        </a>
+                      </TableCell>
                       <TableCell>
                         {submittedAssignment.submittedFileName.map(
                           (fileName, index) => {
@@ -177,8 +184,29 @@ const ViewSubmissions = () => {
                           }
                         )}
                       </TableCell>
-                      <TableCell>{submittedAssignment.status}</TableCell>
-                      <TableCell>{submittedAssignment.marks}</TableCell>
+                      <TableCell>
+                        {submittedAssignment.status === "Not Submitted" && (
+                          <Typography sx={{ color: "#8C0800" }}>
+                            {submittedAssignment.status}
+                          </Typography>
+                        )}
+
+                        {submittedAssignment.status === "Late" && (
+                          <Typography sx={{ color: "#E98600" }}>
+                            {submittedAssignment.status}
+                          </Typography>
+                        )}
+                        {submittedAssignment.status === "On time" && (
+                          <Typography sx={{ color: "#0DB000" }}>
+                            {submittedAssignment.status}
+                          </Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {submittedAssignment.marks
+                          ? submittedAssignment.marks
+                          : "Null"}
+                      </TableCell>
                       <TableCell>
                         <Button
                           sx={[
@@ -199,7 +227,7 @@ const ViewSubmissions = () => {
                             );
                           }}
                         >
-                          Add
+                          Add/ Update
                         </Button>
                       </TableCell>
                       <TableCell>
