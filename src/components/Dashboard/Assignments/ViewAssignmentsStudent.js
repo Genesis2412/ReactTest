@@ -100,8 +100,6 @@ const ViewAssignmentsStudent = ({ classCode }) => {
   };
 
   const handleSubmit = async (assignmentCode, endDate, endTime) => {
-    // values classCode, userDetails.email, userDetails.firstName, userDetails.lastName,
-    // submittedTimestamp,  status,
     var status;
     const statusTimestamp = new Date(endDate + "," + endTime);
     if (statusTimestamp.getTime() > todayTimestamp) {
@@ -111,7 +109,10 @@ const ViewAssignmentsStudent = ({ classCode }) => {
     }
     if (images.length !== 0) {
       images.map((image) => {
-        const storageRef = ref(storage, "/submittedAssignments/" + image.name);
+        const storageRef = ref(
+          storage,
+          "/submittedAssignments/" + classCode + "/" + image.name
+        );
         const uploadTask = uploadBytesResumable(storageRef, image);
 
         uploadTask.on(
@@ -130,14 +131,21 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                 if (response) {
                   const updateRef = doc(db, "submittedAssignments", response);
                   updateDoc(updateRef, {
+                    submittedTimestamp: today,
+                    status: status,
                     submittedFileName: arrayUnion(image.name),
                     submittedFileUrl: arrayUnion(url),
-                  });
+                  })
+                    .then(() => {})
+                    .catch((err) => {
+                      setSnackBarOpen(true);
+                      setMessage("Submission Failed, try again");
+                    });
                 } else {
                   setDoc(doc(collection(db, "submittedAssignments")), {
                     classCode: classCode,
                     studentFirstName: userDetails?.name?.firstName,
-                    studentlastName: userDetails?.name?.lastName,
+                    studentLastName: userDetails?.name?.lastName,
                     studentEmail: userDetails?.email,
                     assignmentCode: assignmentCode,
                     submittedFileName: [image.name],
@@ -145,7 +153,12 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                     submittedTimestamp: today,
                     status: status,
                     marks: "",
-                  });
+                  })
+                    .then(() => {})
+                    .catch((err) => {
+                      setSnackBarOpen(true);
+                      setMessage("Submission Failed, try again");
+                    });
                 }
               });
             });
@@ -180,13 +193,21 @@ const ViewAssignmentsStudent = ({ classCode }) => {
           try {
             const imagePathRef = ref(
               storage,
-              "submittedAssignments/" + fileNames
+              "submittedAssignments/" + classCode + "/" + fileNames
             );
             deleteObject(imagePathRef)
               .then(async () => {
-                await deleteDoc(
-                  doc(db, "submittedAssignments", assignmentCode)
+                const updateRef = doc(
+                  db,
+                  "submittedAssignments",
+                  assignmentCode
                 );
+                updateDoc(updateRef, {
+                  submittedTimestamp: "",
+                  status: "Not Submitted",
+                  submittedFileName: [],
+                  submittedFileUrl: [],
+                });
               })
               .catch((error) => {
                 setSnackBarOpen(true);
@@ -501,7 +522,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                 }
                               })
                               .map((value, index) => {
-                                if (value) {
+                                if (value.status !== "Not Submitted") {
                                   return (
                                     <Button
                                       key={index}
@@ -524,34 +545,33 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                       Unsubmit
                                     </Button>
                                   );
-                                }
-                              })}
-
-                            {submittedAssignments.length === 0 && (
-                              <Button
-                                size={"small"}
-                                fullWidth
-                                sx={[
-                                  {
-                                    "&:hover": {
-                                      backgroundColor: "#c5c6c7",
-                                      color: "#000",
-                                    },
-                                    backgroundColor: "#45a29e",
-                                    color: "#fff",
-                                  },
-                                ]}
-                                onClick={() => {
-                                  handleSubmit(
-                                    assignment.id,
-                                    assignment.endDate,
-                                    assignment.endTime
+                                } else
+                                  return (
+                                    <Button
+                                      size={"small"}
+                                      fullWidth
+                                      sx={[
+                                        {
+                                          "&:hover": {
+                                            backgroundColor: "#c5c6c7",
+                                            color: "#000",
+                                          },
+                                          backgroundColor: "#45a29e",
+                                          color: "#fff",
+                                        },
+                                      ]}
+                                      onClick={() => {
+                                        handleSubmit(
+                                          assignment.id,
+                                          assignment.endDate,
+                                          assignment.endTime
+                                        );
+                                      }}
+                                    >
+                                      Submit
+                                    </Button>
                                   );
-                                }}
-                              >
-                                Submit
-                              </Button>
-                            )}
+                              })}
 
                             <LinearProgress
                               color="secondary"
