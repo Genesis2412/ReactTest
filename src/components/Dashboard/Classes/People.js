@@ -179,7 +179,7 @@ const People = () => {
                         <Avatar
                           sx={{ backgroundColor: "orange" }}
                           alt={person.studentLastName}
-                          src="/broken-image.jpg"
+                          src={person.studentProfilePic}
                         />
                         {person.studentFirstName + " " + person.studentLastName}
                       </TableCell>

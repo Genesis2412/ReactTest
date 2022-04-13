@@ -144,7 +144,8 @@ const Bookings = () => {
     grade,
     email,
     studentFirstName,
-    studentLastName
+    studentLastName,
+    studentProfilePic
   ) => {
     let confirmAction = window.confirm("Are you sure to add this student?");
     if (confirmAction) {
@@ -162,6 +163,7 @@ const Bookings = () => {
             classCode: classCode,
             studentFirstName: studentFirstName,
             studentLastName: studentLastName,
+            studentProfilePic: studentProfilePic,
           });
           const bookingsRef = doc(db, "bookings", bookingId);
           updateDoc(bookingsRef, {
@@ -298,7 +300,8 @@ const Bookings = () => {
                             bookings.grade,
                             bookings.studentEmail,
                             bookings.firstName,
-                            bookings.lastName
+                            bookings.lastName,
+                            bookings.studentProfilePic
                           );
                         }}
                       >
