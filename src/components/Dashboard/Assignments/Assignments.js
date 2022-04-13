@@ -60,6 +60,7 @@ const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
   const [assignmentId, setAssignmentId] = useState("");
   const { userDetails } = useUserAuth();
+  const [joinedStudents, setJoinedStudents] = useState([]);
 
   const HeaderStyle = {
     color: "#66fcf1",
@@ -145,6 +146,8 @@ const Assignments = () => {
                     endTime: endTime,
                     fileName: [image.name],
                     fileUrl: [url],
+                  }).then(async () => {
+                    await createSubmission();
                   });
                 }
               });
@@ -152,6 +155,7 @@ const Assignments = () => {
           }
         );
       });
+
       setImages((prevState) => []);
       fileInputRef.current.value = "";
       setAssignmentId("");
@@ -240,17 +244,46 @@ const Assignments = () => {
   };
 
   const handleDeleteAssignment = async (docId) => {
-    let confirmAction = window.confirm("Are you sure to delete?");
+    let confirmAction = window.confirm(
+      "Are you sure to delete? This will delete submission of students also"
+    );
 
     if (confirmAction) {
-      try {
-        await deleteDoc(doc(db, "assignments", docId));
-        setSnackBarOpen(true);
-        setMessage("Deleted Successfully");
-      } catch (error) {
-        setSnackBarOpen(true);
-        setMessage("An error occurred, please try again");
-      }
+      deleteDoc(doc(db, "assignments", docId))
+        .then(() => {
+          handleDeleteSubmission(docId)
+            .then(() => {
+              setSnackBarOpen(true);
+              setMessage("Deleted Successfully");
+            })
+            .catch((err) => {
+              setSnackBarOpen(true);
+              setMessage("Assignment could not be deleted, please try again");
+            });
+        })
+        .catch((err) => {
+          setSnackBarOpen(true);
+          setMessage("Assignment could not be deleted, please try again");
+        });
+    }
+  };
+
+  const handleDeleteSubmission = async (assignmentCode) => {
+    const docIds = [];
+    const q = query(
+      collection(db, "submittedAssignments"),
+      where("classCode", "==", classCode),
+      where("assignmentCode", "==", assignmentCode)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      docIds.push(doc.id);
+    });
+
+    {
+      docIds.map((dId) => {
+        deleteDoc(doc(db, "submittedAssignments", dId));
+      });
     }
   };
 
@@ -284,7 +317,54 @@ const Assignments = () => {
     }
   };
 
-  // reading all tutors details
+  const getJoinedStudents = async () => {
+    const q = query(
+      collection(db, "joinedClasses"),
+      where("classCode", "==", classCode)
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setJoinedStudents(data);
+    });
+  };
+
+  const createSubmission = async () => {
+    await getJoinedStudents();
+    await fetchAssignment().then((response) => {
+      if (response) {
+        if (joinedStudents) {
+          {
+            joinedStudents.map((joinedStudent) => {
+              setDoc(doc(collection(db, "submittedAssignments")), {
+                classCode: classCode,
+                studentFirstName: joinedStudent?.studentFirstName,
+                studentlastName: joinedStudent?.studentLastName,
+                studentEmail: joinedStudent?.studentEmail,
+                assignmentCode: response,
+                submittedFileName: [],
+                submittedFileUrl: [],
+                submittedTimestamp: "",
+                status: "Not Submitted",
+                marks: "",
+              })
+                .then(() => {
+                  console.log("Inserted Successfully");
+                })
+                .catch((err) => {
+                  setSnackBarOpen(true);
+                  setMessage("Students could not be added to assignment");
+                });
+            });
+          }
+        }
+      }
+    });
+  };
+
+  // reading all assignments details
   useEffect(() => {
     const q = query(
       collection(db, "assignments"),
