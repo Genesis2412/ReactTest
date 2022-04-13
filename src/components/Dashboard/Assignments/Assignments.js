@@ -317,22 +317,24 @@ const Assignments = () => {
     }
   };
 
-  const getJoinedStudents = async () => {
-    const q = query(
-      collection(db, "joinedClasses"),
-      where("classCode", "==", classCode)
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setJoinedStudents(data);
-    });
-  };
+  useEffect(() => {
+    const getJoinedStudents = async () => {
+      const q = query(
+        collection(db, "joinedClasses"),
+        where("classCode", "==", classCode)
+      );
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setJoinedStudents(data);
+      });
+    };
+    getJoinedStudents();
+  }, []);
 
   const createSubmission = async () => {
-    await getJoinedStudents();
     await fetchAssignment().then((response) => {
       if (response) {
         if (joinedStudents) {
@@ -350,9 +352,7 @@ const Assignments = () => {
                 status: "Not Submitted",
                 marks: "",
               })
-                .then(() => {
-                  console.log("Inserted Successfully");
-                })
+                .then(() => {})
                 .catch((err) => {
                   setSnackBarOpen(true);
                   setMessage("Students could not be added to assignment");

@@ -95,6 +95,38 @@ const Classes = () => {
     });
   };
 
+  //read from firestore to get assignments for that class and delete
+  const readToDeleteAssignments = async (classCode) => {
+    const data = [];
+    const q = query(
+      collection(db, "assignments"),
+      where("classCode", "==", classCode)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      data.push(doc.id);
+    });
+    data.map(async (classId) => {
+      await deleteDoc(doc(db, "assignments", classId));
+    });
+  };
+
+  //read from firestore to get submission ids for that class and delete
+  const readToDeleteSubmissions = async (classCode) => {
+    const data = [];
+    const q = query(
+      collection(db, "submittedAssignments"),
+      where("classCode", "==", classCode)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      data.push(doc.id);
+    });
+    data.map(async (classId) => {
+      await deleteDoc(doc(db, "submittedAssignments", classId));
+    });
+  };
+
   // read to delete from joinedClasses
   const readToDeleteJoinedClassesTutor = async (classCode) => {
     const data = [];
@@ -114,11 +146,12 @@ const Classes = () => {
   const handleDelete = async (classCode) => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
-      readToDeleteAnnouncements(classCode);
       if (confirmAction) {
         if (userDetails.accountType === "Tutor") {
           await deleteDoc(doc(db, "createdClasses", classCode));
           readToDeleteAnnouncements(classCode);
+          readToDeleteAssignments(classCode);
+          readToDeleteSubmissions(classCode);
           readToDeleteJoinedClassesTutor(classCode);
           setSnackBarOpen(true);
           setMessage("Deleted Successfully");
