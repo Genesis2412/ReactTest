@@ -3,11 +3,8 @@ import { useLocation } from "react-router-dom";
 import {
   Box,
   Paper,
-  Grid,
-  TextField,
   Button,
   Typography,
-  LinearProgress,
   Table,
   TableBody,
   TableCell,
@@ -19,16 +16,11 @@ import {
 import { db } from "../../../firebase-config";
 import {
   doc,
-  setDoc,
   collection,
   where,
   query,
   onSnapshot,
   updateDoc,
-  arrayUnion,
-  arrayRemove,
-  deleteDoc,
-  getDocs,
 } from "firebase/firestore";
 import { ViewSubmissionsImg } from "../../GlobalStyles";
 import ViewSubmissionIcon from "../../../images/ViewSubmissionIcon.svg";
