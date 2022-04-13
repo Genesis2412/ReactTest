@@ -481,119 +481,123 @@ const Assignments = () => {
               value={progress}
             />
           </Box>
-          <TableContainer
-            component={Paper}
-            sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
-          >
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead
-                sx={{
-                  backgroundColor: "#1f2833",
-                  fontWeight: "bold",
-                }}
-              >
-                <TableRow>
-                  <TableCell style={HeaderStyle}>Start Date/Time</TableCell>
-                  <TableCell style={HeaderStyle}>End Date/Time</TableCell>
-                  <TableCell style={HeaderStyle}>
-                    Assignment Description
-                  </TableCell>
-                  <TableCell style={HeaderStyle}>Assignment Contents</TableCell>
-                  <TableCell style={HeaderStyle}>View Submissions</TableCell>
-                  <TableCell style={HeaderStyle}>Update</TableCell>
-                  <TableCell style={HeaderStyle}>Delete</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {assignments.map((assignment, index) => {
-                  return (
-                    <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
-                      <TableCell>
-                        {assignment.startDate + ", " + assignment.startTime}
-                      </TableCell>
-                      <TableCell>
-                        {assignment.endDate + ", " + assignment.endTime}
-                      </TableCell>
-                      <TableCell>{assignment.title}</TableCell>
-                      <TableCell key={index}>
-                        {assignment.fileName.map((file, index) => {
-                          return (
-                            <Grid container key={index}>
-                              <Grid item xs={6}>
-                                <a
-                                  href={assignment.fileUrl[index]}
-                                  style={LinkStyles}
-                                  target="blank"
-                                >
-                                  {file}
-                                </a>
+          {assignments.length !== 0 && (
+            <TableContainer
+              component={Paper}
+              sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
+            >
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead
+                  sx={{
+                    backgroundColor: "#1f2833",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <TableRow>
+                    <TableCell style={HeaderStyle}>Start Date/Time</TableCell>
+                    <TableCell style={HeaderStyle}>End Date/Time</TableCell>
+                    <TableCell style={HeaderStyle}>
+                      Assignment Description
+                    </TableCell>
+                    <TableCell style={HeaderStyle}>
+                      Assignment Contents
+                    </TableCell>
+                    <TableCell style={HeaderStyle}>View Submissions</TableCell>
+                    <TableCell style={HeaderStyle}>Update</TableCell>
+                    <TableCell style={HeaderStyle}>Delete</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {assignments.map((assignment, index) => {
+                    return (
+                      <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
+                        <TableCell>
+                          {assignment.startDate + ", " + assignment.startTime}
+                        </TableCell>
+                        <TableCell>
+                          {assignment.endDate + ", " + assignment.endTime}
+                        </TableCell>
+                        <TableCell>{assignment.title}</TableCell>
+                        <TableCell key={index}>
+                          {assignment.fileName.map((file, index) => {
+                            return (
+                              <Grid container key={index}>
+                                <Grid item xs={6}>
+                                  <a
+                                    href={assignment.fileUrl[index]}
+                                    style={LinkStyles}
+                                    target="blank"
+                                  >
+                                    {file}
+                                  </a>
+                                </Grid>
+                                <Grid item xs={6}>
+                                  <Button
+                                    sx={{
+                                      position: "relative",
+                                      bottom: 4,
+                                      color: "red",
+                                    }}
+                                    onClick={() => {
+                                      handleDeleteObject(
+                                        assignment.id,
+                                        file,
+                                        assignment.fileUrl[index]
+                                      );
+                                    }}
+                                  >
+                                    <RemoveCircleIcon sx={{ fontSize: 16 }} />
+                                  </Button>
+                                </Grid>
                               </Grid>
-                              <Grid item xs={6}>
-                                <Button
-                                  sx={{
-                                    position: "relative",
-                                    bottom: 4,
-                                    color: "red",
-                                  }}
-                                  onClick={() => {
-                                    handleDeleteObject(
-                                      assignment.id,
-                                      file,
-                                      assignment.fileUrl[index]
-                                    );
-                                  }}
-                                >
-                                  <RemoveCircleIcon sx={{ fontSize: 16 }} />
-                                </Button>
-                              </Grid>
-                            </Grid>
-                          );
-                        })}
-                      </TableCell>
-
-                      <TableCell>
-                        <Link
-                          to="viewsubmissions"
-                          state={{
-                            classCode: classCode,
-                            assignmentId: assignment.id,
-                          }}
-                        >
-                          <PageviewIcon sx={{ color: "green" }} />
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          onClick={() => {
-                            handleUpdate(
-                              assignment.id,
-                              assignment.title,
-                              assignment.startDate,
-                              assignment.startTime,
-                              assignment.endDate,
-                              assignment.endTime
                             );
-                          }}
-                        >
-                          <ChangeCircleIcon />
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          sx={{ color: "red" }}
-                          onClick={() => {
-                            handleDeleteAssignment(assignment.id);
-                          }}
-                        >
-                          <CloseIcon />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                          })}
+                        </TableCell>
+
+                        <TableCell>
+                          <Link
+                            to="viewsubmissions"
+                            state={{
+                              classCode: classCode,
+                              assignmentId: assignment.id,
+                            }}
+                          >
+                            <PageviewIcon sx={{ color: "green" }} />
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            onClick={() => {
+                              handleUpdate(
+                                assignment.id,
+                                assignment.title,
+                                assignment.startDate,
+                                assignment.startTime,
+                                assignment.endDate,
+                                assignment.endTime
+                              );
+                            }}
+                          >
+                            <ChangeCircleIcon />
+                          </Button>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            sx={{ color: "red" }}
+                            onClick={() => {
+                              handleDeleteAssignment(assignment.id);
+                            }}
+                          >
+                            <CloseIcon />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </>
       )}
 
