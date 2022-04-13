@@ -92,21 +92,6 @@ const Assignments = () => {
     }
   };
 
-  const readOne = async () => {
-    var docId = "";
-    // Checking if there is already an assignment exactly by that title
-    const q = query(
-      collection(db, "assignments"),
-      where("title", "==", assignmentValue)
-    );
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      docId = doc.id;
-    });
-    return docId;
-  };
-
   const handleUpload = async () => {
     var d1 = Date.parse(startDate);
     var d2 = Date.parse(endDate);
@@ -115,27 +100,6 @@ const Assignments = () => {
       setMessage("End Date must be greater than Start Date");
       return;
     }
-
-    const updateAssignment = async () => {
-      const assignmentRef = doc(db, "assignments", assignmentId);
-
-      await updateDoc(assignmentRef, {
-        title: assignmentValue,
-        startDate: startDate,
-        startTime: startTime,
-        endDate: endDate,
-        endTime: endTime,
-      });
-      setProgress(100);
-      setSnackBarOpen(true);
-      setMessage("Updated Successfully");
-      setAssignmentId("");
-      setAssignmentValue("");
-      setStartDate("");
-      setStartTime("");
-      setEndDate("");
-      setEndTime("");
-    };
 
     if (
       assignmentValue &&
@@ -146,7 +110,10 @@ const Assignments = () => {
       endTime
     ) {
       images.map((image) => {
-        const storageRef = ref(storage, "/assignments/" + image.name);
+        const storageRef = ref(
+          storage,
+          "/assignments/" + classCode + "/" + image.name
+        );
         const uploadTask = uploadBytesResumable(storageRef, image);
 
         uploadTask.on(
@@ -160,16 +127,16 @@ const Assignments = () => {
           (err) => alert(err),
           // on Success
           () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-              readOne().then((response) => {
+            getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+              await fetchAssignment().then(async (response) => {
                 if (response) {
                   const updateRef = doc(db, "assignments", response);
-                  updateDoc(updateRef, {
+                  await updateDoc(updateRef, {
                     fileName: arrayUnion(image.name),
                     fileUrl: arrayUnion(url),
                   });
                 } else {
-                  setDoc(doc(collection(db, "assignments")), {
+                  await setDoc(doc(collection(db, "assignments")), {
                     title: assignmentValue,
                     classCode: classCode,
                     startDate: startDate,
@@ -206,6 +173,48 @@ const Assignments = () => {
       setSnackBarOpen(true);
       setMessage("Please, fill in values correctly");
     }
+  };
+
+  const fetchAssignment = async () => {
+    var docId = "";
+    const q = query(
+      collection(db, "assignments"),
+      where("classCode", "==", classCode),
+      where("title", "==", assignmentValue)
+    );
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      docId = doc.id;
+    });
+    return docId;
+  };
+
+  const updateAssignment = async () => {
+    const assignmentRef = doc(db, "assignments", assignmentId);
+
+    updateDoc(assignmentRef, {
+      title: assignmentValue,
+      startDate: startDate,
+      startTime: startTime,
+      endDate: endDate,
+      endTime: endTime,
+    })
+      .then(() => {
+        setProgress(100);
+        setSnackBarOpen(true);
+        setMessage("Updated Successfully");
+        setAssignmentId("");
+        setAssignmentValue("");
+        setStartDate("");
+        setStartTime("");
+        setEndDate("");
+        setEndTime("");
+      })
+      .catch((err) => {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      });
   };
 
   const handleUpdate = async (
@@ -248,26 +257,30 @@ const Assignments = () => {
   const handleDeleteObject = async (docId, objFileName, objFileUrl) => {
     let confirmAction = window.confirm("Are you sure to delete?");
     if (confirmAction) {
-      try {
-        const imagePathRef = ref(storage, "assignments/" + objFileName);
-        deleteObject(imagePathRef)
-          .then(() => {})
-          .catch((error) => {
-            setSnackBarOpen(true);
-            setMessage("An error occurred, please try again");
-            return;
-          });
-        const deleteFirestoreRef = doc(db, "assignments", docId);
-        await updateDoc(deleteFirestoreRef, {
-          fileName: arrayRemove(objFileName),
-          fileUrl: arrayRemove(objFileUrl),
+      const imagePathRef = ref(
+        storage,
+        "assignments/" + classCode + "/" + objFileName
+      );
+      deleteObject(imagePathRef)
+        .then(() => {
+          const deleteFirestoreRef = doc(db, "assignments", docId);
+          updateDoc(deleteFirestoreRef, {
+            fileName: arrayRemove(objFileName),
+            fileUrl: arrayRemove(objFileUrl),
+          })
+            .then(() => {
+              setSnackBarOpen(true);
+              setMessage("Deleted Successfully");
+            })
+            .catch((err) => {
+              setSnackBarOpen(true);
+              setMessage("An error occurred, please try again");
+            });
+        })
+        .catch((err) => {
+          setSnackBarOpen(true);
+          setMessage("An error occurred, please try again");
         });
-        setSnackBarOpen(true);
-        setMessage("Deleted Successfully");
-      } catch (error) {
-        setSnackBarOpen(true);
-        setMessage("An error occurred, please try again");
-      }
     }
   };
 
