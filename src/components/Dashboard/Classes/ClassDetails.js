@@ -3,9 +3,9 @@ import { useLocation } from "react-router-dom";
 import { Box, Paper, Typography, Grid } from "@mui/material";
 import ClassesDetailsBanner from "../../../images/ClassesDetailsBanner.jpg";
 import { NavLink, Routes, Route } from "react-router-dom";
-import Streams from "./Streams";
+import Streams from "../Streams/Streams";
 import Assignments from "../Assignments/Assignments";
-import People from "./People";
+import People from "../People/People";
 import { Image } from "./ClassesElements";
 import { Logo } from "../../GlobalStyles";
 

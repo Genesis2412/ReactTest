@@ -27,7 +27,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ChatIcon from "@mui/icons-material/Chat";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
-import { PeopleViewIcon } from ".././../GlobalStyles";
+import { PeopleViewIcon } from "../../GlobalStyles";
 import PeopleEmptyIcon from "../../../images/PeopleEmptyIcon.svg";
 
 const People = () => {
