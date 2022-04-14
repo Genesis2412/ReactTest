@@ -157,6 +157,7 @@ const Bookings = () => {
             firstName: userDetails?.name.firstName,
             lastName: userDetails?.name.lastName,
             profilePic: userDetails?.profilePic,
+            userUid: user.uid,
             subject: subject,
             grade: grade,
             studentEmail: email,
