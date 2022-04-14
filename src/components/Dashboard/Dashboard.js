@@ -7,7 +7,7 @@ import ClassDetails from "./Classes/ClassDetails";
 import Chats from "./Chats/Chats";
 import Videocall from "./Videocall/Videocall";
 import Notifications from "./Notifications/Notifications";
-import CreateClass from "./Forms/CreateClass";
+import CreateClass from "./CreateClass/CreateClass";
 import Tutors from "./TutorProfiles/Tutors";
 import TutorProfile from "./TutorProfiles/TutorProfile";
 import Bookings from "./Booking/Bookings";
