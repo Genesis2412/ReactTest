@@ -291,8 +291,9 @@ const Classes = () => {
       <Box sx={{ textAlign: "center" }}>
         <ClassesIcon src={NoClassIcon} alt="icon" />
         {userDetails.accountType === "Tutor" ? (
-          <Typography>
-            Let's go, create your first <Link to="dashboard/create">Tutor</Link>
+          <Typography variant={"h6"} mt={2}>
+            Let's go, create your first{" "}
+            <Link to="/dashboard/create">Class</Link>
           </Typography>
         ) : (
           <Typography variant={"h6"} mt={2}>
