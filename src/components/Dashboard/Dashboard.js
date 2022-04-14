@@ -28,6 +28,10 @@ const Dashboard = () => {
         const tutorSnap = await getDoc(tutorRef);
         if (tutorSnap.exists()) {
           setUserDetails(tutorSnap.data());
+          localStorage.setItem(
+            "userStorageDetails",
+            JSON.stringify(tutorSnap.data())
+          );
         } else {
           const studentRef = doc(db, "students", user.uid);
           const studentSnap = await getDoc(studentRef);
