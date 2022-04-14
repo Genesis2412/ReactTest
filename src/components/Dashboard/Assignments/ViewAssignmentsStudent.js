@@ -270,7 +270,6 @@ const ViewAssignmentsStudent = ({ classCode }) => {
           var assignmentTimestamp = new Date(
             assignment?.startDate + "," + assignment?.startTime
           );
-
           if (todayTimestamp >= assignmentTimestamp.getTime() && assignments) {
             return (
               <Box sx={{ boxShadow: 3, mt: 3 }} key={index}>
@@ -310,11 +309,11 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                           Attachments
                         </Typography>
                         <Box>
-                          {assignment.fileName.map((assignmentFile) => {
+                          {assignment.fileName.map((assignmentFile, key) => {
                             return (
-                              <Box key={index} sx={{ mt: 1, pl: 1 }}>
+                              <Box key={key} sx={{ mt: 1, pl: 1 }}>
                                 <a
-                                  href={assignment.fileUrl[index]}
+                                  href={assignment.fileUrl[key]}
                                   target="_blank"
                                   rel="noreferrer"
                                   style={{
