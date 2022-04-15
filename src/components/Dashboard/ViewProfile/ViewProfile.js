@@ -1,5 +1,6 @@
 import React from "react";
 import TutorProfile from "./TutorProfile";
+import StudentProfile from "./StudentProfile";
 
 const ViewProfile = () => {
   const days = [];
@@ -186,15 +187,31 @@ const ViewProfile = () => {
     "Savanne",
   ];
 
-  return (
-    <TutorProfile
-      days={days}
-      months={months}
-      years={years}
-      cityArray={cityArray}
-      districtArray={districtArray}
-    />
-  );
+  let userStorageDetails = localStorage.getItem("userStorageDetails");
+  let userDetails = JSON.parse(userStorageDetails);
+
+  if (userDetails.accountType === "Tutor") {
+    return (
+      <TutorProfile
+        days={days}
+        months={months}
+        years={years}
+        cityArray={cityArray}
+        districtArray={districtArray}
+      />
+    );
+  }
+  if (userDetails.accountType === "Student") {
+    return (
+      <StudentProfile
+        days={days}
+        months={months}
+        years={years}
+        cityArray={cityArray}
+        districtArray={districtArray}
+      />
+    );
+  }
 };
 
 export default ViewProfile;

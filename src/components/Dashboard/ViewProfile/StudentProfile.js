@@ -29,7 +29,7 @@ const TutorProfile = (props) => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   let userStorageDetails = localStorage.getItem("userStorageDetails");
-  let tutor = JSON.parse(userStorageDetails);
+  let student = JSON.parse(userStorageDetails);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -39,25 +39,19 @@ const TutorProfile = (props) => {
   };
 
   const [data, setData] = useState({
-    title: tutor?.title,
-    gender: tutor?.gender,
-    firstName: tutor?.name?.firstName,
-    lastName: tutor?.name?.lastName,
-    day: tutor?.dateOfBirth?.day,
-    month: tutor?.dateOfBirth?.month,
-    year: tutor?.dateOfBirth?.year,
-    streetAddress: tutor?.address?.streetAddress,
-    city: tutor?.address?.city,
-    district: tutor?.address?.district,
-    homeNumber: tutor?.contact?.homeNumber,
-    mobileNumber: tutor?.contact?.mobileNumber,
-    additionalNumber: tutor?.contact?.additionalNumber,
-    degree: tutor?.qualification?.degree,
-    degreeInfo: tutor?.qualification?.degreeInfo,
-    teacherQualification: tutor?.qualification?.teacherQualification,
-    teacherQualificationInfo: tutor?.qualification?.teacherQualificationInfo,
-    employed: tutor?.qualification?.employed,
-    employedInfo: tutor?.qualification?.employedInfo,
+    title: student?.title,
+    gender: student?.gender,
+    firstName: student?.name?.firstName,
+    lastName: student?.name?.lastName,
+    day: student?.dateOfBirth?.day,
+    month: student?.dateOfBirth?.month,
+    year: student?.dateOfBirth?.year,
+    streetAddress: student?.address?.streetAddress,
+    city: student?.address?.city,
+    district: student?.address?.district,
+    homeNumber: student?.contact?.homeNumber,
+    mobileNumber: student?.contact?.mobileNumber,
+    additionalNumber: student?.contact?.additionalNumber,
   });
 
   const validationSchema = Yup.object({
@@ -92,28 +86,11 @@ const TutorProfile = (props) => {
         /^\d+$/,
         "Additional number cannot contain letters or special characters"
       ),
-    degree: Yup.string().required("Select Yes or No"),
-    degreeInfo: Yup.mixed().when("degree", {
-      is: "Yes",
-      then: Yup.string().required("Please state the degree you have done"),
-    }),
-    teacherQualification: Yup.string().required("Select Yes or No"),
-    teacherQualificationInfo: Yup.mixed().when("teacherQualification", {
-      is: "Yes",
-      then: Yup.string().required(
-        "Please state the teacher qualification you have done"
-      ),
-    }),
-    employed: Yup.string().required("Select Yes or No"),
-    employedInfo: Yup.mixed().when("employed", {
-      is: "Yes",
-      then: Yup.string().required("Please state where you are employed"),
-    }),
   });
 
   //   update tutor Profile
-  const updateTutorProfile = async (values) => {
-    const docRef = doc(db, "tutors", user.uid);
+  const updateStudentProfile = async (values) => {
+    const docRef = doc(db, "students", user.uid);
     await updateDoc(docRef, {
       title: values.title,
       gender: values.gender,
@@ -131,25 +108,15 @@ const TutorProfile = (props) => {
           ? values.additionalNumber
           : false,
       },
-      qualification: {
-        degree: values.degree,
-        degreeInfo: values.degreeInfo ? values.degreeInfo : false,
-        teacherQualification: values.teacherQualification,
-        teacherQualificationInfo: values.teacherQualificationInfo
-          ? values.teacherQualificationInfo
-          : false,
-        employed: values.employed,
-        employedInfo: values.employedInfo ? values.employedInfo : false,
-      },
     });
   };
 
-  //   update createdClasses(firstName, lastName, profilePic where useruid)
-  const updateCreatedClasses = async (values) => {
+  //bookings(firstName, lastName where userId=user.uid)
+  const updateBookings = async (values) => {
     const dataArray = [];
     const q = query(
-      collection(db, "createdClasses"),
-      where("userUid", "==", user.uid)
+      collection(db, "bookings"),
+      where("userId", "==", user.uid)
     );
 
     const querySnapshot = await getDocs(q);
@@ -161,7 +128,7 @@ const TutorProfile = (props) => {
     if (dataArray) {
       {
         dataArray.map(async (docId) => {
-          const docRef = doc(db, "createdClasses", docId);
+          const docRef = doc(db, "bookings", docId);
           await updateDoc(docRef, {
             firstName: values.firstName,
             lastName: values.lastName,
@@ -171,12 +138,12 @@ const TutorProfile = (props) => {
     }
   };
 
-  //   update joinedClasses (firstName, lastName,title)
+  //joinedClasses(studentFirstName, studentLastName where studentEmail)
   const updateJoinedClasses = async (values) => {
     const dataArray = [];
     const q = query(
       collection(db, "joinedClasses"),
-      where("userUid", "==", user.uid)
+      where("studentEmail", "==", student.email)
     );
 
     const querySnapshot = await getDocs(q);
@@ -190,9 +157,35 @@ const TutorProfile = (props) => {
         dataArray.map(async (docId) => {
           const docRef = doc(db, "joinedClasses", docId);
           await updateDoc(docRef, {
-            title: values.title,
-            firstName: values.firstName,
-            lastName: values.lastName,
+            studentFirstName: values.firstName,
+            studentLastName: values.lastName,
+          });
+        });
+      }
+    }
+  };
+
+  //submittedAssignments(studentLastName, studentFirstName where studentEmail)
+  const updateSubmittedAssignments = async (values) => {
+    const dataArray = [];
+    const q = query(
+      collection(db, "submittedAssignments"),
+      where("studentEmail", "==", student.email)
+    );
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      dataArray.push(doc.id);
+    });
+
+    // updating
+    if (dataArray) {
+      {
+        dataArray.map(async (docId) => {
+          const docRef = doc(db, "submittedAssignments", docId);
+          await updateDoc(docRef, {
+            studentFirstName: values.firstName,
+            studentLastName: values.lastName,
           });
         });
       }
@@ -200,16 +193,24 @@ const TutorProfile = (props) => {
   };
 
   const handleSubmit = (values, setSubmitting) => {
-    updateTutorProfile(values)
+    updateStudentProfile(values)
       .then(() => {
-        updateCreatedClasses(values)
+        updateBookings(values)
           .then(() => {
             updateJoinedClasses(values)
               .then(() => {
-                setSubmitting(false);
-                setEditField(true);
-                setSnackBarOpen(true);
-                setMessage("Updated Successfully");
+                updateSubmittedAssignments(values)
+                  .then(() => {
+                    setSubmitting(false);
+                    setEditField(true);
+                    setSnackBarOpen(true);
+                    setMessage("Updated Successfully");
+                  })
+                  .catch((err) => {
+                    setSubmitting(false);
+                    setSnackBarOpen(true);
+                    setMessage("Failed to update, try again");
+                  });
               })
               .catch((err) => {
                 setSubmitting(false);
@@ -236,8 +237,8 @@ const TutorProfile = (props) => {
         <Paper sx={{ p: 2, boxShadow: 15 }}>
           <Box display="flex" justifyContent="center" alignItems="center">
             <Avatar
-              alt={tutor?.name?.firstName}
-              src={tutor?.profilePic}
+              alt={student?.name?.firstName}
+              src={student?.profilePic}
               sx={{
                 height: "25vh",
                 width: "25vh",
@@ -593,133 +594,6 @@ const TutorProfile = (props) => {
                           formikProps.errors.additionalNumber
                         }
                       ></Field>
-                    </Grid>
-                  </Grid>
-
-                  {/* Qualification */}
-                  <Grid container item spacing={2}>
-                    <Grid item xs={12} sm="auto" md={6}>
-                      <Field
-                        as={TextField}
-                        name="degree"
-                        label="Degree"
-                        select
-                        fullWidth
-                        inputProps={{ readOnly: editField }}
-                        error={
-                          formikProps.touched.degree &&
-                          Boolean(formikProps.errors.degree)
-                        }
-                        helperText={
-                          formikProps.touched.degree &&
-                          formikProps.errors.degree
-                        }
-                      >
-                        <MenuItem value="Yes">Yes</MenuItem>
-                        <MenuItem value="No">No</MenuItem>
-                      </Field>
-                    </Grid>
-
-                    <Grid item xs={12} sm="auto" md={6}>
-                      <Field
-                        as={TextField}
-                        name="degreeInfo"
-                        label="Degree In"
-                        fullWidth
-                        inputProps={{ readOnly: editField }}
-                        error={
-                          formikProps.touched.degreeInfo &&
-                          Boolean(formikProps.errors.degreeInfo)
-                        }
-                        helperText={
-                          formikProps.touched.degreeInfo &&
-                          formikProps.errors.degreeInfo
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-
-                  <Grid container item spacing={2}>
-                    <Grid item xs={12} sm="auto" md={6}>
-                      <Field
-                        as={TextField}
-                        name="teacherQualification"
-                        label="Teacher Qualification"
-                        select
-                        fullWidth
-                        inputProps={{ readOnly: editField }}
-                        error={
-                          formikProps.touched.teacherQualification &&
-                          Boolean(formikProps.errors.teacherQualification)
-                        }
-                        helperText={
-                          formikProps.touched.teacherQualification &&
-                          formikProps.errors.teacherQualification
-                        }
-                      >
-                        <MenuItem value="Yes">Yes</MenuItem>
-                        <MenuItem value="No">No</MenuItem>
-                      </Field>
-                    </Grid>
-
-                    <Grid item xs={12} sm="auto" md={6}>
-                      <Field
-                        as={TextField}
-                        name="teacherQualificationInfo"
-                        label="Teacher Qualification In"
-                        fullWidth
-                        inputProps={{ readOnly: editField }}
-                        error={
-                          formikProps.touched.teacherQualificationInfo &&
-                          Boolean(formikProps.errors.teacherQualificationInfo)
-                        }
-                        helperText={
-                          formikProps.touched.teacherQualificationInfo &&
-                          formikProps.errors.teacherQualificationInfo
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-
-                  <Grid container item spacing={2}>
-                    <Grid item xs={12} sm="auto" md={6}>
-                      <Field
-                        as={TextField}
-                        name="employed"
-                        label="Employed"
-                        select
-                        fullWidth
-                        inputProps={{ readOnly: editField }}
-                        error={
-                          formikProps.touched.employed &&
-                          Boolean(formikProps.errors.employed)
-                        }
-                        helperText={
-                          formikProps.touched.employed &&
-                          formikProps.errors.employed
-                        }
-                      >
-                        <MenuItem value="Yes">Yes</MenuItem>
-                        <MenuItem value="No">No</MenuItem>
-                      </Field>
-                    </Grid>
-
-                    <Grid item xs={12} sm="auto" md={6}>
-                      <Field
-                        as={TextField}
-                        name="employedInfo"
-                        label="Employed at"
-                        fullWidth
-                        inputProps={{ readOnly: editField }}
-                        error={
-                          formikProps.touched.employedInfo &&
-                          Boolean(formikProps.errors.employedInfo)
-                        }
-                        helperText={
-                          formikProps.touched.employedInfo &&
-                          formikProps.errors.employedInfo
-                        }
-                      />
                     </Grid>
                   </Grid>
 

@@ -147,7 +147,7 @@ const ViewSubmissions = () => {
                       <TableCell>
                         {submittedAssignment.studentFirstName +
                           " " +
-                          submittedAssignment.studentlastName}
+                          submittedAssignment.studentLastName}
                       </TableCell>
                       <TableCell>
                         <a
@@ -215,7 +215,7 @@ const ViewSubmissions = () => {
                             addMarks(
                               submittedAssignment.id,
                               submittedAssignment.studentFirstName,
-                              submittedAssignment.studentlastName
+                              submittedAssignment.studentLastName
                             );
                           }}
                         >
@@ -238,7 +238,7 @@ const ViewSubmissions = () => {
                             deleteMarks(
                               submittedAssignment.id,
                               submittedAssignment.studentFirstName,
-                              submittedAssignment.studentlastName
+                              submittedAssignment.studentLastName
                             );
                           }}
                         >

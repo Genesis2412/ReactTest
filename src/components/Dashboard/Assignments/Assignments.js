@@ -343,7 +343,7 @@ const Assignments = () => {
               setDoc(doc(collection(db, "submittedAssignments")), {
                 classCode: classCode,
                 studentFirstName: joinedStudent?.studentFirstName,
-                studentlastName: joinedStudent?.studentLastName,
+                studentLastName: joinedStudent?.studentLastName,
                 studentEmail: joinedStudent?.studentEmail,
                 assignmentCode: response,
                 submittedFileName: [],
