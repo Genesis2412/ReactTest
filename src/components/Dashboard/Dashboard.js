@@ -28,7 +28,6 @@ const Dashboard = () => {
         const studentSnap = await getDoc(studentRef);
         if (studentSnap.exists()) {
           const unsub = onSnapshot(doc(db, "students", user.uid), (doc) => {
-            console.log(doc);
             if (doc) {
               setUserDetails(doc.data());
               localStorage.setItem(
@@ -39,7 +38,6 @@ const Dashboard = () => {
           });
         } else {
           const unsub = onSnapshot(doc(db, "tutors", user.uid), (doc) => {
-            console.log(doc);
             if (doc) {
               setUserDetails(doc.data());
               localStorage.setItem(
@@ -54,7 +52,6 @@ const Dashboard = () => {
     getUserDetails();
   }, []);
 
-  console.log(userDetails);
   return (
     <>
       <Box sx={{ display: "flex" }}>
