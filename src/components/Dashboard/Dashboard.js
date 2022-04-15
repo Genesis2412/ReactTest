@@ -15,36 +15,46 @@ import ViewSubmissions from "./Assignments/ViewSubmissions";
 import { useUserAuth } from "../../Context/UserAuthContext";
 import ViewProfile from "./ViewProfile/ViewProfile";
 import { db } from "../../firebase-config";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 
 const Dashboard = () => {
-  const { user, setUserDetails } = useUserAuth();
+  const { user, setUserDetails, userDetails } = useUserAuth();
 
   //getting all user details
   useEffect(() => {
     const getUserDetails = async () => {
       if (user.uid) {
-        const tutorRef = doc(db, "tutors", user?.uid);
-        const tutorSnap = await getDoc(tutorRef);
-        if (tutorSnap.exists()) {
-          setUserDetails(tutorSnap.data());
-          localStorage.setItem(
-            "userStorageDetails",
-            JSON.stringify(tutorSnap.data())
-          );
+        const studentRef = doc(db, "students", user.uid);
+        const studentSnap = await getDoc(studentRef);
+        if (studentSnap.exists()) {
+          const unsub = onSnapshot(doc(db, "students", user.uid), (doc) => {
+            console.log(doc);
+            if (doc) {
+              setUserDetails(doc.data());
+              localStorage.setItem(
+                "userStorageDetails",
+                JSON.stringify(doc.data())
+              );
+            }
+          });
         } else {
-          const studentRef = doc(db, "students", user.uid);
-          const studentSnap = await getDoc(studentRef);
-          if (studentSnap.exists()) {
-            setUserDetails(studentSnap.data());
-          } else {
-            return;
-          }
+          const unsub = onSnapshot(doc(db, "tutors", user.uid), (doc) => {
+            console.log(doc);
+            if (doc) {
+              setUserDetails(doc.data());
+              localStorage.setItem(
+                "userStorageDetails",
+                JSON.stringify(doc.data())
+              );
+            }
+          });
         }
       }
     };
     getUserDetails();
   }, []);
+
+  console.log(userDetails);
   return (
     <>
       <Box sx={{ display: "flex" }}>
