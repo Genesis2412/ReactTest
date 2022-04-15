@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import TutorProfile from "./TutorProfile";
 import StudentProfile from "./StudentProfile";
+import {
+  Box,
+  Avatar,
+  Paper,
+  Typography,
+  Button,
+  Snackbar,
+  Stack,
+} from "@mui/material";
+import { useUserAuth } from "../../../Context/UserAuthContext";
+import UploadButton from "./UploadButton";
 
 const ViewProfile = () => {
   const days = [];
@@ -187,31 +198,129 @@ const ViewProfile = () => {
     "Savanne",
   ];
 
+  const { user, verifyEmail } = useUserAuth();
   let userStorageDetails = localStorage.getItem("userStorageDetails");
   let userDetails = JSON.parse(userStorageDetails);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
-  if (userDetails.accountType === "Tutor") {
-    return (
-      <TutorProfile
-        days={days}
-        months={months}
-        years={years}
-        cityArray={cityArray}
-        districtArray={districtArray}
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
+
+  const verifyUserEmail = async () => {
+    try {
+      verifyEmail(user);
+      setSnackBarOpen(true);
+      setMessage("A verification has been sent to your email.");
+    } catch (error) {
+      console.log("An error occurred");
+    }
+  };
+
+  return (
+    <>
+      {user.emailVerified === false && (
+        <Box>
+          <Paper
+            sx={{
+              p: 2,
+              mb: 2,
+              textAlign: "center",
+              backgroundColor: "#FFCC00",
+            }}
+          >
+            <Typography>
+              Please verify your email. Failure to do so will{" "}
+              <span style={{ color: "red" }}>deactivate</span> your account in
+              <span style={{ color: "red" }}> 7 days!</span>
+              <Button
+                sx={[
+                  {
+                    "&:hover": {
+                      backgroundColor: "#c5c6c7",
+                      color: "#000",
+                    },
+                    backgroundColor: "#45a29e",
+                    color: "#fff",
+                    ml: 2,
+                  },
+                ]}
+                onClick={() => {
+                  verifyUserEmail();
+                }}
+              >
+                Verify Here!
+              </Button>
+            </Typography>
+          </Paper>
+        </Box>
+      )}
+      {userDetails.profilePic === "" && (
+        <Box>
+          <Paper
+            sx={{
+              p: 2,
+              mb: 2,
+              textAlign: "center",
+              backgroundColor: "#FFCC00",
+            }}
+          >
+            <Typography>
+              It is compulsory to upload your face as your profile picture,
+              failure to do so will{" "}
+              <span style={{ color: "red" }}>deactivate</span> your account in
+              <span style={{ color: "red" }}> 7 days!</span>
+            </Typography>
+          </Paper>
+        </Box>
+      )}
+
+      <Box>
+        <Paper sx={{ p: 2, boxShadow: 15 }}>
+          <Stack display="flex" justifyContent="center" alignItems="center">
+            <Avatar
+              alt={userDetails?.name?.firstName}
+              src={userDetails?.profilePic}
+              sx={{
+                height: "25vh",
+                width: "25vh",
+              }}
+            />
+            <UploadButton userDetails={userDetails} />
+          </Stack>
+
+          {userDetails.accountType === "Tutor" ? (
+            <TutorProfile
+              days={days}
+              months={months}
+              years={years}
+              cityArray={cityArray}
+              districtArray={districtArray}
+            />
+          ) : (
+            <StudentProfile
+              days={days}
+              months={months}
+              years={years}
+              cityArray={cityArray}
+              districtArray={districtArray}
+            />
+          )}
+        </Paper>
+      </Box>
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />
-    );
-  }
-  if (userDetails.accountType === "Student") {
-    return (
-      <StudentProfile
-        days={days}
-        months={months}
-        years={years}
-        cityArray={cityArray}
-        districtArray={districtArray}
-      />
-    );
-  }
+    </>
+  );
 };
 
 export default ViewProfile;

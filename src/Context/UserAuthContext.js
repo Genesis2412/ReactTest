@@ -6,6 +6,7 @@ import {
   sendPasswordResetEmail,
   fetchSignInMethodsForEmail,
   signOut,
+  sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "../firebase-config";
 
@@ -23,6 +24,10 @@ export function UserAuthContextProvider({ children }) {
   }
   function resetPassword(email) {
     return sendPasswordResetEmail(auth, email);
+  }
+
+  function verifyEmail(currentUser) {
+    return sendEmailVerification(currentUser);
   }
 
   function checkSignIn(email) {
@@ -61,6 +66,7 @@ export function UserAuthContextProvider({ children }) {
         signUp,
         logOut,
         resetPassword,
+        verifyEmail,
         checkSignIn,
       }}
     >
