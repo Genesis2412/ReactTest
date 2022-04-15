@@ -76,7 +76,7 @@ const Register = () => {
             title: data.title,
             gender: data.gender,
             name: { firstName: data.firstName, lastName: data.lastName },
-            dateOfBith: { day: data.day, month: data.month, year: data.year },
+            dateOfBirth: { day: data.day, month: data.month, year: data.year },
             nationality: data.nationality,
             address: {
               streetAddress: data.streetAddress,
