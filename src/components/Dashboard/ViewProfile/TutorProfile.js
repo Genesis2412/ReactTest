@@ -7,28 +7,24 @@ import {
   MenuItem,
   Button,
   Paper,
-  Typography,
 } from "@mui/material";
 import {
   collection,
   query,
-  onSnapshot,
   where,
-  setDoc,
   doc,
-  deleteDoc,
   updateDoc,
   getDocs,
-  getDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useUserAuth } from "../../../Context/UserAuthContext";
+import CloseIcon from "@mui/icons-material/Close";
 
 const TutorProfile = (props) => {
   const { userDetails, user } = useUserAuth();
-
+  const [editField, setEditField] = useState(true);
   let userStorageDetails = localStorage.getItem("userStorageDetails");
   let tutor = JSON.parse(userStorageDetails);
 
@@ -105,8 +101,6 @@ const TutorProfile = (props) => {
     }),
   });
 
-  const [editField, setEditField] = useState(false);
-
   //   update tutor Profile
   const updateTutorProfile = async (values) => {
     const docRef = doc(db, "tutors", user.uid);
@@ -166,6 +160,7 @@ const TutorProfile = (props) => {
       }
     }
   };
+
   //   update joinedClasses (firstName, lastName,title)
   const updateJoinedClasses = async (values) => {
     const dataArray = [];
@@ -219,6 +214,47 @@ const TutorProfile = (props) => {
           />
         </Box>
 
+        <Box sx={{ float: "right" }}>
+          {editField ? (
+            <Button
+              sx={[
+                {
+                  "&:hover": {
+                    backgroundColor: "#1f2833",
+                    color: "#66fcf1",
+                  },
+                  backgroundColor: "#45a29e",
+                  color: "#fff",
+                },
+              ]}
+              onClick={() => {
+                setEditField((prevState) => !prevState);
+              }}
+            >
+              Edit
+            </Button>
+          ) : (
+            <Button
+              sx={[
+                {
+                  "&:hover": {
+                    backgroundColor: "#45a29e",
+                    color: "#fff",
+                  },
+                  backgroundColor: "red",
+                  color: "#fff",
+                },
+              ]}
+              onClick={() => {
+                setEditField((prevState) => !prevState);
+              }}
+            >
+              <CloseIcon />
+              Cancel
+            </Button>
+          )}
+        </Box>
+
         <Formik
           validationSchema={validationSchema}
           initialValues={data}
@@ -235,6 +271,7 @@ const TutorProfile = (props) => {
                       label="Title"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.title &&
                         Boolean(formikProps.errors.title)
@@ -258,6 +295,7 @@ const TutorProfile = (props) => {
                       label="Gender"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.gender &&
                         Boolean(formikProps.errors.gender)
@@ -279,6 +317,7 @@ const TutorProfile = (props) => {
                       name="firstName"
                       label="First Name"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.firstName &&
                         Boolean(formikProps.errors.firstName)
@@ -296,6 +335,7 @@ const TutorProfile = (props) => {
                       name="lastName"
                       label="Last Name"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.lastName &&
                         Boolean(formikProps.errors.lastName)
@@ -316,6 +356,7 @@ const TutorProfile = (props) => {
                       label="Day"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.day &&
                         Boolean(formikProps.errors.day)
@@ -341,6 +382,7 @@ const TutorProfile = (props) => {
                       label="Month"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.month &&
                         Boolean(formikProps.errors.month)
@@ -366,6 +408,7 @@ const TutorProfile = (props) => {
                       label="Year"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.year &&
                         Boolean(formikProps.errors.year)
@@ -394,6 +437,7 @@ const TutorProfile = (props) => {
                       name="streetAddress"
                       label="Street Address"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.streetAddress &&
                         Boolean(formikProps.errors.streetAddress)
@@ -412,6 +456,7 @@ const TutorProfile = (props) => {
                       label="City"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.city &&
                         Boolean(formikProps.errors.city)
@@ -437,6 +482,7 @@ const TutorProfile = (props) => {
                       label="District"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.district &&
                         Boolean(formikProps.errors.district)
@@ -467,6 +513,7 @@ const TutorProfile = (props) => {
                       name="homeNumber"
                       label="Home Number"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.homeNumber &&
                         Boolean(formikProps.errors.homeNumber)
@@ -484,6 +531,7 @@ const TutorProfile = (props) => {
                       name="mobileNumber"
                       label="Mobile Number"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.mobileNumber &&
                         Boolean(formikProps.errors.mobileNumber)
@@ -501,6 +549,7 @@ const TutorProfile = (props) => {
                       name="additionalNumber"
                       label="Additional Number"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.additionalNumber &&
                         Boolean(formikProps.errors.additionalNumber)
@@ -522,6 +571,7 @@ const TutorProfile = (props) => {
                       label="Degree"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.degree &&
                         Boolean(formikProps.errors.degree)
@@ -541,6 +591,7 @@ const TutorProfile = (props) => {
                       name="degreeInfo"
                       label="Degree In"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.degreeInfo &&
                         Boolean(formikProps.errors.degreeInfo)
@@ -561,6 +612,7 @@ const TutorProfile = (props) => {
                       label="Teacher Qualification"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.teacherQualification &&
                         Boolean(formikProps.errors.teacherQualification)
@@ -581,6 +633,7 @@ const TutorProfile = (props) => {
                       name="teacherQualificationInfo"
                       label="Teacher Qualification In"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.teacherQualificationInfo &&
                         Boolean(formikProps.errors.teacherQualificationInfo)
@@ -601,6 +654,7 @@ const TutorProfile = (props) => {
                       label="Employed"
                       select
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.employed &&
                         Boolean(formikProps.errors.employed)
@@ -621,6 +675,7 @@ const TutorProfile = (props) => {
                       name="employedInfo"
                       label="Employed at"
                       fullWidth
+                      inputProps={{ readOnly: editField }}
                       error={
                         formikProps.touched.employedInfo &&
                         Boolean(formikProps.errors.employedInfo)
