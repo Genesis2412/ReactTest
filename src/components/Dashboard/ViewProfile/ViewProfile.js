@@ -9,7 +9,11 @@ import {
   Button,
   Snackbar,
   Stack,
+  Menu,
+  MenuItem,
 } from "@mui/material";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import UploadButtonTutor from "./UploadButtonTutor";
 import UploadButtonStudent from "./UploadButtonStudent";
@@ -282,6 +286,27 @@ const ViewProfile = () => {
 
       <Box>
         <Paper sx={{ p: 2, boxShadow: 15 }}>
+          <Box sx={{ float: "right" }}>
+            <PopupState variant="popover" popupId="demo-popup-menu">
+              {(popupState) => (
+                <>
+                  <MoreVertIcon
+                    {...bindTrigger(popupState)}
+                    sx={{ cursor: "pointer" }}
+                  />
+                  <Menu {...bindMenu(popupState)}>
+                    <MenuItem onClick={popupState.close}>Change Email</MenuItem>
+                    <MenuItem onClick={popupState.close}>
+                      Change Password
+                    </MenuItem>
+                    <MenuItem onClick={popupState.close}>
+                      Delete Account
+                    </MenuItem>
+                  </Menu>
+                </>
+              )}
+            </PopupState>
+          </Box>
           <Stack display="flex" justifyContent="center" alignItems="center">
             <Avatar
               alt={userDetails?.name?.firstName}

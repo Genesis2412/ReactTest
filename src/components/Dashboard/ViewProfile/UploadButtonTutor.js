@@ -21,6 +21,7 @@ const UploadButtonTutor = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const { user } = useUserAuth();
+  const [viewUploadBtn, setViewUploadBtn] = useState(false);
 
   const Input = styled("input")({
     display: "none",
@@ -36,6 +37,9 @@ const UploadButtonTutor = () => {
   const handleChange = (e) => {
     e.preventDefault();
     setFile(e.target?.files?.[0]);
+    if (file) {
+      setViewUploadBtn(true);
+    }
   };
 
   const uploadProfilePic = () => {
@@ -63,6 +67,7 @@ const UploadButtonTutor = () => {
                       setSnackBarOpen(true);
                       setMessage("Profile Picture Uploaded Successfully");
                       setFile([]);
+                      setViewUploadBtn(false);
                       setLoading(false);
                     })
                     .catch((err) => {
@@ -174,25 +179,27 @@ const UploadButtonTutor = () => {
         </IconButton>
       </label>
 
-      <Button
-        sx={[
-          {
-            "&:hover": {
-              backgroundColor: "#c5c6c7",
-              color: "#0b0c10",
+      {viewUploadBtn === true && (
+        <Button
+          sx={[
+            {
+              "&:hover": {
+                backgroundColor: "#c5c6c7",
+                color: "#0b0c10",
+              },
+              backgroundColor: "#45a29e",
+              color: "#fff",
             },
-            backgroundColor: "#45a29e",
-            color: "#fff",
-          },
-        ]}
-        disabled={loading}
-        value="Upload"
-        onClick={() => {
-          uploadProfilePic();
-        }}
-      >
-        {loading ? <CircularProgress color="secondary" /> : "Upload"}
-      </Button>
+          ]}
+          disabled={loading}
+          value="Upload"
+          onClick={() => {
+            uploadProfilePic();
+          }}
+        >
+          {loading ? <CircularProgress color="secondary" /> : "Upload"}
+        </Button>
+      )}
 
       <Snackbar
         open={snackBarOpen}

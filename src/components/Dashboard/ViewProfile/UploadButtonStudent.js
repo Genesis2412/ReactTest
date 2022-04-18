@@ -21,6 +21,7 @@ const UploadButton = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const { user, userDetails } = useUserAuth();
+  const [viewUploadBtn, setViewUploadBtn] = useState(false);
 
   const Input = styled("input")({
     display: "none",
@@ -36,6 +37,9 @@ const UploadButton = () => {
   const handleChange = (e) => {
     e.preventDefault();
     setFile(e.target?.files?.[0]);
+    if (file) {
+      setViewUploadBtn(true);
+    }
   };
 
   const uploadProfilePic = () => {
@@ -63,6 +67,7 @@ const UploadButton = () => {
                       setSnackBarOpen(true);
                       setMessage("Profile Picture Uploaded Successfully");
                       setFile([]);
+                      setViewUploadBtn(false);
                       setLoading(false);
                     })
                     .catch((err) => {
@@ -149,6 +154,8 @@ const UploadButton = () => {
     }
   };
 
+  if (viewUploadBtn === true) {
+  }
   return (
     <>
       <label htmlFor="icon-button-file">
@@ -173,25 +180,27 @@ const UploadButton = () => {
         </IconButton>
       </label>
 
-      <Button
-        sx={[
-          {
-            "&:hover": {
-              backgroundColor: "#c5c6c7",
-              color: "#0b0c10",
+      {viewUploadBtn === true && (
+        <Button
+          sx={[
+            {
+              "&:hover": {
+                backgroundColor: "#c5c6c7",
+                color: "#0b0c10",
+              },
+              backgroundColor: "#45a29e",
+              color: "#fff",
             },
-            backgroundColor: "#45a29e",
-            color: "#fff",
-          },
-        ]}
-        disabled={loading}
-        value="Upload"
-        onClick={() => {
-          uploadProfilePic();
-        }}
-      >
-        {loading ? <CircularProgress color="secondary" /> : "Upload"}
-      </Button>
+          ]}
+          disabled={loading}
+          value="Upload"
+          onClick={() => {
+            uploadProfilePic();
+          }}
+        >
+          {loading ? <CircularProgress color="secondary" /> : "Upload"}
+        </Button>
+      )}
 
       <Snackbar
         open={snackBarOpen}
