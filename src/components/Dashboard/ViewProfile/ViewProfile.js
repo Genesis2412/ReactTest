@@ -203,7 +203,7 @@ const ViewProfile = () => {
     "Savanne",
   ];
 
-  const { user, verifyEmail, userDetails } = useUserAuth();
+  const { user, verifyEmail, userDetails, resetPassword } = useUserAuth();
   let userStorageDetails = localStorage.getItem("userStorageDetails");
   let localUserDetails = JSON.parse(userStorageDetails);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -224,6 +224,18 @@ const ViewProfile = () => {
     } catch (error) {
       console.log("An error occurred");
     }
+  };
+
+  const changePassword = async () => {
+    resetPassword(user.email)
+      .then(() => {
+        setSnackBarOpen(true);
+        setMessage("Password reset email sent!");
+      })
+      .catch((err) => {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      });
   };
 
   return (
@@ -296,7 +308,11 @@ const ViewProfile = () => {
                   />
                   <Menu {...bindMenu(popupState)}>
                     <MenuItem onClick={popupState.close}>Change Email</MenuItem>
-                    <MenuItem onClick={popupState.close}>
+                    <MenuItem
+                      onClick={() => {
+                        changePassword();
+                      }}
+                    >
                       Change Password
                     </MenuItem>
                     <MenuItem onClick={popupState.close}>
