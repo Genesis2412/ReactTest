@@ -15,7 +15,7 @@ import { Snackbar, IconButton, Button, CircularProgress } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
-const UploadButtonTutor = ({ userDetails }) => {
+const UploadButtonTutor = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [file, setFile] = useState([]);
   const [loading, setLoading] = useState(false);
