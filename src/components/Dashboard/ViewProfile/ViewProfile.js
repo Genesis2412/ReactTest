@@ -11,7 +11,7 @@ import {
   Stack,
 } from "@mui/material";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import UploadButton from "./UploadButton";
+import UploadButtonTutor from "./UploadButtonTutor";
 
 const ViewProfile = () => {
   const days = [];
@@ -198,9 +198,9 @@ const ViewProfile = () => {
     "Savanne",
   ];
 
-  const { user, verifyEmail } = useUserAuth();
+  const { user, verifyEmail, userDetails } = useUserAuth();
   let userStorageDetails = localStorage.getItem("userStorageDetails");
-  let userDetails = JSON.parse(userStorageDetails);
+  let localUserDetails = JSON.parse(userStorageDetails);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -223,7 +223,7 @@ const ViewProfile = () => {
 
   return (
     <>
-      {user.emailVerified === false && (
+      {user?.emailVerified === false && (
         <Box>
           <Paper
             sx={{
@@ -259,7 +259,7 @@ const ViewProfile = () => {
           </Paper>
         </Box>
       )}
-      {userDetails.profilePic === "" && (
+      {userDetails?.profilePic === "" && (
         <Box>
           <Paper
             sx={{
@@ -290,10 +290,14 @@ const ViewProfile = () => {
                 width: "25vh",
               }}
             />
-            <UploadButton userDetails={userDetails} />
+            {localUserDetails.accountType === "Tutor" ? (
+              <UploadButtonTutor userDetails={userDetails} />
+            ) : (
+              ""
+            )}
           </Stack>
 
-          {userDetails.accountType === "Tutor" ? (
+          {localUserDetails.accountType === "Tutor" ? (
             <TutorProfile
               days={days}
               months={months}
