@@ -88,7 +88,7 @@ const TutorProfile = (props) => {
       ),
   });
 
-  //   update tutor Profile
+  //   update student Profile
   const updateStudentProfile = async (values) => {
     const docRef = doc(db, "students", user.uid);
     await updateDoc(docRef, {

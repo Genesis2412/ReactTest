@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import UploadButtonTutor from "./UploadButtonTutor";
+import UploadButtonStudent from "./UploadButtonStudent";
 
 const ViewProfile = () => {
   const days = [];
@@ -291,9 +292,9 @@ const ViewProfile = () => {
               }}
             />
             {localUserDetails.accountType === "Tutor" ? (
-              <UploadButtonTutor userDetails={userDetails} />
+              <UploadButtonTutor />
             ) : (
-              ""
+              <UploadButtonStudent />
             )}
           </Stack>
 
