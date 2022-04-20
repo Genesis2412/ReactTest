@@ -125,9 +125,9 @@ const CreateClass = () => {
           const tutorsRef = collection(db, "createdClasses");
           setDoc(doc(tutorsRef, classId), {
             classCode: classId,
-            tutorUid: user?.uid,
             tutorFirstName: userDetails?.name?.firstName,
             tutorLastName: userDetails?.name?.lastName,
+            tutorEmail: userDetails?.email,
             tutorProfilePic: userDetails?.profilePic
               ? userDetails?.profilePic
               : "",
