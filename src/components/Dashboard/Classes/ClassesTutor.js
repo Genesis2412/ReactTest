@@ -7,7 +7,6 @@ import {
   CardActionArea,
   CardMedia,
   CardActions,
-  Button,
   Snackbar,
   Box,
   MenuItem,
@@ -157,9 +156,10 @@ const ClassesTutor = () => {
         where("classCode", "==", classCode)
       );
       const querySnapshot = await getDocs(q);
-      const query = doc(db, "tutors", user?.uid);
+      const deleteDoc = doc(db, "tutors", user?.uid);
       querySnapshot.forEach((doc) => {
-        updateDoc(query, {
+        console.log(doc.data());
+        updateDoc(deleteDoc, {
           grades: arrayRemove(doc.data().grade),
           subjects: arrayRemove(doc.data().subject),
         });
@@ -174,16 +174,15 @@ const ClassesTutor = () => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
       if (confirmAction) {
-        deleteSubmittedAssignments(classCode);
-        deleteAssignments(classCode);
-        deleteAnnouncements(classCode);
-        deleteJoinedClasses(classCode);
-        deleteClassProfile(classCode);
-        deleteDoc(doc(db, "createdClasses", classCode)).catch((err) => {
+        await deleteSubmittedAssignments(classCode);
+        await deleteAssignments(classCode);
+        await deleteAnnouncements(classCode);
+        await deleteJoinedClasses(classCode);
+        await deleteClassProfile(classCode);
+        await deleteDoc(doc(db, "createdClasses", classCode)).catch((err) => {
           setSnackBarOpen(true);
           setMessage("An error occurred, please try again");
         });
-
         setSnackBarOpen(true);
         setMessage("Deleted Successfully");
       }
