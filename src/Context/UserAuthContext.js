@@ -7,6 +7,9 @@ import {
   fetchSignInMethodsForEmail,
   signOut,
   sendEmailVerification,
+  deleteUser,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
 } from "firebase/auth";
 import { auth } from "../firebase-config";
 
@@ -42,6 +45,18 @@ export function UserAuthContextProvider({ children }) {
     return createUserWithEmailAndPassword(auth, email, password);
   }
 
+  function emailAuthProvider() {
+    return EmailAuthProvider;
+  }
+
+  function reAuthenticateUserWithCredential(user, credential) {
+    return reauthenticateWithCredential(user, credential);
+  }
+
+  function deleteAuthUser(user) {
+    return deleteUser(user);
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentuser) => {
       setUser(currentuser);
@@ -68,6 +83,9 @@ export function UserAuthContextProvider({ children }) {
         resetPassword,
         verifyEmail,
         checkSignIn,
+        emailAuthProvider,
+        reAuthenticateUserWithCredential,
+        deleteAuthUser,
       }}
     >
       {!loading && children}
