@@ -115,10 +115,12 @@ const CreateClass = () => {
           const tutorsRef = collection(db, "createdClasses");
           setDoc(doc(tutorsRef, classId), {
             classCode: classId,
-            userUid: user.uid,
-            firstName: userDetails.name.firstName,
-            lastName: userDetails.name.lastName,
-            profilePic: userDetails.profilePic ? userDetails.profilePic : "",
+            tutorUid: user?.uid,
+            tutorFirstName: userDetails?.name?.firstName,
+            tutorLastName: userDetails?.name?.lastName,
+            tutorProfilePic: userDetails?.profilePic
+              ? userDetails?.profilePic
+              : "",
             subject: subject,
             grade: grade,
           });
