@@ -54,7 +54,10 @@ const BookingStudent = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(collection(db, "bookings"), where("studentUid", "==", user.uid)),
+      query(
+        collection(db, "bookings"),
+        where("studentEmail", "==", userDetails?.email)
+      ),
       (querySnapshot) => {
         const bookingsData = querySnapshot.docs.map((doc) => ({
           ...doc.data(),

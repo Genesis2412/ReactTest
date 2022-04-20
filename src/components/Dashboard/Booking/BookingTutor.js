@@ -6,7 +6,6 @@ import {
   where,
   setDoc,
   doc,
-  deleteDoc,
   updateDoc,
   getDocs,
 } from "firebase/firestore";
@@ -20,15 +19,11 @@ import {
   TableRow,
   Paper,
   Button,
-  Typography,
-  Box,
   Snackbar,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
-import { Logo } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import { Image } from "./BookingElements";
 
 const BookingTutor = () => {
   const { user, userDetails } = useUserAuth();
@@ -123,17 +118,19 @@ const BookingTutor = () => {
         getClassCode(subject, grade).then((classCode) => {
           const joinedRef = collection(db, "joinedClasses");
           setDoc(doc(joinedRef), {
+            classCode: classCode,
+            subject: subject,
+            grade: grade,
+
             tutorTitle: userDetails?.title,
             tutorFirstName: userDetails?.name.firstName,
             tutorLastName: userDetails?.name.lastName,
             tutorProfilePic: userDetails?.profilePic,
-            tutorUid: user.uid,
-            subject: subject,
-            grade: grade,
-            studentEmail: studentEmail,
-            classCode: classCode,
+            tutorEmail: userDetails?.email,
+
             studentFirstName: studentFirstName,
             studentLastName: studentLastName,
+            studentEmail: studentEmail,
             studentProfilePic: studentProfilePic,
           });
           const bookingsRef = doc(db, "bookings", bookingId);
