@@ -26,84 +26,92 @@ const Tutors = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [hideTextField, setHideTextField] = useState(false);
 
-  if (profiles.length !== 0) {
-    return (
-      <>
-        <Typography textAlign={"right"}>
-          <Logo
-            to="/dashboard/classes"
-            style={{ textAlign: "left", color: "#2f3c7e", fontSize: 30 }}
-          >
-            Tutorhuntz
-          </Logo>
-        </Typography>
+  return (
+    <>
+      <Typography textAlign={"right"}>
+        <Logo
+          to="/dashboard/classes"
+          style={{ textAlign: "left", color: "#2f3c7e", fontSize: 30 }}
+        >
+          Tutorhuntz
+        </Logo>
+      </Typography>
 
-        {/* search */}
-        <Box sx={{ float: "right", mt: 1 }}>
-          {hideTextField && (
-            <TextField
-              size="small"
-              onChange={(event) => {
-                setSearchTerm(event.target.value);
-              }}
-            />
-          )}
-
-          <PersonSearchIcon
-            sx={{ cursor: "pointer", position: "relative", top: 6, ml: 1 }}
-            onClick={() => {
-              setHideTextField((prevCheck) => !prevCheck);
+      {/* search */}
+      <Box sx={{ float: "right", mt: 1 }}>
+        {hideTextField && (
+          <TextField
+            size="small"
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
             }}
           />
-        </Box>
+        )}
+
+        <PersonSearchIcon
+          sx={{ cursor: "pointer", position: "relative", top: 6, ml: 1 }}
+          onClick={() => {
+            setHideTextField((prevCheck) => !prevCheck);
+          }}
+        />
+      </Box>
+      <Grid container spacing={2}>
         {profiles
           .filter((profile) => {
-            // filter by subjects
-            for (let i = 0; i < profile.subjects.length; i++) {
-              if (
-                profile.subjects[i]
+            if (profile.subjects.length !== 0) {
+              // filter by subjects
+              for (let i = 0; i < profile.subjects.length; i++) {
+                if (
+                  profile.subjects[i]
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return profile;
+                }
+              }
+
+              // filter by grades
+              for (let i = 0; i < profile.grades.length; i++) {
+                if (
+                  (
+                    "grade " + profile.grades[i].toString().toLowerCase()
+                  ).includes(searchTerm.toLowerCase())
+                ) {
+                  return profile;
+                }
+              }
+
+              if (searchTerm === "") {
+                return profile;
+              } else if (
+                profile?.name?.firstName
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ) {
+                return profile;
+              } else if (
+                profile?.name?.lastName
                   .toLowerCase()
                   .includes(searchTerm.toLowerCase())
               ) {
                 return profile;
               }
             }
-
-            // filter by grades
-            for (let i = 0; i < profile.grades.length; i++) {
-              if (
-                (
-                  "grade " + profile.grades[i].toString().toLowerCase()
-                ).includes(searchTerm.toLowerCase())
-              ) {
-                return profile;
-              }
-            }
-
-            if (searchTerm === "") {
-              return profile;
-            } else if (
-              profile?.name?.firstName
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-            ) {
-              return profile;
-            } else if (
-              profile?.name?.lastName
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-            ) {
-              return profile;
-            }
           })
           .map((profile) => {
             return (
-              <Grid container spacing={2} key={profile.email}>
-                <Grid item xs={12} md={4}>
-                  <Link
-                    to="tutor"
-                    state={{
-                      email: profile.email,
+              <Grid item xs={12} md={4} key={profile.email}>
+                <Link
+                  to="tutor"
+                  state={{
+                    email: profile.email,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}
                   >
                     <Avatar
@@ -112,70 +120,60 @@ const Tutors = () => {
                       sx={{
                         width: 200,
                         height: 200,
-                        position: "relative",
-                        left: "25%",
                       }}
                     />
-                  </Link>
-                  <Box mt={1}>
-                    <Paper
-                      sx={{
-                        height: "100%",
-                        p: 2,
-                        boxShadow: 15,
-                        textAlign: "center",
-                        backgroundColor: "#1f2833",
-                        borderRadius: 3,
-                      }}
-                    >
-                      <Typography
-                        variant={"h3"}
-                        sx={{ fontSize: 18, color: "#c5c6c7" }}
-                      >
-                        {profile.title +
-                          " " +
-                          profile.name.firstName +
-                          " " +
-                          profile.name.lastName}
-                      </Typography>
-
-                      <Box>
-                        {profile.subjects.map((subject, index) => {
-                          return (
-                            <Typography
-                              sx={{ fontSize: 14, pl: 1, color: "#66fcf1" }}
-                              key={index++}
-                            >
-                              {subject}, Grade {profile.grades[index]}{" "}
-                            </Typography>
-                          );
-                        })}
-                      </Box>
-                    </Paper>
                   </Box>
-                </Grid>
+                </Link>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    mt: 1,
+                  }}
+                >
+                  <Paper
+                    sx={{
+                      height: "100%",
+                      p: 2,
+                      boxShadow: 15,
+                      textAlign: "center",
+                      backgroundColor: "#1f2833",
+                      borderRadius: 3,
+                      width: "70%",
+                    }}
+                  >
+                    <Typography
+                      variant={"h3"}
+                      sx={{ fontSize: 18, color: "#c5c6c7" }}
+                    >
+                      {profile.title +
+                        " " +
+                        profile.name.firstName +
+                        " " +
+                        profile.name.lastName}
+                    </Typography>
+
+                    <Box>
+                      {profile.subjects.map((subject, index) => {
+                        return (
+                          <Typography
+                            sx={{ fontSize: 14, pl: 1, color: "#66fcf1" }}
+                            key={index++}
+                          >
+                            {subject}, Grade {profile.grades[index]}{" "}
+                          </Typography>
+                        );
+                      })}
+                    </Box>
+                  </Paper>
+                </Box>
               </Grid>
             );
           })}
-      </>
-    );
-  } else
-    return (
-      <>
-        <Typography textAlign={"right"}>
-          <Logo
-            to="/dashboard/classes"
-            style={{ textAlign: "left", color: "#2f3c7e", fontSize: 30 }}
-          >
-            Tutorhuntz
-          </Logo>
-        </Typography>
-        <Box sx={{ textAlign: "center", mt: 5 }}>
-          <TutorProfileIcon alt="banner" src={NoTutorProfileIcon} />
-          <Typography>Hehe, Tutors coming soon!</Typography>
-        </Box>
-      </>
-    );
+      </Grid>
+    </>
+  );
 };
 
 export default Tutors;
