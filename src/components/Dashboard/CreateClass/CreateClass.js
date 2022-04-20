@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, Button, MenuItem, Modal, TextField, Alert } from "@mui/material";
+import {
+  Box,
+  Button,
+  MenuItem,
+  Modal,
+  TextField,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 import createClassIcon from "../../../images/createClassIcon.svg";
 import { Image } from "./FormElements";
 import { Formik, Form, Field } from "formik";
@@ -89,6 +97,7 @@ const CreateClass = () => {
   const { user, userDetails } = useUserAuth();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isSubmitting, setisSubmitting] = useState(false);
 
   // check if class already exists
   const readClass = async (subject, grade) => {
@@ -106,6 +115,7 @@ const CreateClass = () => {
   };
 
   const createClass = async (subject, grade) => {
+    setisSubmitting(true);
     setSuccess("");
     setError("");
     readClass(subject, grade).then(async (value) => {
@@ -130,14 +140,17 @@ const CreateClass = () => {
             grades: arrayUnion(grade),
           });
           setSuccess("Class Created");
-        } else setError("Class exists");
+          setisSubmitting(false);
+        } else {
+          setError("Class exists");
+          setisSubmitting(false);
+        }
       } catch (err) {
         setError("Class not created!");
+        setisSubmitting(false);
       }
     });
   };
-
-  const [isSubmitting, setisSubmitting] = useState(false);
 
   return (
     <>
@@ -202,9 +215,7 @@ const CreateClass = () => {
               grade: "",
             }}
             onSubmit={async (values) => {
-              setisSubmitting(true);
               createClass(values.subject, values.grade);
-              setisSubmitting(false);
             }}
           >
             {(formikProps) => (
@@ -257,7 +268,11 @@ const CreateClass = () => {
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  Create Class
+                  {isSubmitting ? (
+                    <CircularProgress color="secondary" />
+                  ) : (
+                    "Create Class"
+                  )}
                 </Button>
                 {error && <Alert severity="error">{error}</Alert>}
                 {success && <Alert severity="success">{success}</Alert>}
