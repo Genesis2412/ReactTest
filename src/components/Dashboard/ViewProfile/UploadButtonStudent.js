@@ -104,12 +104,12 @@ const UploadButton = () => {
     });
   };
 
-  //bookings(firstName, lastName where userId=user.uid)
+  //update bookings
   const updateBookings = async (url) => {
     const dataArray = [];
     const q = query(
       collection(db, "bookings"),
-      where("userId", "==", user.uid)
+      where("studentEmail", "==", userDetails?.email)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -117,18 +117,16 @@ const UploadButton = () => {
     });
     // updating
     if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "bookings", docId);
-          await updateDoc(docRef, {
-            studentProfilePic: url,
-          });
+      dataArray.map(async (docId) => {
+        const docRef = doc(db, "bookings", docId);
+        await updateDoc(docRef, {
+          studentProfilePic: url,
         });
-      }
+      });
     }
   };
 
-  //joinedClasses(studentFirstName, studentLastName where studentEmail)
+  //update joinedClasses
   const updateJoinedClasses = async (url) => {
     const dataArray = [];
     const q = query(
@@ -141,17 +139,12 @@ const UploadButton = () => {
       dataArray.push(doc.id);
     });
 
-    // updating
-    if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "joinedClasses", docId);
-          await updateDoc(docRef, {
-            studentProfilePic: url,
-          });
-        });
-      }
-    }
+    dataArray.map(async (docId) => {
+      const docRef = doc(db, "joinedClasses", docId);
+      await updateDoc(docRef, {
+        studentProfilePic: url,
+      });
+    });
   };
 
   if (viewUploadBtn === true) {
