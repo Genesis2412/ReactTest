@@ -44,7 +44,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ViewAssignmentsStudent from "./ViewAssignmentsStudent";
 
-const Assignments = () => {
+const CreateAssignments = () => {
   const [images, setImages] = useState([]);
   const [assignmentValue, setAssignmentValue] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -339,8 +339,8 @@ const Assignments = () => {
       if (response) {
         if (joinedStudents) {
           {
-            joinedStudents.map((joinedStudent) => {
-              setDoc(doc(collection(db, "submittedAssignments")), {
+            joinedStudents.map(async (joinedStudent) => {
+              await setDoc(doc(collection(db, "submittedAssignments")), {
                 classCode: classCode,
                 studentFirstName: joinedStudent?.studentFirstName,
                 studentLastName: joinedStudent?.studentLastName,
@@ -351,12 +351,10 @@ const Assignments = () => {
                 submittedTimestamp: "",
                 status: "Not Submitted",
                 marks: "",
-              })
-                .then(() => {})
-                .catch((err) => {
-                  setSnackBarOpen(true);
-                  setMessage("Students could not be added to assignment");
-                });
+              }).catch((err) => {
+                setSnackBarOpen(true);
+                setMessage("Students could not be added to assignment");
+              });
             });
           }
         }
@@ -616,4 +614,4 @@ const Assignments = () => {
   );
 };
 
-export default Assignments;
+export default CreateAssignments;

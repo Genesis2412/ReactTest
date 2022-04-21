@@ -4,7 +4,7 @@ import { Box, Paper, Typography, Grid } from "@mui/material";
 import ClassesDetailsBanner from "../../../images/ClassesDetailsBanner.jpg";
 import { NavLink, Routes, Route } from "react-router-dom";
 import Streams from "../Streams/Streams";
-import Assignments from "../Assignments/Assignments";
+import CreateAssignments from "../Assignments/CreateAssignments";
 import People from "../People/People";
 import { Image } from "./ClassesElements";
 import { Logo } from "../../GlobalStyles";
@@ -102,7 +102,7 @@ const ClassDetails = () => {
 
       <Routes>
         <Route path="streams" element={<Streams />} />
-        <Route path="assignments" element={<Assignments />} />
+        <Route path="assignments" element={<CreateAssignments />} />
         <Route path="people" element={<People />} />
       </Routes>
     </>
