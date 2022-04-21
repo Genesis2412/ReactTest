@@ -32,8 +32,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
-import { ClassesIcon } from "../../GlobalStyles";
-import NoClassIcon from "../../../images/NoClassIcon.svg";
 
 const ClassesTutor = () => {
   const { user, userDetails, classes, setClasses } = useUserAuth();
@@ -52,7 +50,7 @@ const ClassesTutor = () => {
       try {
         const data = query(
           collection(db, "createdClasses"),
-          where("tutorUid", "==", user.uid)
+          where("tutorEmail", "==", userDetails?.email)
         );
         const unsubscribe = onSnapshot(data, (querySnapshot) => {
           const newFiles = querySnapshot.docs.map((doc) => ({
@@ -149,6 +147,26 @@ const ClassesTutor = () => {
     }
   };
 
+  const deleteBookings = async () => {
+    try {
+      const data = [];
+      const q = query(
+        collection(db, "bookings"),
+        where("tutorEmail", "==", userDetails?.email)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        data.push(doc.id);
+      });
+      data.map(async (bookingsId) => {
+        await deleteDoc(doc(db, "bookings", bookingsId));
+      });
+    } catch (error) {
+      setSnackBarOpen(true);
+      setMessage("An error occurred, please try again");
+    }
+  };
+
   const deleteClassProfile = async (classCode) => {
     try {
       const q = query(
@@ -183,6 +201,7 @@ const ClassesTutor = () => {
           setSnackBarOpen(true);
           setMessage("An error occurred, please try again");
         });
+        await deleteBookings();
         setSnackBarOpen(true);
         setMessage("Deleted Successfully");
       }
