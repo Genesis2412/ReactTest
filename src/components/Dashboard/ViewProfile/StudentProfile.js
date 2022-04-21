@@ -116,7 +116,7 @@ const TutorProfile = (props) => {
     const dataArray = [];
     const q = query(
       collection(db, "bookings"),
-      where("userId", "==", user.uid)
+      where("studentEmail", "==", student?.email)
     );
 
     const querySnapshot = await getDocs(q);
@@ -126,15 +126,13 @@ const TutorProfile = (props) => {
 
     // updating
     if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "bookings", docId);
-          await updateDoc(docRef, {
-            firstName: values.firstName,
-            lastName: values.lastName,
-          });
+      dataArray.map(async (docId) => {
+        const docRef = doc(db, "bookings", docId);
+        await updateDoc(docRef, {
+          firstName: values.firstName,
+          lastName: values.lastName,
         });
-      }
+      });
     }
   };
 
@@ -143,7 +141,7 @@ const TutorProfile = (props) => {
     const dataArray = [];
     const q = query(
       collection(db, "joinedClasses"),
-      where("studentEmail", "==", student.email)
+      where("studentEmail", "==", student?.email)
     );
 
     const querySnapshot = await getDocs(q);
@@ -153,15 +151,13 @@ const TutorProfile = (props) => {
 
     // updating
     if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "joinedClasses", docId);
-          await updateDoc(docRef, {
-            studentFirstName: values.firstName,
-            studentLastName: values.lastName,
-          });
+      dataArray.map(async (docId) => {
+        const docRef = doc(db, "joinedClasses", docId);
+        await updateDoc(docRef, {
+          studentFirstName: values.firstName,
+          studentLastName: values.lastName,
         });
-      }
+      });
     }
   };
 
@@ -170,7 +166,7 @@ const TutorProfile = (props) => {
     const dataArray = [];
     const q = query(
       collection(db, "submittedAssignments"),
-      where("studentEmail", "==", student.email)
+      where("studentEmail", "==", student?.email)
     );
 
     const querySnapshot = await getDocs(q);
@@ -180,15 +176,13 @@ const TutorProfile = (props) => {
 
     // updating
     if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "submittedAssignments", docId);
-          await updateDoc(docRef, {
-            studentFirstName: values.firstName,
-            studentLastName: values.lastName,
-          });
+      dataArray.map(async (docId) => {
+        const docRef = doc(db, "submittedAssignments", docId);
+        await updateDoc(docRef, {
+          studentFirstName: values.firstName,
+          studentLastName: values.lastName,
         });
-      }
+      });
     }
   };
 

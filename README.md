@@ -21,10 +21,8 @@ yup
 
 firebase
 
-## position alert center modal for reset password
+## Getting problem when creating assignment and streams
 
-## modify email template
+### assignment - not adding in same folder and not creating submittedAssignments
 
-## check sameSite attribute problem - it can cause cross-site-scripting issues
-
-### additional number problems - getting null
+### streams - not adding in same folder
