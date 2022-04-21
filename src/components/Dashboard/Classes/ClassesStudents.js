@@ -5,19 +5,18 @@ import {
   Typography,
   CardContent,
   CardActionArea,
-  CardMedia,
   CardActions,
   Snackbar,
-  Box,
-  MenuItem,
   Menu,
+  MenuItem,
+  Box,
 } from "@mui/material";
+import { AvatarContainer } from "./ClassesElements";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import ChatIcon from "@mui/icons-material/Chat";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import ClassesBanner from "../../../images/ClassesBanner.jpg";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { db } from "../../../firebase-config";
 import {
@@ -28,12 +27,10 @@ import {
   doc,
   onSnapshot,
   getDocs,
-  arrayRemove,
-  updateDoc,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 
-const ClassesTutor = () => {
+const ClassesStudents = () => {
   const { user, userDetails, classes, setClasses } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -46,11 +43,11 @@ const ClassesTutor = () => {
   };
 
   useEffect(() => {
-    const getCreatedClasses = async () => {
+    const read = async () => {
       try {
         const data = query(
-          collection(db, "createdClasses"),
-          where("tutorEmail", "==", userDetails?.email)
+          collection(db, "joinedClasses"),
+          where("studentEmail", "==", userDetails?.email)
         );
         const unsubscribe = onSnapshot(data, (querySnapshot) => {
           const newFiles = querySnapshot.docs.map((doc) => ({
@@ -64,42 +61,23 @@ const ClassesTutor = () => {
         setMessage("An error occurred, please try again");
       }
     };
-    getCreatedClasses();
+    read();
   }, []);
-
-  const deleteAssignments = async (classCode) => {
-    const data = [];
-    try {
-      const q = query(
-        collection(db, "assignments"),
-        where("classCode", "==", classCode)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        data.push(doc.id);
-      });
-      data.map(async (classId) => {
-        await deleteDoc(doc(db, "assignments", classId));
-      });
-    } catch (error) {
-      setSnackBarOpen(true);
-      setMessage("An error occurred, please try again");
-    }
-  };
 
   const deleteSubmittedAssignments = async (classCode) => {
     const data = [];
     try {
       const q = query(
         collection(db, "submittedAssignments"),
-        where("classCode", "==", classCode)
+        where("classCode", "==", classCode),
+        where("studentEmail", "==", userDetails?.email)
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         data.push(doc.id);
       });
-      data.map(async (classId) => {
-        await deleteDoc(doc(db, "submittedAssignments", classId));
+      data.map(async (assignmentId) => {
+        await deleteDoc(doc(db, "submittedAssignments", assignmentId));
       });
     } catch (error) {
       setSnackBarOpen(true);
@@ -107,54 +85,12 @@ const ClassesTutor = () => {
     }
   };
 
-  const deleteAnnouncements = async (classCode) => {
-    const data = [];
-    try {
-      const q = query(
-        collection(db, "announcements"),
-        where("classCode", "==", classCode)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        data.push(doc.id);
-      });
-      data.map(async (classId) => {
-        await deleteDoc(doc(db, "announcements", classId));
-      });
-    } catch (error) {
-      setSnackBarOpen(true);
-      setMessage("An error occurred, please try again");
-    }
-  };
-
-  const deleteJoinedClasses = async (classCode) => {
-    try {
-      const data = [];
-      const q = query(
-        collection(db, "joinedClasses"),
-        where("classCode", "==", classCode)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        data.push(doc.id);
-      });
-      data.map(async (joinedClassesId) => {
-        await deleteDoc(doc(db, "joinedClasses", joinedClassesId));
-      });
-    } catch (error) {
-      setSnackBarOpen(true);
-      setMessage("An error occurred, please try again");
-    }
-  };
-
-  const deleteBookings = async (subject, grade) => {
+  const deleteBookings = async () => {
     try {
       const data = [];
       const q = query(
         collection(db, "bookings"),
-        where("tutorEmail", "==", userDetails?.email),
-        where("subject", "==", subject),
-        where("grade", "==", grade)
+        where("studentEmail", "==", userDetails?.email)
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
@@ -169,12 +105,20 @@ const ClassesTutor = () => {
     }
   };
 
-  const deleteClassProfile = async (subject, grade) => {
+  const deleteJoinedClasses = async (classCode) => {
     try {
-      const updateArray = doc(db, "tutors", user?.uid);
-      updateDoc(updateArray, {
-        grades: arrayRemove(grade),
-        subjects: arrayRemove(subject),
+      const data = [];
+      const q = query(
+        collection(db, "joinedClasses"),
+        where("classCode", "==", classCode),
+        where("studentEmail", "==", userDetails?.email)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        data.push(doc.id);
+      });
+      data.map(async (joinedClassesId) => {
+        await deleteDoc(doc(db, "joinedClasses", joinedClassesId));
       });
     } catch (error) {
       setSnackBarOpen(true);
@@ -182,20 +126,13 @@ const ClassesTutor = () => {
     }
   };
 
-  const handleDelete = async (classCode, subject, grade) => {
+  const handleDelete = async (classCode) => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
       if (confirmAction) {
         await deleteSubmittedAssignments(classCode);
-        await deleteAssignments(classCode);
-        await deleteAnnouncements(classCode);
+        await deleteBookings();
         await deleteJoinedClasses(classCode);
-        await deleteBookings(subject, grade);
-        await deleteClassProfile(subject, grade);
-        await deleteDoc(doc(db, "createdClasses", classCode)).catch((err) => {
-          setSnackBarOpen(true);
-          setMessage("An error occurred, please try again");
-        });
         setSnackBarOpen(true);
         setMessage("Deleted Successfully");
       }
@@ -228,27 +165,48 @@ const ClassesTutor = () => {
                     }}
                     style={{ color: "#000", textDecoration: "none" }}
                   >
-                    <CardMedia
-                      component="img"
-                      height="150"
-                      image={ClassesBanner}
-                      alt="picture"
-                    />
+                    <CardContent
+                      sx={{
+                        backgroundImage:
+                          "url(https://wallpaperaccess.com/full/187161.jpg)",
+                        backgroundPosition: "center",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover",
+                      }}
+                    >
+                      <AvatarContainer
+                        alt={showClass.tutorFirstName}
+                        src={showClass.tutorProfilePic}
+                      />
+                    </CardContent>
+
                     <CardContent sx={{ height: "15vh" }}>
                       <Typography gutterBottom variant="body1" component="div">
                         {showClass.subject}
                       </Typography>
                       <Typography
-                        variant="body1"
+                        gutterBottom
+                        variant="body2"
+                        component="div"
+                        sx={{ pt: 1, pl: 1 }}
+                      >
+                        Taught By:{" "}
+                        {" " +
+                          showClass.tutorFirstName +
+                          " " +
+                          showClass.tutorLastName}
+                      </Typography>
+                      <Typography
+                        variant="body2"
                         color="text.secondary"
-                        sx={{ fontSize: 15 }}
+                        sx={{ pt: 1, pl: 1 }}
                       >
                         Grade: {showClass.grade}
                       </Typography>
                       <Typography
-                        variant="h6"
+                        variant="body2"
                         color="text.secondary"
-                        sx={{ pt: 1, fontSize: 13 }}
+                        sx={{ pt: 1, pl: 1 }}
                       >
                         Class Code: {showClass.id}
                       </Typography>
@@ -309,11 +267,7 @@ const ClassesTutor = () => {
                             </MenuItem>
                             <MenuItem
                               onClick={() => {
-                                handleDelete(
-                                  showClass.classCode,
-                                  showClass.subject,
-                                  showClass.grade
-                                );
+                                handleDelete();
                               }}
                             >
                               <DeleteOutlineIcon
@@ -323,9 +277,7 @@ const ClassesTutor = () => {
                                   color: "red",
                                 }}
                               />
-                              <span style={{ color: "#0b0c10" }}>
-                                Delete Class
-                              </span>
+                              <span style={{ color: "#0b0c10" }}>Unenroll</span>
                             </MenuItem>
                           </Menu>
                         </>
@@ -349,4 +301,4 @@ const ClassesTutor = () => {
   );
 };
 
-export default ClassesTutor;
+export default ClassesStudents;
