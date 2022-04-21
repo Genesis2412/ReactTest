@@ -20,7 +20,7 @@ const UploadButtonTutor = () => {
   const [file, setFile] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const { user } = useUserAuth();
+  const { user, userDetails } = useUserAuth();
   const [viewUploadBtn, setViewUploadBtn] = useState(false);
 
   const Input = styled("input")({
@@ -47,7 +47,7 @@ const UploadButtonTutor = () => {
       setLoading(true);
       const storageRef = ref(
         storage,
-        "/ProfilePictures/" + user.uid + "/" + file.name
+        "/ProfilePictures/" + userDetails?.email + "/" + file.name
       );
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
@@ -58,35 +58,27 @@ const UploadButtonTutor = () => {
           setMessage("Failed to upload Profile Picture");
         },
         () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            updateTutorProfile(url).then(() => {
-              updateCreatedClasses(url)
-                .then(() => {
-                  updateJoinedClasses(url)
-                    .then(() => {
-                      setSnackBarOpen(true);
-                      setMessage("Profile Picture Uploaded Successfully");
-                      setFile([]);
-                      setViewUploadBtn(false);
-                      setLoading(false);
-                    })
-                    .catch((err) => {
-                      setSnackBarOpen(true);
-                      setMessage("Failed to upload Profile Picture");
-                      setLoading(false);
-                    })
-                    .catch((err) => {
-                      setSnackBarOpen(true);
-                      setMessage("Failed to upload Profile Picture");
-                      setLoading(false);
-                    });
-                })
-                .catch((err) => {
-                  setSnackBarOpen(true);
-                  setMessage("Failed to upload Profile Picture");
-                  setLoading(false);
-                });
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            await updateTutorProfile(url).catch((err) => {
+              setSnackBarOpen(true);
+              setMessage("Failed to upload Profile Picture");
+              setLoading(false);
             });
+
+            await updateCreatedClasses(url).catch((err) => {
+              setSnackBarOpen(true);
+              setMessage("Failed to upload Profile Picture");
+              setLoading(false);
+            });
+
+            await updateJoinedClasses(url).catch((err) => {
+              setSnackBarOpen(true);
+              setMessage("Failed to upload Profile Picture");
+              setLoading(false);
+            });
+            setSnackBarOpen(true);
+            setMessage("Profile Picture updated successfully");
+            setLoading(false);
           });
         }
       );
@@ -96,7 +88,6 @@ const UploadButtonTutor = () => {
     }
   };
 
-  // tutors
   //   update tutor Profile
   const updateTutorProfile = async (url) => {
     const docRef = doc(db, "tutors", user.uid);
@@ -104,12 +95,13 @@ const UploadButtonTutor = () => {
       profilePic: url,
     });
   };
-  // createdClasses
+
+  // update createdClasses
   const updateCreatedClasses = async (url) => {
     const dataArray = [];
     const q = query(
       collection(db, "createdClasses"),
-      where("userUid", "==", user.uid)
+      where("tutorEmail", "==", userDetails?.email)
     );
 
     const querySnapshot = await getDocs(q);
@@ -117,24 +109,20 @@ const UploadButtonTutor = () => {
       dataArray.push(doc.id);
     });
 
-    // updating
-    if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "createdClasses", docId);
-          await updateDoc(docRef, {
-            profilePic: url,
-          });
-        });
-      }
-    }
+    dataArray.map(async (createdClassesId) => {
+      const docRef = doc(db, "createdClasses", createdClassesId);
+      await updateDoc(docRef, {
+        tutorProfilePic: url,
+      });
+    });
   };
-  // joinedClasses
+
+  // update joinedClasses
   const updateJoinedClasses = async (url) => {
     const dataArray = [];
     const q = query(
       collection(db, "joinedClasses"),
-      where("userUid", "==", user.uid)
+      where("tutorEmail", "==", userDetails?.email)
     );
 
     const querySnapshot = await getDocs(q);
@@ -142,17 +130,12 @@ const UploadButtonTutor = () => {
       dataArray.push(doc.id);
     });
 
-    // updating
-    if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "joinedClasses", docId);
-          await updateDoc(docRef, {
-            profilePic: url,
-          });
-        });
-      }
-    }
+    dataArray.map(async (docId) => {
+      const docRef = doc(db, "joinedClasses", docId);
+      await updateDoc(docRef, {
+        tutorProfilePic: url,
+      });
+    });
   };
 
   return (
