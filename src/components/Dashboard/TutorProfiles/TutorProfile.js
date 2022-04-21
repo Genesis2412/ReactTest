@@ -23,8 +23,6 @@ import ChatIcon from "@mui/icons-material/Chat";
 import { Logo } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { Link } from "react-router-dom";
-import { TutorProfileIcon } from "../../GlobalStyles";
-import NoTutorProfileIcon from "../../../images/NoTutorProfileIcon.svg";
 
 const BookingOne = () => {
   const location = useLocation();
@@ -69,8 +67,8 @@ const BookingOne = () => {
   const checkBooking = async (tutorEmail, classSubject, classGrade) => {
     const q = query(
       collection(db, "bookings"),
-      where("userId", "==", user.uid),
       where("tutorEmail", "==", tutorEmail),
+      where("studentEmail", "==", userDetails?.email),
       where("subject", "==", classSubject),
       where("grade", "==", classGrade)
     );
@@ -85,7 +83,6 @@ const BookingOne = () => {
   };
 
   const addBooking = async (tutorEmail, classSubject, classGrade) => {
-    const d = new Date();
     let confirmAction = window.confirm(
       "Are you sure to do booking for " +
         "" +
@@ -95,16 +92,17 @@ const BookingOne = () => {
         "?"
     );
     if (confirmAction) {
-      checkBooking(tutorEmail, classSubject, classGrade).then((value) => {
+      checkBooking(tutorEmail, classSubject, classGrade).then(async (value) => {
         if (value === true) {
           try {
-            const docRef = addDoc(collection(db, "bookings"), {
-              tutorEmail: tutorEmail,
-              studentUid: user.uid,
+            await addDoc(collection(db, "bookings"), {
               subject: classSubject,
               grade: classGrade,
               dateOfBooking: serverTimestamp(),
               status: "Pending",
+
+              tutorEmail: tutorEmail,
+
               studentFirstName: userDetails?.name?.firstName,
               studentLastName: userDetails?.name?.lastName,
               studentEmail: userDetails?.email,
