@@ -14,11 +14,12 @@ import {
 } from "@mui/material";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import LockIcon from "@mui/icons-material/Lock";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import UploadButtonTutor from "./UploadButtonTutor";
 import UploadButtonStudent from "./UploadButtonStudent";
+import ChangeTutorEmail from "./ChangeTutorEmail";
+import ChangeStudentEmail from "./ChangeStudentEmail";
 import DeleteProfile from "./DeleteProfile";
 
 const ViewProfile = () => {
@@ -310,12 +311,11 @@ const ViewProfile = () => {
                     sx={{ cursor: "pointer" }}
                   />
                   <Menu {...bindMenu(popupState)}>
-                    <MenuItem onClick={popupState.close}>
-                      <AlternateEmailIcon
-                        sx={{ mr: 1, fontSize: 16, color: "#45a29e" }}
-                      />
-                      Change Email
-                    </MenuItem>
+                    {localUserDetails.accountType === "Tutor" ? (
+                      <ChangeTutorEmail />
+                    ) : (
+                      <ChangeStudentEmail />
+                    )}
                     <MenuItem
                       onClick={() => {
                         changePassword();
