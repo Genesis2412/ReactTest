@@ -4,13 +4,10 @@ import { Avatar } from "@mui/material";
 
 export const AvatarContainer = MaterialStyles(Avatar)`
   position: relative;
-  top: 25px;
-  left: 23%;
+  top: 25px;  
   width: 150px;
   height: 150px;
   @media screen and (max-width: 768px) {
-    
-    left: 25%;
     width: 120px;
     height: 120px;
   }

@@ -85,12 +85,14 @@ const ClassesStudents = () => {
     }
   };
 
-  const deleteBookings = async () => {
+  const deleteBookings = async (subject, grade) => {
     try {
       const data = [];
       const q = query(
         collection(db, "bookings"),
-        where("studentEmail", "==", userDetails?.email)
+        where("studentEmail", "==", userDetails?.email),
+        where("subject", "==", subject),
+        where("grade", "==", grade)
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
@@ -105,36 +107,20 @@ const ClassesStudents = () => {
     }
   };
 
-  const deleteJoinedClasses = async (classCode) => {
-    try {
-      const data = [];
-      const q = query(
-        collection(db, "joinedClasses"),
-        where("classCode", "==", classCode),
-        where("studentEmail", "==", userDetails?.email)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        data.push(doc.id);
-      });
-      data.map(async (joinedClassesId) => {
-        await deleteDoc(doc(db, "joinedClasses", joinedClassesId));
-      });
-    } catch (error) {
-      setSnackBarOpen(true);
-      setMessage("An error occurred, please try again");
-    }
-  };
-
-  const handleDelete = async (classCode) => {
+  const handleDelete = async (joinedClassesId, classCode, subject, grade) => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
       if (confirmAction) {
         await deleteSubmittedAssignments(classCode);
-        await deleteBookings();
-        await deleteJoinedClasses(classCode);
+        await deleteBookings(subject, grade);
+        await deleteDoc(doc(db, "joinedClasses", joinedClassesId)).catch(
+          (err) => {
+            setSnackBarOpen(true);
+            setMessage("An error occurred, please try again");
+          }
+        );
         setSnackBarOpen(true);
-        setMessage("Deleted Successfully");
+        setMessage("Unenrolled Successfully");
       }
     } catch (err) {
       setSnackBarOpen(true);
@@ -174,10 +160,18 @@ const ClassesStudents = () => {
                         backgroundSize: "cover",
                       }}
                     >
-                      <AvatarContainer
-                        alt={showClass.tutorFirstName}
-                        src={showClass.tutorProfilePic}
-                      />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <AvatarContainer
+                          alt={showClass.tutorFirstName}
+                          src={showClass.tutorProfilePic}
+                        />
+                      </Box>
                     </CardContent>
 
                     <CardContent sx={{ height: "15vh" }}>
@@ -208,7 +202,7 @@ const ClassesStudents = () => {
                         color="text.secondary"
                         sx={{ pt: 1, pl: 1 }}
                       >
-                        Class Code: {showClass.id}
+                        Class Code: {showClass.classCode}
                       </Typography>
                     </CardContent>
                   </Link>
@@ -267,7 +261,12 @@ const ClassesStudents = () => {
                             </MenuItem>
                             <MenuItem
                               onClick={() => {
-                                handleDelete();
+                                handleDelete(
+                                  showClass.id,
+                                  showClass.classCode,
+                                  showClass.subject,
+                                  showClass.grade
+                                );
                               }}
                             >
                               <DeleteOutlineIcon
