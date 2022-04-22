@@ -9,9 +9,14 @@ import {
   Snackbar,
   Grid,
   Typography,
+  Menu,
+  MenuItem,
 } from "@mui/material";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import { storage } from "../../../firebase-config";
 import {
   getDownloadURL,
@@ -52,6 +57,7 @@ const Streams = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showFiles, setShowFiles] = useState([]);
+  const [streamCode, setStreamCode] = useState("");
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -72,20 +78,34 @@ const Streams = () => {
   const handleUpload = async () => {
     if (announcementValue && images.length !== 0) {
       setLoading(true);
-
-      const docRef = await addDoc(collection(db, "announcements"), {
-        subject: classSubject,
-        grade: classGrade,
-        title: announcementValue,
-        classCode: classCode,
-      });
+      var docRef = "";
+      if (streamCode) {
+        docRef = await updateDoc(doc(db, "announcements", streamCode), {
+          title: announcementValue,
+        });
+      } else {
+        docRef = await addDoc(collection(db, "announcements"), {
+          subject: classSubject,
+          grade: classGrade,
+          title: announcementValue,
+          classCode: classCode,
+        });
+      }
 
       await Promise.all(
         images.map((image) => {
-          const storageRef = ref(
-            storage,
-            "streams/" + classCode + "/" + docRef.id + "/" + image.name
-          );
+          var storageRef = "";
+          if (streamCode) {
+            storageRef = ref(
+              storage,
+              "streams/" + classCode + "/" + streamCode + "/" + image.name
+            );
+          } else {
+            storageRef = ref(
+              storage,
+              "streams/" + classCode + "/" + docRef.id + "/" + image.name
+            );
+          }
 
           const uploadTask = uploadBytesResumable(storageRef, image);
 
@@ -105,11 +125,19 @@ const Streams = () => {
             () => {
               getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
                 try {
-                  await updateDoc(doc(db, "announcements", docRef.id), {
-                    fileName: arrayUnion(image.name),
-                    fileUrl: arrayUnion(url),
-                    timestamp: serverTimestamp(),
-                  });
+                  if (streamCode) {
+                    await updateDoc(doc(db, "announcements", streamCode), {
+                      fileName: arrayUnion(image.name),
+                      fileUrl: arrayUnion(url),
+                      timestamp: serverTimestamp(),
+                    });
+                  } else {
+                    await updateDoc(doc(db, "announcements", docRef.id), {
+                      fileName: arrayUnion(image.name),
+                      fileUrl: arrayUnion(url),
+                      timestamp: serverTimestamp(),
+                    });
+                  }
                 } catch (error) {
                   setSnackBarOpen(true);
                   setMessage("An error occurred, please try again");
@@ -122,20 +150,31 @@ const Streams = () => {
       );
       fileInputRef.current.value = "";
       setAnnouncementValue("");
+      setStreamCode("");
       setImages([]);
       setLoading(false);
     } else if (announcementValue && images.length === 0) {
       try {
-        await setDoc(doc(collection(db, "announcements")), {
-          subject: classSubject,
-          grade: classGrade,
-          classCode: classCode,
-          title: announcementValue,
-          timestamp: serverTimestamp(),
-        });
+        if (streamCode) {
+          docRef = await updateDoc(doc(db, "announcements", streamCode), {
+            title: announcementValue,
+          });
+        } else {
+          await setDoc(doc(collection(db, "announcements")), {
+            subject: classSubject,
+            grade: classGrade,
+            classCode: classCode,
+            title: announcementValue,
+            timestamp: serverTimestamp(),
+            fileName: [],
+            fileUrl: [],
+          });
+        }
+
         setSnackBarOpen(true);
         setMessage("Stream created successfully");
         setAnnouncementValue("");
+        setStreamCode("");
         setLoading(false);
       } catch (error) {
         setSnackBarOpen(true);
@@ -201,6 +240,18 @@ const Streams = () => {
     }
   };
 
+  // updateStream
+  const updateStream = async (streamId, title) => {
+    let confirmAction = window.confirm("Are you sure to update " + title);
+
+    if (confirmAction) {
+      setSnackBarOpen(true);
+      setMessage("Update in form");
+      setAnnouncementValue(title);
+      setStreamCode(streamId);
+    }
+  };
+
   useEffect(() => {
     const q = query(
       collection(db, "announcements"),
@@ -224,6 +275,7 @@ const Streams = () => {
             <Box>
               <TextField
                 fullWidth
+                multiline
                 label="Create Stream"
                 sx={{ mb: 1 }}
                 value={announcementValue}
@@ -280,16 +332,57 @@ const Streams = () => {
                   >
                     <h5 style={{ flex: 1 }}>{showFile.title}</h5>
                     {userDetails?.accountType === "Tutor" && (
-                      <CloseIcon
-                        sx={{ color: "#870000", cursor: "pointer" }}
-                        onClick={() => {
-                          handleDeleteStream(
-                            showFile.id,
-                            showFile.title,
-                            showFile.fileName
-                          );
-                        }}
-                      />
+                      <Box>
+                        <PopupState variant="popover" popupId="demo-popup-menu">
+                          {(popupState) => (
+                            <>
+                              <MoreVertIcon
+                                {...bindTrigger(popupState)}
+                                sx={{ cursor: "pointer", color: "#1f2833" }}
+                              />
+                              <Menu {...bindMenu(popupState)}>
+                                <MenuItem
+                                  onClick={() => {
+                                    updateStream(showFile.id, showFile.title);
+                                  }}
+                                >
+                                  <ChangeCircleIcon
+                                    sx={{
+                                      fontSize: "20px",
+                                      mr: 1,
+                                      color: "#45a29e",
+                                    }}
+                                  />
+                                  <span style={{ color: "#0b0c10" }}>
+                                    Update Stream
+                                  </span>
+                                </MenuItem>
+
+                                <MenuItem
+                                  onClick={() => {
+                                    handleDeleteStream(
+                                      showFile.id,
+                                      showFile.title,
+                                      showFile.fileName
+                                    );
+                                  }}
+                                >
+                                  <CloseIcon
+                                    sx={{
+                                      fontSize: "20px",
+                                      mr: 1,
+                                      color: "red",
+                                    }}
+                                  />
+                                  <span style={{ color: "#0b0c10" }}>
+                                    Delete Stream
+                                  </span>
+                                </MenuItem>
+                              </Menu>
+                            </>
+                          )}
+                        </PopupState>
+                      </Box>
                     )}
                   </Box>
                 </Paper>
