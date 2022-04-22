@@ -26,7 +26,7 @@ import {
   updateEmail,
 } from "firebase/auth";
 
-const ChangeTutorEmail = () => {
+const ChangeStudentEmail = () => {
   const { user, userDetails } = useUserAuth();
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -43,7 +43,8 @@ const ChangeTutorEmail = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "50%",
-    bgcolor: "#fff",
+    bgcolor: "rgba(255, 255, 255, 0.8)",
+    border: "1px solid rgba(255, 255, 255, 0.3)",
     p: 4,
     borderRadius: 2,
     textAlign: "center",
@@ -74,9 +75,9 @@ const ChangeTutorEmail = () => {
           const credential = EmailAuthProvider.credential(user.email, password);
           await reauthenticateWithCredential(user, credential)
             .then(async () => {
+              await updateSubmittedAssignments(email);
               await updateBookings(email);
               await updateJoinedClasses(email);
-              await updateCreatedClasses(email);
               await updateProfile(email);
               await updateEmail(user, email)
                 .then(() => {
@@ -122,12 +123,32 @@ const ChangeTutorEmail = () => {
     }
   };
 
+  // updateSubmittedAssignments
+  const updateSubmittedAssignments = async (newEmail) => {
+    const dataArray = [];
+    const q = query(
+      collection(db, "submittedAssignments"),
+      where("studentEmail", "==", userDetails?.email)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      dataArray.push(doc.id);
+    });
+
+    dataArray.map(async (values) => {
+      const submittedRef = doc(db, "submittedAssignments", values);
+      await updateDoc(submittedRef, {
+        studentEmail: newEmail,
+      });
+    });
+  };
+
   // updateBookings
   const updateBookings = async (newEmail) => {
     const dataArray = [];
     const q = query(
       collection(db, "bookings"),
-      where("tutorEmail", "==", userDetails?.email)
+      where("studentEmail", "==", userDetails?.email)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -137,27 +158,7 @@ const ChangeTutorEmail = () => {
     dataArray.map(async (values) => {
       const bookingRef = doc(db, "bookings", values);
       await updateDoc(bookingRef, {
-        tutorEmail: newEmail,
-      });
-    });
-  };
-
-  // updateCreatedClasses
-  const updateCreatedClasses = async (newEmail) => {
-    const dataArray = [];
-    const q = query(
-      collection(db, "createdClasses"),
-      where("tutorEmail", "==", userDetails?.email)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      dataArray.push(doc.id);
-    });
-
-    dataArray.map(async (values) => {
-      const classesRef = doc(db, "createdClasses", values);
-      await updateDoc(classesRef, {
-        tutorEmail: newEmail,
+        studentEmail: newEmail,
       });
     });
   };
@@ -167,7 +168,7 @@ const ChangeTutorEmail = () => {
     const dataArray = [];
     const q = query(
       collection(db, "joinedClasses"),
-      where("tutorEmail", "==", userDetails?.email)
+      where("studentEmail", "==", userDetails?.email)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -177,15 +178,15 @@ const ChangeTutorEmail = () => {
     dataArray.map(async (values) => {
       const joinedRef = doc(db, "joinedClasses", values);
       await updateDoc(joinedRef, {
-        tutorEmail: newEmail,
+        studentEmail: newEmail,
       });
     });
   };
 
   // updateProfile
   const updateProfile = async (newEmail) => {
-    const profileRef = doc(db, "tutors", user?.uid);
-    await updateDoc(profileRef, {
+    const classesRef = doc(db, "students", user?.uid);
+    await updateDoc(classesRef, {
       email: newEmail,
     });
   };
@@ -288,4 +289,4 @@ const ChangeTutorEmail = () => {
   );
 };
 
-export default ChangeTutorEmail;
+export default ChangeStudentEmail;
