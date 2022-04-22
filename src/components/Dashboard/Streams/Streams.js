@@ -42,6 +42,9 @@ import {
 } from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ShowStreamsIcon from "./ShowStreamsIcon";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import ReactHtmlParser from "react-html-parser";
 
 const Streams = () => {
   const location = useLocation();
@@ -189,8 +192,8 @@ const Streams = () => {
   };
 
   // Delete a stream
-  const handleDeleteStream = async (streamId, streamName, fileName) => {
-    let confirmAction = window.confirm("Are you sure to delete " + streamName);
+  const handleDeleteStream = async (streamId, fileName) => {
+    let confirmAction = window.confirm("Are you sure to delete?");
     if (confirmAction) {
       try {
         fileName.map(async (file) => {
@@ -214,7 +217,7 @@ const Streams = () => {
   // Delete one material in a stream
   const handleObjectDelete = async (streamId, title, fileName, fileUrl) => {
     let confirmAction = window.confirm(
-      "Are you sure to delete " + fileName + " from " + title
+      "Are you sure to delete " + fileName + " ?"
     );
 
     if (confirmAction) {
@@ -242,7 +245,7 @@ const Streams = () => {
 
   // updateStream
   const updateStream = async (streamId, title) => {
-    let confirmAction = window.confirm("Are you sure to update " + title);
+    let confirmAction = window.confirm("Are you sure to update?");
 
     if (confirmAction) {
       setSnackBarOpen(true);
@@ -267,20 +270,26 @@ const Streams = () => {
     });
   }, []);
 
+  console.log(announcementValue);
+
   return (
     <>
       {userDetails?.accountType === "Tutor" && (
         <Box sx={{ boxShadow: 5, mt: 3, p: 2 }}>
           <Paper>
             <Box>
-              <TextField
-                fullWidth
-                multiline
-                label="Create Stream"
-                sx={{ mb: 1 }}
-                value={announcementValue}
-                onChange={(e) => setAnnouncementValue(e.target.value)}
+              <CKEditor
+                editor={ClassicEditor}
+                config={{
+                  removePlugins: ["EasyImage", "ImageUpload", "MediaEmbed"],
+                }}
+                data={announcementValue}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setAnnouncementValue(data);
+                }}
               />
+
               <input
                 multiple
                 type="file"
@@ -330,7 +339,9 @@ const Streams = () => {
                       display: "flex",
                     }}
                   >
-                    <h5 style={{ flex: 1 }}>{showFile.title}</h5>
+                    <h5 style={{ flex: 1 }}>
+                      {ReactHtmlParser(showFile.title)}
+                    </h5>
                     {userDetails?.accountType === "Tutor" && (
                       <Box>
                         <PopupState variant="popover" popupId="demo-popup-menu">
@@ -362,7 +373,6 @@ const Streams = () => {
                                   onClick={() => {
                                     handleDeleteStream(
                                       showFile.id,
-                                      showFile.title,
                                       showFile.fileName
                                     );
                                   }}
