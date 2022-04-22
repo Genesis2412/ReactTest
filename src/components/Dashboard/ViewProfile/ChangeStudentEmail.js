@@ -209,7 +209,7 @@ const ChangeStudentEmail = () => {
             <Typography
               sx={{
                 textAlign: "center",
-                fontSize: 18,
+                fontSize: 16,
               }}
             >
               Please enter your Password and your new Email
@@ -263,8 +263,9 @@ const ChangeStudentEmail = () => {
                       backgroundColor: "#c5c6c7",
                       color: "#0b0c10",
                     },
-                    backgroundColor: "#FF4747",
-                    color: "#fff",
+
+                    border: "2px solid #45a29e",
+                    color: "#0b0c10",
                     mt: 1,
                   },
                 ]}

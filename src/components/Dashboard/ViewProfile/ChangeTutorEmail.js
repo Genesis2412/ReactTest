@@ -43,7 +43,7 @@ const ChangeTutorEmail = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "50%",
-    bgcolor: "#fff",
+    bgcolor: "rgba(255, 255, 255, 0.8)",
     p: 4,
     borderRadius: 2,
     textAlign: "center",
@@ -208,7 +208,7 @@ const ChangeTutorEmail = () => {
             <Typography
               sx={{
                 textAlign: "center",
-                fontSize: 18,
+                fontSize: 16,
               }}
             >
               Please enter your Password and your new Email
@@ -262,8 +262,9 @@ const ChangeTutorEmail = () => {
                       backgroundColor: "#c5c6c7",
                       color: "#0b0c10",
                     },
-                    backgroundColor: "#FF4747",
-                    color: "#fff",
+
+                    border: "2px solid #45a29e",
+                    color: "#0b0c10",
                     mt: 1,
                   },
                 ]}
