@@ -21,14 +21,21 @@ import {
   onSnapshot,
   getDocs,
 } from "firebase/firestore";
-import { EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import {
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+  deleteUser,
+} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 const DeleteTutorProfile = () => {
-  const { userDetails, user, deleteAuthUser } = useUserAuth();
-  const [open, setOpen] = React.useState(false);
+  const { userDetails, user } = useUserAuth();
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setPassword("");
+  };
   const [password, setPassword] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -59,56 +66,139 @@ const DeleteTutorProfile = () => {
   };
 
   const handleDelete = async () => {
-    deleteAnnouncements();
+    setLoading(true);
     if (password !== "") {
       const credential = EmailAuthProvider.credential(user.email, password);
       await reauthenticateWithCredential(user, credential)
-        .then(() => {
-          // deleteSubmittedAssignments();
-          // deleteAssignments();
-          deleteAnnouncements();
-          // deleteBookings();
-          // deleteJoinedClasses();
-          // deleteCreatedClasses();
+        .then(async () => {
+          await deleteSubmittedAssignments()
+            .then(async () => {
+              await deleteAssignments();
+            })
+            .then(async () => {
+              await deleteAnnouncements();
+            })
+            .then(async () => {
+              await deleteBookings();
+            })
+            .then(async () => {
+              await deleteJoinedClasses();
+            })
+            .then(async () => {
+              await deleteCreatedClasses();
+            })
+            .then(async () => {
+              await deleteDoc(doc(db, "tutors", user?.uid))
+                .then(async () => {
+                  await deleteUser(user).then(() => {
+                    navigate("/");
+                  });
+                })
+                .catch((err) => {
+                  setSnackBarOpen(true);
+                  setMessage("An error occurred, please try again");
+                  setLoading(false);
+                });
+            });
         })
         .catch((err) => {
           if (err.message.includes("auth/wrong-password")) {
+            setSnackBarOpen(true);
             setMessage("Incorrect Password!");
+            setLoading(false);
           }
-          setSnackBarOpen(true);
         });
     } else {
       setSnackBarOpen(true);
       setMessage("Please, enter your Email and Password");
+      setLoading(false);
     }
   };
 
-  const deleteTutorProfile = async () => {
-    deleteDoc(doc(db, "tutors", user.uid)).catch((err) => {
-      setSnackBarOpen(true);
-      setMessage("An error occured, please try again");
-      return;
-    });
-  };
-
-  // delete createdClasses
-  const deleteCreatedClasses = async () => {
+  // delete submittedAssignments
+  const deleteSubmittedAssignments = async () => {
     const dataArray = [];
+    const newArray = [];
     const q = query(
       collection(db, "createdClasses"),
-      where("userUid", "==", user?.uid)
+      where("tutorEmail", "==", userDetails?.email)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       dataArray.push(doc.id);
     });
 
-    dataArray.map((values) => {
-      return deleteDoc(doc(db, "createdClasses", values)).catch((err) => {
-        setSnackBarOpen(true);
-        setMessage("An error occured, please try again");
-        return;
+    for await (const data of dataArray) {
+      const q = query(
+        collection(db, "submittedAssignments"),
+        where("classCode", "==", data)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (doc) => {
+        newArray.push(doc.id);
       });
+    }
+
+    newArray.map((values) => {
+      return deleteDoc(doc(db, "submittedAssignments", values));
+    });
+  };
+
+  // delete Assignments
+  const deleteAssignments = async () => {
+    const dataArray = [];
+    const newArray = [];
+    const q = query(
+      collection(db, "createdClasses"),
+      where("tutorEmail", "==", userDetails?.email)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      dataArray.push(doc.id);
+    });
+
+    for await (const data of dataArray) {
+      const q = query(
+        collection(db, "assignments"),
+        where("classCode", "==", data)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (doc) => {
+        newArray.push(doc.id);
+      });
+    }
+
+    newArray.map((values) => {
+      return deleteDoc(doc(db, "assignments", values));
+    });
+  };
+
+  // delete Announcements
+  const deleteAnnouncements = async () => {
+    const dataArray = [];
+    const newArray = [];
+    const q = query(
+      collection(db, "createdClasses"),
+      where("tutorEmail", "==", userDetails?.email)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      dataArray.push(doc.id);
+    });
+
+    for await (const data of dataArray) {
+      const q = query(
+        collection(db, "announcements"),
+        where("classCode", "==", data)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(async (doc) => {
+        newArray.push(doc.id);
+      });
+    }
+
+    newArray.map((values) => {
+      return deleteDoc(doc(db, "announcements", values));
     });
   };
 
@@ -125,11 +215,7 @@ const DeleteTutorProfile = () => {
     });
 
     dataArray.map((values) => {
-      return deleteDoc(doc(db, "bookings", values)).catch((err) => {
-        setSnackBarOpen(true);
-        setMessage("An error occured, please try again");
-        return;
-      });
+      return deleteDoc(doc(db, "bookings", values));
     });
   };
 
@@ -138,7 +224,7 @@ const DeleteTutorProfile = () => {
     const dataArray = [];
     const q = query(
       collection(db, "joinedClasses"),
-      where("userUid", "==", user?.uid)
+      where("tutorEmail", "==", userDetails?.email)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -146,86 +232,24 @@ const DeleteTutorProfile = () => {
     });
 
     dataArray.map((values) => {
-      return deleteDoc(doc(db, "joinedClasses", values)).catch((err) => {
-        setSnackBarOpen(true);
-        setMessage("An error occured, please try again");
-        return;
-      });
+      return deleteDoc(doc(db, "joinedClasses", values));
     });
   };
 
-  // delete announcements
-  const deleteAnnouncements = async () => {
-    const classCodeArray = [];
+  // delete createdClasses
+  const deleteCreatedClasses = async () => {
     const dataArray = [];
     const q = query(
       collection(db, "createdClasses"),
-      where("userUid", "==", user.uid)
+      where("tutorEmail", "==", userDetails?.email)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      classCodeArray.push(doc.data().classCode);
-    });
-
-    classCodeArray.map(async (values) => {
-      const q = query(
-        collection(db, "announcements"),
-        where("classCode", "==", values)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        dataArray.push(doc.id);
-      });
-    });
-
-    // datasArray.map(async (value) => {
-    // return deleteDoc(doc(db, "announcements", values)).catch((err) => {
-    //   setSnackBarOpen(true);
-    //   setMessage("An error occured, please try again");
-    //   return;
-    // });
-    // });
-  };
-
-  // delete announcements
-  const deleteAssignments = async () => {
-    const dataArray = [];
-    const q = query(
-      collection(db, "createdClasses"),
-      where("userUid", "==", user.uid)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      dataArray.push(doc.data().classCode);
+      dataArray.push(doc.id);
     });
 
     dataArray.map((values) => {
-      return deleteDoc(doc(db, "assignments", values)).catch((err) => {
-        setSnackBarOpen(true);
-        setMessage("An error occured, please try again");
-        return;
-      });
-    });
-  };
-
-  // delete announcements
-  const deleteSubmittedAssignments = async () => {
-    const dataArray = [];
-    const q = query(
-      collection(db, "createdClasses"),
-      where("userUid", "==", user.uid)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      dataArray.push(doc.data().classCode);
-    });
-
-    dataArray.map((values) => {
-      return deleteDoc(doc(db, "submittedAssignments", values)).catch((err) => {
-        setSnackBarOpen(true);
-        setMessage("An error occured, please try again");
-        return;
-      });
+      return deleteDoc(doc(db, "createdClasses", values));
     });
   };
 
@@ -293,10 +317,9 @@ const DeleteTutorProfile = () => {
                   {
                     "&:hover": {
                       backgroundColor: "#c5c6c7",
-                      color: "#0b0c10",
                     },
-                    backgroundColor: "#FF4747",
-                    color: "#fff",
+                    border: "2px solid #45a29e",
+                    color: "#0b0c10",
                     mt: 1,
                   },
                 ]}
