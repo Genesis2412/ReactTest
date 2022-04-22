@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Box,
@@ -7,8 +7,6 @@ import {
   Button,
   LinearProgress,
   Snackbar,
-  Grid,
-  Typography,
 } from "@mui/material";
 import { storage } from "../../../firebase-config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -21,12 +19,9 @@ import {
   arrayUnion,
   addDoc,
   serverTimestamp,
-  query,
-  where,
-  onSnapshot,
 } from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import ShowStreamsIcon from "./ShowStreamsIcon";
+import ViewStreams from "./ViewStreams";
 
 const Streams = () => {
   const location = useLocation();
