@@ -13,11 +13,6 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 
-import ImageIcon from "../../images/ImageIcon.jpg";
-import PdfIcon from "../../images/PdfIcon.jpg";
-import SheetIcon from "../../images/SheetIcon.jpg";
-import VideoIcon from "../../images/VideoIcon.jpg";
-
 const Read = () => {
   const title = "Lecture 3";
 
@@ -61,24 +56,7 @@ const Read = () => {
 
   const type = "sheet";
 
-  return (
-    <>
-      {/* <button onClick={createOne}>CreateOne</button> */}
-      {/* <button onClick={createAll}>ReadOne</button> */}
-      {type.includes("image") && (
-        <img src={ImageIcon} alt="thumbnail" height={40} />
-      )}
-      {type.includes("video") && (
-        <img src={VideoIcon} alt="thumbnail" height={40} />
-      )}
-      {type.includes("sheet") && (
-        <img src={SheetIcon} alt="thumbnail" height={40} />
-      )}
-      {type.includes("pdf") && (
-        <img src={PdfIcon} alt="thumbnail" height={40} />
-      )}
-    </>
-  );
+  return <></>;
 };
 
 export default Read;

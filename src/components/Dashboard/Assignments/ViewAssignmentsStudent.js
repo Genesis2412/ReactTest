@@ -32,14 +32,14 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import ImageIcon from "../../../images/ImageIcon.jpg";
-import VideoIcon from "../../../images/VideoIcon.jpg";
-import SheetIcon from "../../../images/SheetIcon.jpg";
-import PdfIcon from "../../../images/PdfIcon.jpg";
-import TextIcon from "../../../images/TextIcon.jpg";
-import WordIcon from "../../../images/WordIcon.jpg";
-import PowerPointIcon from "../../../images/PowerPointIcon.jpg";
-import MusicIcon from "../../../images/MusicIcon.jpg";
+import ImageIcon from "../../../images/StreamIcons/ImageIcon.png";
+import VideoIcon from "../../../images/StreamIcons/VideoIcon.png";
+import SheetIcon from "../../../images/StreamIcons/ExcelIcon.png";
+import PdfIcon from "../../../images/StreamIcons/PdfIcon.png";
+import TextIcon from "../../../images/StreamIcons/TextIcon.png";
+import WordIcon from "../../../images/StreamIcons/WordIcon.png";
+import PowerPointIcon from "../../../images/StreamIcons/PowerPointIcon.png";
+import MusicIcon from "../../../images/StreamIcons/MusicIcon.png";
 import NoAssignmentsIcon from "../../../images/NoAssignmentsIcon.svg";
 import { AssignmentIcon } from "../../GlobalStyles";
 
