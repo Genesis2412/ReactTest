@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Box,
@@ -7,6 +7,8 @@ import {
   Button,
   LinearProgress,
   Snackbar,
+  Grid,
+  Typography,
 } from "@mui/material";
 import { storage } from "../../../firebase-config";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
@@ -19,9 +21,12 @@ import {
   arrayUnion,
   addDoc,
   serverTimestamp,
+  query,
+  where,
+  onSnapshot,
 } from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import ShowStreams from "./ShowStreams";
+import ShowStreamsIcon from "./ShowStreamsIcon";
 
 const Streams = () => {
   const location = useLocation();
@@ -36,6 +41,7 @@ const Streams = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showFiles, setShowFiles] = useState([]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -107,6 +113,7 @@ const Streams = () => {
       setSnackBarOpen(true);
       setMessage("Stream created successfully");
       setAnnouncementValue("");
+      setImages([]);
       setLoading(false);
     } else if (announcementValue && images.length === 0) {
       try {
@@ -131,6 +138,20 @@ const Streams = () => {
       return;
     }
   };
+
+  useEffect(() => {
+    const q = query(
+      collection(db, "announcements"),
+      where("classCode", "==", classCode)
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const newFiles = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setShowFiles(newFiles);
+    });
+  }, []);
 
   return (
     <>
@@ -167,6 +188,7 @@ const Streams = () => {
               },
             ]}
             onClick={handleUpload}
+            disabled={loading}
           >
             Create
           </Button>
@@ -179,7 +201,58 @@ const Streams = () => {
         </Box>
       )}
 
-      <ShowStreams classCode={classCode} />
+      {showFiles.map((showFile, key) => {
+        return (
+          <Box sx={{ boxShadow: 5, mt: 5 }} key={key}>
+            <Paper>
+              <Box>
+                <Paper>
+                  <Box
+                    fullWidth
+                    sx={{
+                      p: 1,
+                      backgroundColor: "#c5c6c7",
+                      display: "flex",
+                    }}
+                  >
+                    <h5 style={{ flex: 1 }}>{showFile?.title}</h5>
+                    {/* Delete Stream */}
+                  </Box>
+                </Paper>
+              </Box>
+              <Grid container spacing={2} sx={{ p: 2 }}>
+                {showFile.fileName.map((showFilesName, index) => {
+                  return (
+                    <Grid item md={3} xs={12} key={index}>
+                      <Box
+                        sx={{
+                          boxShadow: 1,
+                          textAlign: "center",
+                        }}
+                      >
+                        <Paper>
+                          {/* button deleteOne */}
+                          <a
+                            href={showFile.fileUrl[index]}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ textDecoration: "none", color: "#000" }}
+                          >
+                            <Box p={1}>
+                              <ShowStreamsIcon fileName={showFilesName} />
+                              <Typography>{showFilesName}</Typography>
+                            </Box>
+                          </a>
+                        </Paper>
+                      </Box>
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </Paper>
+          </Box>
+        );
+      })}
 
       <Snackbar
         open={snackBarOpen}
