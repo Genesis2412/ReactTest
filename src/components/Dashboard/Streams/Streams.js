@@ -268,8 +268,6 @@ const Streams = () => {
     });
   }, []);
 
-  console.log();
-
   return (
     <>
       {userDetails?.accountType === "Tutor" && (
