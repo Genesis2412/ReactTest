@@ -42,8 +42,6 @@ import {
 } from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ShowStreamsIcon from "./ShowStreamsIcon";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import ReactHtmlParser from "react-html-parser";
 
 const Streams = () => {
@@ -278,18 +276,6 @@ const Streams = () => {
         <Box sx={{ boxShadow: 5, mt: 3, p: 2 }}>
           <Paper>
             <Box>
-              <CKEditor
-                editor={ClassicEditor}
-                config={{
-                  removePlugins: ["EasyImage", "ImageUpload", "MediaEmbed"],
-                }}
-                data={announcementValue}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  setAnnouncementValue(data);
-                }}
-              />
-
               <input
                 multiple
                 type="file"
