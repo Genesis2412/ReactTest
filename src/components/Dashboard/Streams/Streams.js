@@ -42,6 +42,8 @@ import {
 } from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ShowStreamsIcon from "./ShowStreamsIcon";
+import Editor from "ckeditor5-custom-build/build/ckeditor";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ReactHtmlParser from "react-html-parser";
 
 const Streams = () => {
@@ -82,13 +84,13 @@ const Streams = () => {
       var docRef = "";
       if (streamCode) {
         docRef = await updateDoc(doc(db, "announcements", streamCode), {
-          title: announcementValue,
+          context: announcementValue,
         });
       } else {
         docRef = await addDoc(collection(db, "announcements"), {
           subject: classSubject,
           grade: classGrade,
-          title: announcementValue,
+          context: announcementValue,
           classCode: classCode,
         });
       }
@@ -107,9 +109,7 @@ const Streams = () => {
               "streams/" + classCode + "/" + docRef.id + "/" + image.name
             );
           }
-
           const uploadTask = uploadBytesResumable(storageRef, image);
-
           uploadTask.on(
             "state_changed",
             (snapshot) => {
@@ -158,14 +158,14 @@ const Streams = () => {
       try {
         if (streamCode) {
           docRef = await updateDoc(doc(db, "announcements", streamCode), {
-            title: announcementValue,
+            context: announcementValue,
           });
         } else {
           await setDoc(doc(collection(db, "announcements")), {
             subject: classSubject,
             grade: classGrade,
             classCode: classCode,
-            title: announcementValue,
+            context: announcementValue,
             timestamp: serverTimestamp(),
             fileName: [],
             fileUrl: [],
@@ -213,7 +213,7 @@ const Streams = () => {
   };
 
   // Delete one material in a stream
-  const handleObjectDelete = async (streamId, title, fileName, fileUrl) => {
+  const handleObjectDelete = async (streamId, fileName, fileUrl) => {
     let confirmAction = window.confirm(
       "Are you sure to delete " + fileName + " ?"
     );
@@ -242,13 +242,13 @@ const Streams = () => {
   };
 
   // updateStream
-  const updateStream = async (streamId, title) => {
+  const updateStream = async (streamId, context) => {
     let confirmAction = window.confirm("Are you sure to update?");
 
     if (confirmAction) {
       setSnackBarOpen(true);
       setMessage("Update in form");
-      setAnnouncementValue(title);
+      setAnnouncementValue(context);
       setStreamCode(streamId);
     }
   };
@@ -268,22 +268,31 @@ const Streams = () => {
     });
   }, []);
 
-  console.log(announcementValue);
+  console.log();
 
   return (
     <>
       {userDetails?.accountType === "Tutor" && (
         <Box sx={{ boxShadow: 5, mt: 3, p: 2 }}>
-          <Paper>
-            <Box>
-              <input
-                multiple
-                type="file"
-                ref={fileInputRef}
-                onChange={handleChange}
-              />
-            </Box>
-          </Paper>
+          <Box>
+            <CKEditor
+              editor={Editor}
+              data={announcementValue}
+              onChange={(event, editor) => {
+                const data = editor.getData();
+                setAnnouncementValue(data);
+              }}
+            />
+
+            <input
+              style={{ marginTop: 5 }}
+              multiple
+              type="file"
+              ref={fileInputRef}
+              onChange={handleChange}
+            />
+          </Box>
+
           <Button
             fullWidth
             sx={[
@@ -321,13 +330,13 @@ const Streams = () => {
                     fullWidth
                     sx={{
                       p: 1,
-                      backgroundColor: "#c5c6c7",
+                      // backgroundColor: "#c5c6c7",
                       display: "flex",
                     }}
                   >
-                    <h5 style={{ flex: 1 }}>
-                      {ReactHtmlParser(showFile.title)}
-                    </h5>
+                    <span style={{ flex: 1 }}>
+                      {ReactHtmlParser(showFile.context)}
+                    </span>
                     {userDetails?.accountType === "Tutor" && (
                       <Box>
                         <PopupState variant="popover" popupId="demo-popup-menu">
@@ -340,7 +349,7 @@ const Streams = () => {
                               <Menu {...bindMenu(popupState)}>
                                 <MenuItem
                                   onClick={() => {
-                                    updateStream(showFile.id, showFile.title);
+                                    updateStream(showFile.id, showFile.context);
                                   }}
                                 >
                                   <ChangeCircleIcon
@@ -405,7 +414,7 @@ const Streams = () => {
                               onClick={() =>
                                 handleObjectDelete(
                                   showFile.id,
-                                  showFile.title,
+
                                   showFilesName,
                                   showFile.fileUrl[index]
                                 )
