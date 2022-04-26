@@ -44,6 +44,9 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ViewAssignmentsStudent from "./ViewAssignmentsStudent";
+import Editor from "ckeditor5-custom-build/build/ckeditor";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ReactHtmlParser from "react-html-parser";
 
 const CreateAssignments = () => {
   const [images, setImages] = useState([]);
@@ -404,78 +407,73 @@ const CreateAssignments = () => {
       {userDetails.accountType === "Tutor" && (
         <>
           <Box sx={{ boxShadow: 5, mt: 3, p: 1 }}>
-            <Paper>
-              <Typography sx={{ fontSize: 15 }}>Create Assignments</Typography>
-              <Box>
-                <TextField
-                  multiline
-                  fullWidth
-                  sx={{ mb: 1 }}
-                  value={assignmentValue}
-                  onChange={(e) => setAssignmentValue(e.target.value)}
-                />
+            <Box>
+              <CKEditor
+                editor={Editor}
+                data={assignmentValue}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setAssignmentValue(data);
+                }}
+              />
 
-                <Grid container spacing={1}>
-                  <Grid md={6} xs={12} item>
-                    <Typography sx={{ fontSize: 15 }}>
-                      Enter Start Date
-                    </Typography>
-                    <TextField
-                      type={"date"}
-                      fullWidth
-                      sx={{ mb: 1 }}
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                    />
-                  </Grid>
-                  <Grid md={6} xs={12} item>
-                    <Typography sx={{ fontSize: 15 }}>
-                      Enter Start Time
-                    </Typography>
-                    <TextField
-                      type={"time"}
-                      fullWidth
-                      sx={{ mb: 1 }}
-                      value={startTime}
-                      onChange={(e) => setStartTime(e.target.value)}
-                    />
-                  </Grid>
+              <Grid container spacing={1} mt={1}>
+                <Grid md={6} xs={12} item>
+                  <Typography sx={{ fontSize: 15 }}>
+                    Enter Start Date
+                  </Typography>
+                  <TextField
+                    type={"date"}
+                    fullWidth
+                    sx={{ mb: 1 }}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
                 </Grid>
+                <Grid md={6} xs={12} item>
+                  <Typography sx={{ fontSize: 15 }}>
+                    Enter Start Time
+                  </Typography>
+                  <TextField
+                    type={"time"}
+                    fullWidth
+                    sx={{ mb: 1 }}
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                  />
+                </Grid>
+              </Grid>
 
-                <Grid container spacing={1}>
-                  <Grid md={6} xs={12} item>
-                    <Typography sx={{ fontSize: 15 }}>
-                      Enter End Date
-                    </Typography>
-                    <TextField
-                      type={"date"}
-                      fullWidth
-                      sx={{ mb: 1 }}
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                    />
-                  </Grid>
-                  <Grid md={6} xs={12} item>
-                    <Typography sx={{ fontSize: 15 }}>
-                      Enter End Time
-                    </Typography>
-                    <TextField
-                      type={"time"}
-                      fullWidth
-                      sx={{ mb: 1 }}
-                      value={endTime}
-                      onChange={(e) => setEndTime(e.target.value)}
-                    />
-                  </Grid>
+              <Grid container spacing={1}>
+                <Grid md={6} xs={12} item>
+                  <Typography sx={{ fontSize: 15 }}>Enter End Date</Typography>
+                  <TextField
+                    type={"date"}
+                    fullWidth
+                    sx={{ mb: 1 }}
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                  />
                 </Grid>
-                <input
-                  type={"file"}
-                  multiple
-                  ref={fileInputRef}
-                  onChange={handleChange}
-                />
-              </Box>
-            </Paper>
+                <Grid md={6} xs={12} item>
+                  <Typography sx={{ fontSize: 15 }}>Enter End Time</Typography>
+                  <TextField
+                    type={"time"}
+                    fullWidth
+                    sx={{ mb: 1 }}
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                  />
+                </Grid>
+              </Grid>
+              <input
+                type={"file"}
+                multiple
+                ref={fileInputRef}
+                onChange={handleChange}
+              />
+            </Box>
+
             <Button
               fullWidth
               sx={[
