@@ -1,615 +1,500 @@
-// import React, { useState, useEffect, useRef } from "react";
-// import {
-//   Grid,
-//   Box,
-//   Paper,
-//   Typography,
-//   Button,
-//   LinearProgress,
-//   Snackbar,
-// } from "@mui/material";
-// import { db } from "../../../firebase-config";
-// import {
-//   doc,
-//   setDoc,
-//   collection,
-//   where,
-//   query,
-//   onSnapshot,
-//   orderBy,
-//   updateDoc,
-//   arrayUnion,
-//   arrayRemove,
-//   deleteDoc,
-//   getDoc,
-//   getDocs,
-// } from "firebase/firestore";
-// import { storage } from "../../../firebase-config";
-// import {
-//   getDownloadURL,
-//   ref,
-//   uploadBytesResumable,
-//   deleteObject,
-// } from "firebase/storage";
-// import { useUserAuth } from "../../../Context/UserAuthContext";
-// import ImageIcon from "../../../images/StreamIcons/ImageIcon.png";
-// import VideoIcon from "../../../images/StreamIcons/VideoIcon.png";
-// import SheetIcon from "../../../images/StreamIcons/ExcelIcon.png";
-// import PdfIcon from "../../../images/StreamIcons/PdfIcon.png";
-// import TextIcon from "../../../images/StreamIcons/TextIcon.png";
-// import WordIcon from "../../../images/StreamIcons/WordIcon.png";
-// import PowerPointIcon from "../../../images/StreamIcons/PowerPointIcon.png";
-// import MusicIcon from "../../../images/StreamIcons/MusicIcon.png";
-// import NoAssignmentsIcon from "../../../images/NoAssignmentsIcon.svg";
-// import { AssignmentIcon } from "../../GlobalStyles";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Grid,
+  Box,
+  Paper,
+  Typography,
+  Button,
+  LinearProgress,
+  Snackbar,
+} from "@mui/material";
+import { db } from "../../../firebase-config";
+import {
+  doc,
+  setDoc,
+  collection,
+  where,
+  query,
+  onSnapshot,
+  orderBy,
+  updateDoc,
+  arrayUnion,
+  getDoc,
+  getDocs,
+} from "firebase/firestore";
+import { storage } from "../../../firebase-config";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+  deleteObject,
+} from "firebase/storage";
+import { useUserAuth } from "../../../Context/UserAuthContext";
+import ShowIcons from "../ShowIcons";
+import ReactHtmlParser from "react-html-parser";
 
-// const ViewAssignmentsStudent = ({ classCode }) => {
-//   const [assignments, setAssignments] = useState([]);
-//   const [submittedAssignments, setSubmittedAssignments] = useState([]);
-//   const { userDetails } = useUserAuth();
-//   const [images, setImages] = useState([]);
-//   const [snackBarOpen, setSnackBarOpen] = useState(false);
-//   const [progress, setProgress] = useState(0);
-//   const [message, setMessage] = useState("");
-//   const fileInputRef = useRef();
+const ViewAssignmentsStudent = ({ classCode }) => {
+  const [assignments, setAssignments] = useState([]);
+  const [submittedAssignments, setSubmittedAssignments] = useState([]);
+  const { userDetails } = useUserAuth();
+  const [images, setImages] = useState([]);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [message, setMessage] = useState("");
+  const fileInputRef = useRef();
 
-//   const LinkStyles = {
-//     color: "#45a29e",
-//     textDecoration: "none",
-//     fontWeight: "bold",
+  const LinkStyles = {
+    color: "#45a29e",
+    textDecoration: "none",
+    fontWeight: "bold",
 
-//     "&:hover": {
-//       color: "#0b0c10",
-//       backgroundColor: "#c5c6c7",
-//     },
-//   };
+    "&:hover": {
+      color: "#0b0c10",
+      backgroundColor: "#c5c6c7",
+    },
+  };
 
-//   var today = new Date();
-//   var todayTimestamp = today.getTime();
+  var today = new Date();
+  var todayTimestamp = today.getTime();
 
-//   const handleClose = (event, reason) => {
-//     if (reason === "clickaway") {
-//       return;
-//     }
-//     setSnackBarOpen(false);
-//   };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
 
-//   const handleChange = (e) => {
-//     for (let i = 0; i < e.target.files.length; i++) {
-//       const newImage = e.target.files[i];
-//       newImage["id"] = Math.random();
-//       setImages((prevState) => [...prevState, newImage]);
-//     }
-//   };
+  const handleChange = (e) => {
+    for (let i = 0; i < e.target.files.length; i++) {
+      const newImage = e.target.files[i];
+      newImage["id"] = Math.random();
+      setImages((prevState) => [...prevState, newImage]);
+    }
+  };
 
-//   const readOne = async (assignmentCode) => {
-//     var docId = "";
-//     // Checking if there is already an submitted exactly by that title to merge
-//     const q = query(
-//       collection(db, "submittedAssignments"),
-//       where("classCode", "==", classCode),
-//       where("assignmentCode", "==", assignmentCode),
-//       where("studentEmail", "==", userDetails?.email)
-//     );
+  const readOne = async (assignmentCode) => {
+    var docId = "";
+    // Checking for user submission
+    const q = query(
+      collection(db, "submittedAssignments"),
+      where("classCode", "==", classCode),
+      where("assignmentCode", "==", assignmentCode),
+      where("studentEmail", "==", userDetails?.email)
+    );
 
-//     const querySnapshot = await getDocs(q);
-//     querySnapshot.forEach((doc) => {
-//       docId = doc.id;
-//     });
-//     return docId;
-//   };
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      docId = doc.id;
+    });
+    return docId;
+  };
 
-//   const handleSubmit = async (assignmentCode, endDate, endTime) => {
-//     var status;
-//     const statusTimestamp = new Date(endDate + "," + endTime);
-//     if (statusTimestamp.getTime() > todayTimestamp) {
-//       status = "On time";
-//     } else {
-//       status = "Late";
-//     }
-//     if (images.length !== 0) {
-//       images.map((image) => {
-//         const storageRef = ref(
-//           storage,
-//           "/submittedAssignments/" + classCode + "/" + image.name
-//         );
-//         const uploadTask = uploadBytesResumable(storageRef, image);
+  const handleSubmit = async (assignmentCode, endDate, endTime) => {
+    var status = "";
+    const statusTimestamp = new Date(endDate + "," + endTime);
+    if (statusTimestamp.getTime() > todayTimestamp) {
+      status = "On time";
+    } else {
+      status = "Late";
+    }
 
-//         uploadTask.on(
-//           "state_changed",
-//           (snapshot) => {
-//             const prog = Math.round(
-//               (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-//             );
-//             setProgress(prog);
-//           },
-//           (err) => alert(err),
-//           // on Success
-//           () => {
-//             getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-//               readOne(assignmentCode).then((response) => {
-//                 if (response) {
-//                   const updateRef = doc(db, "submittedAssignments", response);
-//                   updateDoc(updateRef, {
-//                     submittedTimestamp: today,
-//                     status: status,
-//                     submittedFileName: arrayUnion(image.name),
-//                     submittedFileUrl: arrayUnion(url),
-//                   })
-//                     .then(() => {})
-//                     .catch((err) => {
-//                       setSnackBarOpen(true);
-//                       setMessage("Submission Failed, try again");
-//                     });
-//                 } else {
-//                   setDoc(doc(collection(db, "submittedAssignments")), {
-//                     classCode: classCode,
-//                     studentFirstName: userDetails?.name?.firstName,
-//                     studentLastName: userDetails?.name?.lastName,
-//                     studentEmail: userDetails?.email,
-//                     assignmentCode: assignmentCode,
-//                     submittedFileName: [image.name],
-//                     submittedFileUrl: [url],
-//                     submittedTimestamp: today,
-//                     status: status,
-//                     marks: "",
-//                   })
-//                     .then(() => {})
-//                     .catch((err) => {
-//                       setSnackBarOpen(true);
-//                       setMessage("Submission Failed, try again");
-//                     });
-//                 }
-//               });
-//             });
-//           }
-//         );
-//       });
-//       setImages((prevState) => []);
-//       fileInputRef.current.value = "";
-//     } else {
-//       setSnackBarOpen(true);
-//       setMessage("Please, input your files");
-//     }
-//   };
+    var assignmentId = "";
+    await readOne(assignmentCode).then((response) => {
+      assignmentId = response;
+    });
 
-//   // read to get file name to delete
-//   const readFiles = async (assignmentCode) => {
-//     var filesArray = [];
-//     const docRef = doc(db, "submittedAssignments", assignmentCode);
-//     const docSnap = await getDoc(docRef);
+    if (images.length !== 0) {
+      await Promise.all(
+        images.map((image) => {
+          const storageRef = ref(
+            storage,
+            "CreatedClasses/" +
+              classCode +
+              "/SubmittedAssignments/" +
+              assignmentId +
+              "/" +
+              image.name
+          );
+          const uploadTask = uploadBytesResumable(storageRef, image);
 
-//     if (docSnap.exists()) {
-//       filesArray = docSnap.data().submittedFileName;
-//     }
-//     return filesArray;
-//   };
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const prog = Math.round(
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              );
+              setProgress(prog);
+            },
+            (err) => alert(err),
 
-//   const handleUnsubmit = async (assignmentCode) => {
-//     let confirmAction = window.confirm("Are you sure to delete?");
-//     if (confirmAction) {
-//       readFiles(assignmentCode).then((val) => {
-//         val.map((fileNames) => {
-//           try {
-//             const imagePathRef = ref(
-//               storage,
-//               "submittedAssignments/" + classCode + "/" + fileNames
-//             );
-//             deleteObject(imagePathRef)
-//               .then(async () => {
-//                 const updateRef = doc(
-//                   db,
-//                   "submittedAssignments",
-//                   assignmentCode
-//                 );
-//                 updateDoc(updateRef, {
-//                   submittedTimestamp: "",
-//                   status: "Not Submitted",
-//                   submittedFileName: [],
-//                   submittedFileUrl: [],
-//                 });
-//               })
-//               .catch((error) => {
-//                 setSnackBarOpen(true);
-//                 setMessage("An error occurred, please try again");
-//                 return;
-//               });
-//           } catch (error) {
-//             setSnackBarOpen(true);
-//             setMessage("An error occurred, please try again");
-//           }
-//         });
-//         setSnackBarOpen(true);
-//         setMessage("Unsubmitted Successfully");
-//       });
-//     }
-//   };
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+                try {
+                  if (assignmentId) {
+                    const updateRef = doc(
+                      db,
+                      "submittedAssignments",
+                      assignmentId
+                    );
+                    await updateDoc(updateRef, {
+                      submittedTimestamp: today,
+                      status: status,
+                      submittedFileName: arrayUnion(image.name),
+                      submittedFileUrl: arrayUnion(url),
+                    });
+                  } else {
+                    await setDoc(doc(collection(db, "submittedAssignments")), {
+                      classCode: classCode,
+                      studentFirstName: userDetails?.name?.firstName,
+                      studentLastName: userDetails?.name?.lastName,
+                      studentEmail: userDetails?.email,
+                      assignmentCode: assignmentCode,
+                      submittedFileName: [image.name],
+                      submittedFileUrl: [url],
+                      submittedTimestamp: today,
+                      status: status,
+                      marks: "",
+                    });
+                  }
+                } catch (error) {
+                  setSnackBarOpen(true);
+                  setMessage("Submission Failed, try again");
+                }
+              });
+            }
+          );
+        })
+      );
 
-//   // reading assignment details for that class
-//   useEffect(() => {
-//     const q = query(
-//       collection(db, "assignments"),
-//       where("classCode", "==", classCode),
-//       orderBy("startDate")
-//     );
-//     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-//       const data = querySnapshot.docs.map((doc) => ({
-//         ...doc.data(),
-//         id: doc.id,
-//       }));
-//       setAssignments(data);
-//     });
-//   }, []);
+      fileInputRef.current.value = "";
+      setImages([]);
+    } else {
+      setSnackBarOpen(true);
+      setMessage("Please, input your files");
+    }
+  };
 
-//   useEffect(() => {
-//     const q = query(
-//       collection(db, "submittedAssignments"),
-//       where("classCode", "==", classCode),
-//       where("studentEmail", "==", userDetails?.email)
-//     );
-//     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-//       const data = querySnapshot.docs.map((doc) => ({
-//         ...doc.data(),
-//         id: doc.id,
-//       }));
-//       setSubmittedAssignments(data);
-//     });
-//   }, []);
+  // read to get file name to delete
+  const readFiles = async (assignmentCode) => {
+    var filesArray = [];
+    const docRef = doc(db, "submittedAssignments", assignmentCode);
+    const docSnap = await getDoc(docRef);
 
-//   if (assignments.length === 0) {
-//     return (
-//       <Box sx={{ textAlign: "center" }}>
-//         <AssignmentIcon src={NoAssignmentsIcon} alt="icon" />
-//         <Typography>Woohoo, no assignments</Typography>
-//       </Box>
-//     );
-//   } else
-//     return (
-//       <>
-//         {assignments.map((assignment, index) => {
-//           var assignmentTimestamp = new Date(
-//             assignment?.startDate + "," + assignment?.startTime
-//           );
-//           if (todayTimestamp >= assignmentTimestamp.getTime() && assignments) {
-//             return (
-//               <Box sx={{ boxShadow: 3, mt: 3 }} key={index}>
-//                 <Paper sx={{ p: 2 }}>
-//                   <Grid container spacing={2}>
-//                     <Grid item xs={12} md={8}>
-//                       <Box>
-//                         <Paper
-//                           sx={{
-//                             p: 1,
-//                             backgroundColor: "#45a29e",
-//                             color: "#fff",
-//                           }}
-//                         >
-//                           <Typography variant={"h4"} sx={{ fontSize: 16 }}>
-//                             Assigned on:{" "}
-//                             <span>
-//                               {assignment.startDate +
-//                                 ", " +
-//                                 assignment.startTime}
-//                             </span>
-//                           </Typography>
-//                         </Paper>
-//                         <Typography
-//                           variant={"h4"}
-//                           sx={{ fontSize: 16, pl: 1, mt: 2 }}
-//                         >
-//                           Description
-//                         </Typography>
-//                         <Typography sx={{ fontSize: 15, pt: 1, pl: 1 }}>
-//                           {assignment.title}
-//                         </Typography>
-//                         <Typography
-//                           variant={"h4"}
-//                           sx={{ fontSize: 16, pt: 3, pl: 1 }}
-//                         >
-//                           Attachments
-//                         </Typography>
-//                         <Box>
-//                           {assignment.fileName.map((assignmentFile, key) => {
-//                             return (
-//                               <Box key={key} sx={{ mt: 1, pl: 1 }}>
-//                                 <a
-//                                   href={assignment.fileUrl[key]}
-//                                   target="_blank"
-//                                   rel="noreferrer"
-//                                   style={{
-//                                     textDecoration: "none",
-//                                     color: "#000",
-//                                   }}
-//                                 >
-//                                   <Box p={1}>
-//                                     {/* Images Icon */}
-//                                     {(assignmentFile.includes(".jpg") ||
-//                                       assignmentFile.includes(".jpeg") ||
-//                                       assignmentFile.includes(".png") ||
-//                                       assignmentFile.includes(".gif") ||
-//                                       assignmentFile.includes(".svg")) && (
-//                                       <img
-//                                         src={ImageIcon}
-//                                         alt="thumbnail"
-//                                         height={40}
-//                                       />
-//                                     )}
-//                                     {/* Video Icons */}
-//                                     {(assignmentFile.includes(".mp4") ||
-//                                       assignmentFile.includes(".mov") ||
-//                                       assignmentFile.includes(".wmv") ||
-//                                       assignmentFile.includes(".avi") ||
-//                                       assignmentFile.includes(".mkv")) && (
-//                                       <img
-//                                         src={VideoIcon}
-//                                         alt="thumbnail"
-//                                         height={40}
-//                                       />
-//                                     )}
-//                                     {/* SpreadSheet Icons */}
-//                                     {(assignmentFile.includes(".xlsx") ||
-//                                       assignmentFile.includes(".xlsm") ||
-//                                       assignmentFile.includes(".xls") ||
-//                                       assignmentFile.includes(".csv")) && (
-//                                       <img
-//                                         src={SheetIcon}
-//                                         alt="thumbnail"
-//                                         height={40}
-//                                       />
-//                                     )}
-//                                     {/* PDF Icon */}
-//                                     {assignmentFile.includes(".pdf") && (
-//                                       <img
-//                                         src={PdfIcon}
-//                                         alt="thumbnail"
-//                                         height={40}
-//                                       />
-//                                     )}
+    if (docSnap.exists()) {
+      filesArray = docSnap.data().submittedFileName;
+    }
+    return filesArray;
+  };
 
-//                                     {/* Text Icon */}
-//                                     {(assignmentFile.includes(".txt") ||
-//                                       assignmentFile.includes(".rtf")) && (
-//                                       <img
-//                                         src={TextIcon}
-//                                         alt="thumbnail"
-//                                         height={40}
-//                                       />
-//                                     )}
+  const handleUnsubmit = async (assignmentCode) => {
+    let confirmAction = window.confirm("Are you sure to delete?");
+    if (confirmAction) {
+      await readFiles(assignmentCode).then((val) => {
+        val.map(async (fileNames) => {
+          try {
+            const imagePathRef = ref(
+              storage,
+              "CreatedClasses/" +
+                classCode +
+                "/SubmittedAssignments/" +
+                assignmentCode +
+                "/" +
+                fileNames
+            );
+            await deleteObject(imagePathRef);
+            await updateDoc(doc(db, "submittedAssignments", assignmentCode), {
+              submittedTimestamp: "",
+              status: "Not Submitted",
+              submittedFileName: [],
+              submittedFileUrl: [],
+            });
+            setSnackBarOpen(true);
+            setMessage("Unsubmitted Successfully");
+          } catch (error) {
+            setSnackBarOpen(true);
+            setMessage("An error occurred, please try again");
+          }
+        });
+      });
+    }
+  };
 
-//                                     {/* Word Icon */}
-//                                     {(assignmentFile.includes(".doc") ||
-//                                       assignmentFile.includes(".docx") ||
-//                                       assignmentFile.includes(".wpd")) && (
-//                                       <img
-//                                         src={WordIcon}
-//                                         alt="thumbnail"
-//                                         height={40}
-//                                       />
-//                                     )}
+  // reading assignment details for that class
+  useEffect(() => {
+    const q = query(
+      collection(db, "assignments"),
+      where("classCode", "==", classCode),
+      orderBy("startDate")
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setAssignments(data);
+    });
+  }, []);
 
-//                                     {/* Powerpoint Icon */}
-//                                     {(assignmentFile.includes(".pptx") ||
-//                                       assignmentFile.includes(".pptm") ||
-//                                       assignmentFile.includes(".ppt")) && (
-//                                       <img
-//                                         src={PowerPointIcon}
-//                                         alt="thumbnail"
-//                                         height={40}
-//                                       />
-//                                     )}
+  useEffect(() => {
+    const q = query(
+      collection(db, "submittedAssignments"),
+      where("classCode", "==", classCode),
+      where("studentEmail", "==", userDetails?.email)
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setSubmittedAssignments(data);
+    });
+  }, []);
 
-//                                     {/* Music Icon */}
-//                                     {(assignmentFile.includes(".mp3") ||
-//                                       assignmentFile.includes(".aac") ||
-//                                       assignmentFile.includes(".ogg") ||
-//                                       assignmentFile.includes(".wav") ||
-//                                       assignmentFile.includes(".wma") ||
-//                                       assignmentFile.includes(".flac")) && (
-//                                       <img
-//                                         src={MusicIcon}
-//                                         alt="thumbnail"
-//                                         height={40}
-//                                       />
-//                                     )}
-//                                     <Typography sx={{ fontSize: 15 }}>
-//                                       {assignmentFile}
-//                                     </Typography>
-//                                   </Box>
-//                                 </a>
-//                               </Box>
-//                             );
-//                           })}
-//                         </Box>
-//                       </Box>
-//                     </Grid>
-//                     <Grid item xs={12} md={4}>
-//                       <Box sx={{ boxShadow: 3 }}>
-//                         <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
-//                           {submittedAssignments
-//                             .filter((submittedAssignment) => {
-//                               if (
-//                                 assignment?.id ===
-//                                 submittedAssignment.assignmentCode
-//                               ) {
-//                                 return submittedAssignment;
-//                               }
-//                             })
-//                             .map((submittedAssignment, index) => {
-//                               return (
-//                                 <Typography>
-//                                   Your Marks:{" "}
-//                                   <span style={{ color: "blue" }}>
-//                                     {submittedAssignment.marks}
-//                                   </span>
-//                                 </Typography>
-//                               );
-//                             })}
-//                         </Paper>
-//                         <Paper sx={{ p: 2 }}>
-//                           <Typography sx={{ fontSize: 15 }}>
-//                             Due Date:{" "}
-//                             <span style={{ color: "red" }}>
-//                               {assignment.endDate + ", " + assignment.endTime}
-//                             </span>
-//                           </Typography>
+  return (
+    <>
+      {assignments.map((assignment, index) => {
+        var assignmentTimestamp = new Date(
+          assignment?.startDate + "," + assignment?.startTime
+        );
+        if (todayTimestamp >= assignmentTimestamp.getTime() && assignments) {
+          return (
+            <Box sx={{ boxShadow: 3, mt: 3 }} key={index}>
+              <Paper sx={{ p: 2 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={8}>
+                    <Box>
+                      <Paper
+                        sx={{
+                          p: 1,
+                          backgroundColor: "#45a29e",
+                          color: "#fff",
+                        }}
+                      >
+                        <Typography variant={"h4"} sx={{ fontSize: 16 }}>
+                          Assigned on:{" "}
+                          <span>
+                            {assignment.startDate + ", " + assignment.startTime}
+                          </span>
+                        </Typography>
+                      </Paper>
 
-//                           {submittedAssignments
-//                             .filter((submittedAssignment) => {
-//                               if (
-//                                 assignment?.id ===
-//                                 submittedAssignment.assignmentCode
-//                               ) {
-//                                 return submittedAssignment;
-//                               }
-//                             })
-//                             .map((submittedAssignment, index) => {
-//                               return (
-//                                 <Box key={index}>
-//                                   <Typography sx={{ fontSize: 15 }}>
-//                                     Submitted:{" "}
-//                                     <span>{submittedAssignment.status}</span>
-//                                   </Typography>
-//                                   {submittedAssignment.submittedFileName.map(
-//                                     (fileName, index) => {
-//                                       return (
-//                                         <Paper
-//                                           sx={{
-//                                             p: 1,
-//                                             mt: 1,
-//                                             textAlign: "center",
-//                                             backgroundColor: "#c5c6c7",
-//                                           }}
-//                                           key={index}
-//                                         >
-//                                           <Typography
-//                                             sx={{
-//                                               fontSize: 15,
-//                                             }}
-//                                           >
-//                                             <a
-//                                               href={
-//                                                 submittedAssignment
-//                                                   .submittedFileUrl[index]
-//                                               }
-//                                               target="blank"
-//                                               style={LinkStyles}
-//                                             >
-//                                               {fileName}
-//                                             </a>
-//                                           </Typography>
-//                                         </Paper>
-//                                       );
-//                                     }
-//                                   )}
-//                                 </Box>
-//                               );
-//                             })}
+                      <Typography sx={{ fontSize: 15, mt: 2, ml: 1 }}>
+                        {ReactHtmlParser(assignment.title)}
+                      </Typography>
 
-//                           <Box sx={{ mt: 2 }}>
-//                             <input
-//                               type={"file"}
-//                               multiple
-//                               ref={fileInputRef}
-//                               onChange={handleChange}
-//                             />
-//                           </Box>
-//                           <Box mt={1}>
-//                             {submittedAssignments
-//                               .filter((value) => {
-//                                 if (assignment?.id === value.assignmentCode) {
-//                                   return value;
-//                                 }
-//                               })
-//                               .map((value, index) => {
-//                                 if (value.status !== "Not Submitted") {
-//                                   return (
-//                                     <Button
-//                                       key={index}
-//                                       size={"small"}
-//                                       fullWidth
-//                                       sx={[
-//                                         {
-//                                           "&:hover": {
-//                                             backgroundColor: "#c5c6c7",
-//                                             color: "#000",
-//                                           },
-//                                           backgroundColor: "#B01F00",
-//                                           color: "#fff",
-//                                         },
-//                                       ]}
-//                                       onClick={() => {
-//                                         handleUnsubmit(value.id);
-//                                       }}
-//                                     >
-//                                       Unsubmit
-//                                     </Button>
-//                                   );
-//                                 } else
-//                                   return (
-//                                     <Button
-//                                       size={"small"}
-//                                       fullWidth
-//                                       sx={[
-//                                         {
-//                                           "&:hover": {
-//                                             backgroundColor: "#c5c6c7",
-//                                             color: "#000",
-//                                           },
-//                                           backgroundColor: "#45a29e",
-//                                           color: "#fff",
-//                                         },
-//                                       ]}
-//                                       onClick={() => {
-//                                         handleSubmit(
-//                                           assignment.id,
-//                                           assignment.endDate,
-//                                           assignment.endTime
-//                                         );
-//                                       }}
-//                                     >
-//                                       Submit
-//                                     </Button>
-//                                   );
-//                               })}
+                      <Box>
+                        <Grid container item spacing={2} mt={1}>
+                          {assignment.fileName.map((assignmentFile, key) => {
+                            return (
+                              <Grid item xs={12} md={2}>
+                                <Paper key={key} sx={{ mt: 1, pl: 1 }}>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <a
+                                      href={assignment.fileUrl[key]}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      style={{
+                                        textDecoration: "none",
+                                        color: "#000",
+                                      }}
+                                    >
+                                      <Box p={1}>
+                                        <ShowIcons fileName={assignmentFile} />
+                                        <Typography sx={{ fontSize: 15 }}>
+                                          {assignmentFile}
+                                        </Typography>
+                                      </Box>
+                                    </a>
+                                  </Box>
+                                </Paper>
+                              </Grid>
+                            );
+                          })}
+                        </Grid>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12} md={4}>
+                    <Box sx={{ boxShadow: 3 }}>
+                      <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
+                        {submittedAssignments
+                          .filter((submittedAssignment) => {
+                            if (
+                              assignment?.id ===
+                              submittedAssignment.assignmentCode
+                            ) {
+                              return submittedAssignment;
+                            }
+                          })
+                          .map((submittedAssignment, index) => {
+                            return (
+                              <Typography>
+                                Your Marks:{" "}
+                                <span style={{ color: "blue" }}>
+                                  {submittedAssignment.marks}
+                                </span>
+                              </Typography>
+                            );
+                          })}
+                      </Paper>
+                      <Paper sx={{ p: 2 }}>
+                        <Typography sx={{ fontSize: 15 }}>
+                          Due Date:{" "}
+                          <span style={{ color: "red" }}>
+                            {assignment.endDate + ", " + assignment.endTime}
+                          </span>
+                        </Typography>
 
-//                             <LinearProgress
-//                               color="secondary"
-//                               variant="determinate"
-//                               value={progress}
-//                             />
-//                           </Box>
-//                         </Paper>
-//                       </Box>
-//                     </Grid>
-//                   </Grid>
-//                 </Paper>
-//               </Box>
-//             );
-//           } else {
-//             return (
-//               <Box sx={{ textAlign: "center" }}>
-//                 <AssignmentIcon src={NoAssignmentsIcon} alt="icon" />
-//                 <Typography>Woohoo, no assignments</Typography>
-//               </Box>
-//             );
-//           }
-//         })}
-//         <Snackbar
-//           open={snackBarOpen}
-//           autoHideDuration={3000}
-//           onClose={handleClose}
-//           message={message}
-//           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-//         />
-//       </>
-//     );
-// };
+                        {submittedAssignments
+                          .filter((submittedAssignment) => {
+                            if (
+                              assignment?.id ===
+                              submittedAssignment.assignmentCode
+                            ) {
+                              return submittedAssignment;
+                            }
+                          })
+                          .map((submittedAssignment, index) => {
+                            return (
+                              <Box key={index}>
+                                <Typography sx={{ fontSize: 15 }}>
+                                  Submitted:{" "}
+                                  <span>{submittedAssignment.status}</span>
+                                </Typography>
+                                {submittedAssignment.submittedFileName.map(
+                                  (fileName, index) => {
+                                    return (
+                                      <Paper
+                                        sx={{
+                                          p: 1,
+                                          mt: 1,
+                                          textAlign: "center",
+                                          backgroundColor: "#c5c6c7",
+                                        }}
+                                        key={index}
+                                      >
+                                        <Typography
+                                          sx={{
+                                            fontSize: 15,
+                                          }}
+                                        >
+                                          <a
+                                            href={
+                                              submittedAssignment
+                                                .submittedFileUrl[index]
+                                            }
+                                            target="blank"
+                                            style={LinkStyles}
+                                          >
+                                            {fileName}
+                                          </a>
+                                        </Typography>
+                                      </Paper>
+                                    );
+                                  }
+                                )}
+                              </Box>
+                            );
+                          })}
 
-// export default ViewAssignmentsStudent;
-import React from "react";
+                        <Box sx={{ mt: 2 }}>
+                          <input
+                            type={"file"}
+                            multiple
+                            ref={fileInputRef}
+                            onChange={handleChange}
+                          />
+                        </Box>
+                        <Box mt={1}>
+                          {submittedAssignments
+                            .filter((value) => {
+                              if (assignment?.id === value.assignmentCode) {
+                                return value;
+                              }
+                            })
+                            .map((value, index) => {
+                              if (value.status !== "Not Submitted") {
+                                return (
+                                  <Button
+                                    key={index}
+                                    size={"small"}
+                                    fullWidth
+                                    sx={[
+                                      {
+                                        "&:hover": {
+                                          backgroundColor: "#c5c6c7",
+                                          color: "#000",
+                                        },
+                                        backgroundColor: "#B01F00",
+                                        color: "#fff",
+                                      },
+                                    ]}
+                                    onClick={() => {
+                                      handleUnsubmit(value.id);
+                                    }}
+                                  >
+                                    Unsubmit
+                                  </Button>
+                                );
+                              } else
+                                return (
+                                  <Button
+                                    key={index}
+                                    size={"small"}
+                                    fullWidth
+                                    sx={[
+                                      {
+                                        "&:hover": {
+                                          backgroundColor: "#c5c6c7",
+                                          color: "#000",
+                                        },
+                                        backgroundColor: "#45a29e",
+                                        color: "#fff",
+                                      },
+                                    ]}
+                                    onClick={() => {
+                                      handleSubmit(
+                                        assignment.id,
+                                        assignment.endDate,
+                                        assignment.endTime
+                                      );
+                                    }}
+                                  >
+                                    Submit
+                                  </Button>
+                                );
+                            })}
 
-const ViewAssignmentsStudent = () => {
-  return <div>ViewAssignmentsStudent</div>;
+                          <LinearProgress
+                            color="secondary"
+                            variant="determinate"
+                            value={progress}
+                          />
+                        </Box>
+                      </Paper>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Paper>
+            </Box>
+          );
+        }
+      })}
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+    </>
+  );
 };
 
 export default ViewAssignmentsStudent;
