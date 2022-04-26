@@ -101,12 +101,22 @@ const Streams = () => {
           if (streamCode) {
             storageRef = ref(
               storage,
-              "streams/" + classCode + "/" + streamCode + "/" + image.name
+              "CreatedClasses/" +
+                classCode +
+                "/streams/" +
+                streamCode +
+                "/" +
+                image.name
             );
           } else {
             storageRef = ref(
               storage,
-              "streams/" + classCode + "/" + docRef.id + "/" + image.name
+              "CreatedClasses/" +
+                classCode +
+                "/streams/" +
+                docRef.id +
+                "/" +
+                image.name
             );
           }
           const uploadTask = uploadBytesResumable(storageRef, image);
@@ -197,7 +207,7 @@ const Streams = () => {
         fileName.map(async (file) => {
           const filePathRef = ref(
             storage,
-            "streams/" + classCode + "/" + streamId + "/" + file
+            "CreatedClasses/" + classCode + "/streams/" + streamId + "/" + file
           );
           await deleteObject(filePathRef);
         });
@@ -222,7 +232,12 @@ const Streams = () => {
       try {
         const filePathRef = ref(
           storage,
-          "streams/" + classCode + "/" + streamId + "/" + fileName
+          "CreatedClasses/" +
+            classCode +
+            "/streams/" +
+            streamId +
+            "/" +
+            fileName
         );
         await deleteObject(filePathRef).then(async () => {
           const deleteFirestoreRef = doc(db, "announcements", streamId);
