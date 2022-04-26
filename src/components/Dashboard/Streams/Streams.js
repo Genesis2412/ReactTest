@@ -41,7 +41,7 @@ import {
   arrayRemove,
 } from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import ShowStreamsIcon from "./ShowStreamsIcon";
+import ShowIcons from "../ShowIcons";
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ReactHtmlParser from "react-html-parser";
@@ -412,7 +412,6 @@ const Streams = () => {
                               onClick={() =>
                                 handleObjectDelete(
                                   showFile.id,
-
                                   showFilesName,
                                   showFile.fileUrl[index]
                                 )
@@ -426,7 +425,7 @@ const Streams = () => {
                             style={{ textDecoration: "none", color: "#000" }}
                           >
                             <Box p={1}>
-                              <ShowStreamsIcon fileName={showFilesName} />
+                              <ShowIcons fileName={showFilesName} />
                               <Typography>{showFilesName}</Typography>
                             </Box>
                           </a>

@@ -1,16 +1,14 @@
 import React from "react";
-import ImageIcon from "../../../images/StreamIcons/ImageIcon.png";
-import PdfIcon from "../../../images/StreamIcons/PdfIcon.png";
-import SheetIcon from "../../../images/StreamIcons/ExcelIcon.png";
-import VideoIcon from "../../../images/StreamIcons/VideoIcon.png";
-import MusicIcon from "../../../images/StreamIcons/MusicIcon.png";
-import PowerPointIcon from "../../../images/StreamIcons/PowerPointIcon.png";
-import TextIcon from "../../../images/StreamIcons/TextIcon.png";
-import WordIcon from "../../../images/StreamIcons/WordIcon.png";
+import ImageIcon from "../../images/MediaIcons/ImageIcon.png";
+import PdfIcon from "../../images/MediaIcons/PdfIcon.png";
+import SheetIcon from "../../images/MediaIcons/ExcelIcon.png";
+import VideoIcon from "../../images/MediaIcons/VideoIcon.png";
+import MusicIcon from "../../images/MediaIcons/MusicIcon.png";
+import PowerPointIcon from "../../images/MediaIcons/PowerPointIcon.png";
+import TextIcon from "../../images/MediaIcons/TextIcon.png";
+import WordIcon from "../../images/MediaIcons/WordIcon.png";
 
-const ShowStreamsIcon = ({ fileName }) => {
-  const imageFormat = ["jpg", "jpeg", "png", "gif", "svg"];
-
+const ShowIcons = ({ fileName }) => {
   if (
     fileName.includes("jpg") ||
     fileName.includes(".png") ||
@@ -70,4 +68,4 @@ const ShowStreamsIcon = ({ fileName }) => {
   }
 };
 
-export default ShowStreamsIcon;
+export default ShowIcons;

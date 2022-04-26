@@ -7,13 +7,9 @@ import {
   Button,
   Typography,
   LinearProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Snackbar,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import PageviewIcon from "@mui/icons-material/Pageview";
 import CloseIcon from "@mui/icons-material/Close";
@@ -47,6 +43,9 @@ import ViewAssignmentsStudent from "./ViewAssignmentsStudent";
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ReactHtmlParser from "react-html-parser";
+import ShowIcons from "../ShowIcons";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const CreateAssignments = () => {
   const [images, setImages] = useState([]);
@@ -499,123 +498,189 @@ const CreateAssignments = () => {
               value={progress}
             />
           </Box>
-          {assignments.length !== 0 && (
-            <TableContainer
-              component={Paper}
-              sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
-            >
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead
-                  sx={{
-                    backgroundColor: "#1f2833",
-                    fontWeight: "bold",
-                  }}
-                >
-                  <TableRow>
-                    <TableCell style={HeaderStyle}>Start Date/Time</TableCell>
-                    <TableCell style={HeaderStyle}>End Date/Time</TableCell>
-                    <TableCell style={HeaderStyle}>
-                      Assignment Description
-                    </TableCell>
-                    <TableCell style={HeaderStyle}>
-                      Assignment Contents
-                    </TableCell>
-                    <TableCell style={HeaderStyle}>View Submissions</TableCell>
-                    <TableCell style={HeaderStyle}>Update</TableCell>
-                    <TableCell style={HeaderStyle}>Delete</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {assignments?.map((assignment, index) => {
-                    return (
-                      <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
-                        <TableCell>
-                          {assignment.startDate + ", " + assignment.startTime}
-                        </TableCell>
-                        <TableCell>
-                          {assignment.endDate + ", " + assignment.endTime}
-                        </TableCell>
-                        <TableCell>{assignment.title}</TableCell>
-                        <TableCell key={index}>
-                          {assignment?.fileName?.map((file, index) => {
-                            return (
-                              <Grid container key={index}>
-                                <Grid item xs={6}>
-                                  <a
-                                    href={assignment.fileUrl[index]}
-                                    style={LinkStyles}
-                                    target="blank"
-                                  >
-                                    {file}
-                                  </a>
-                                </Grid>
-                                <Grid item xs={6}>
-                                  <Button
-                                    sx={{
-                                      position: "relative",
-                                      bottom: 4,
-                                      color: "red",
-                                    }}
-                                    onClick={() => {
-                                      handleDeleteOneObject(
-                                        assignment.id,
-                                        file,
-                                        assignment.fileUrl[index]
-                                      );
-                                    }}
-                                  >
-                                    <RemoveCircleIcon sx={{ fontSize: 16 }} />
-                                  </Button>
-                                </Grid>
-                              </Grid>
-                            );
-                          })}
-                        </TableCell>
 
-                        <TableCell>
-                          <Link
-                            to="viewsubmissions"
-                            state={{
-                              classCode: classCode,
-                              assignmentId: assignment.id,
-                            }}
-                          >
-                            <PageviewIcon sx={{ color: "green" }} />
-                          </Link>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() => {
-                              handleUpdate(
-                                assignment.id,
-                                assignment.title,
-                                assignment.startDate,
-                                assignment.startTime,
-                                assignment.endDate,
-                                assignment.endTime
-                              );
-                            }}
-                          >
-                            <ChangeCircleIcon />
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            sx={{ color: "red" }}
-                            onClick={() => {
-                              handleDelete(assignment.id, assignment.fileName);
-                            }}
-                          >
-                            <CloseIcon />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
+          {assignments?.map((assignment, index) => {
+            return (
+              <Box sx={{ boxShadow: 3, mt: 3 }} key={index}>
+                <Paper sx={{ p: 2 }}>
+                  <Box sx={{ float: "right" }}>
+                    <PopupState variant="popover" popupId="demo-popup-menu">
+                      {(popupState) => (
+                        <>
+                          <MoreVertIcon
+                            {...bindTrigger(popupState)}
+                            sx={{ cursor: "pointer", color: "#1f2833" }}
+                          />
+                          <Menu {...bindMenu(popupState)}>
+                            <MenuItem>
+                              <Link
+                                to="viewsubmissions"
+                                state={{
+                                  classCode: classCode,
+                                  assignmentId: assignment.id,
+                                }}
+                                style={{
+                                  textDecoration: "none",
+                                  color: "#000",
+                                  marginLeft: 10,
+                                }}
+                              >
+                                <Box>
+                                  <Typography>View Submissions</Typography>
+                                </Box>
+                              </Link>
+                            </MenuItem>
+                            <MenuItem>
+                              <Button
+                                onClick={() => {
+                                  handleUpdate(
+                                    assignment.id,
+                                    assignment.title,
+                                    assignment.startDate,
+                                    assignment.startTime,
+                                    assignment.endDate,
+                                    assignment.endTime
+                                  );
+                                }}
+                              >
+                                <ChangeCircleIcon />
+                                <Typography ml={1}>Update</Typography>
+                              </Button>
+                            </MenuItem>
+                            <MenuItem>
+                              <Button
+                                sx={{ color: "red" }}
+                                onClick={() => {
+                                  handleDelete(
+                                    assignment.id,
+                                    assignment.fileName
+                                  );
+                                }}
+                              >
+                                <CloseIcon />
+                                <Typography ml={1}>Delete</Typography>
+                              </Button>
+                            </MenuItem>
+                          </Menu>
+                        </>
+                      )}
+                    </PopupState>
+                  </Box>
+
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={8}>
+                      <Box>
+                        <Paper
+                          sx={{
+                            p: 1,
+                            backgroundColor: "#45a29e",
+                            color: "#fff",
+                          }}
+                        >
+                          <Typography variant={"h4"} sx={{ fontSize: 16 }}>
+                            Assigned on:{" "}
+                            {assignment.startDate + ", " + assignment.startTime}
+                          </Typography>
+                        </Paper>
+
+                        <Paper
+                          sx={{
+                            p: 1,
+                            backgroundColor: "#45a29e",
+                            color: "#fff",
+                            mt: 1,
+                          }}
+                        >
+                          <Typography variant={"h4"} sx={{ fontSize: 16 }}>
+                            Due on:{" "}
+                            {assignment.endDate + ", " + assignment.endTime}
+                          </Typography>
+                        </Paper>
+                        <Typography
+                          variant={"h4"}
+                          sx={{ fontSize: 16, mt: 2, pl: 2 }}
+                        >
+                          Description
+                        </Typography>
+                        <Typography sx={{ fontSize: 15, pt: 1, pl: 2 }}>
+                          {ReactHtmlParser(assignment.title)}
+                        </Typography>
+                      </Box>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                      <Box sx={{ boxShadow: 3 }}>
+                        <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
+                          <Typography variant={"h4"} sx={{ fontSize: 16 }}>
+                            Attachments
+                          </Typography>
+                        </Paper>
+                        <Paper sx={{ p: 2 }}>
+                          <Grid container item spacing={2}>
+                            {assignment?.fileName?.map(
+                              (assignmentFile, key) => {
+                                return (
+                                  <Grid item xs={6} key={key}>
+                                    <Box>
+                                      <Paper
+                                        sx={{
+                                          p: 1,
+                                        }}
+                                      >
+                                        <RemoveCircleIcon
+                                          sx={{
+                                            color: "red",
+                                            fontSize: 20,
+                                            float: "right",
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={() => {
+                                            handleDeleteOneObject(
+                                              assignment.id,
+                                              assignmentFile,
+                                              assignment.fileUrl[key]
+                                            );
+                                          }}
+                                        />
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <a
+                                            href={assignment.fileUrl[key]}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            style={{
+                                              textDecoration: "none",
+                                              color: "#000",
+                                            }}
+                                          >
+                                            <ShowIcons
+                                              fileName={assignmentFile}
+                                            />
+                                            <Typography sx={{ fontSize: 15 }}>
+                                              {assignmentFile}
+                                            </Typography>
+                                          </a>
+                                        </Box>
+                                      </Paper>
+                                    </Box>
+                                  </Grid>
+                                );
+                              }
+                            )}
+                          </Grid>
+                        </Paper>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Box>
+            );
+          })}
         </>
       )}
 
