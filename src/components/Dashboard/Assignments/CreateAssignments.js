@@ -596,13 +596,8 @@ const CreateAssignments = () => {
                             {assignment.endDate + ", " + assignment.endTime}
                           </Typography>
                         </Paper>
-                        <Typography
-                          variant={"h4"}
-                          sx={{ fontSize: 16, mt: 2, pl: 2 }}
-                        >
-                          Description
-                        </Typography>
-                        <Typography sx={{ fontSize: 15, pt: 1, pl: 2 }}>
+
+                        <Typography sx={{ fontSize: 15, mt: 2, ml: 1 }}>
                           {ReactHtmlParser(assignment.title)}
                         </Typography>
                       </Box>
@@ -620,7 +615,7 @@ const CreateAssignments = () => {
                             {assignment?.fileName?.map(
                               (assignmentFile, key) => {
                                 return (
-                                  <Grid item xs={6} key={key}>
+                                  <Grid item xs={12} md={6} key={key}>
                                     <Box>
                                       <Paper
                                         sx={{
