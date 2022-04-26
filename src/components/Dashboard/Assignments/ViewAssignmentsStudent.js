@@ -110,7 +110,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
             storage,
             "CreatedClasses/" +
               classCode +
-              "/SubmittedAssignments/" +
+              "/submittedAssignments/" +
               assignmentId +
               "/" +
               image.name
@@ -123,7 +123,6 @@ const ViewAssignmentsStudent = ({ classCode }) => {
               const prog = Math.round(
                 (snapshot.bytesTransferred / snapshot.totalBytes) * 100
               );
-              setProgress(prog);
             },
             (err) => alert(err),
 
@@ -165,7 +164,8 @@ const ViewAssignmentsStudent = ({ classCode }) => {
           );
         })
       );
-
+      setSnackBarOpen(true);
+      setMessage("Submitted Successfully");
       fileInputRef.current.value = "";
       setImages([]);
     } else {
@@ -196,7 +196,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
               storage,
               "CreatedClasses/" +
                 classCode +
-                "/SubmittedAssignments/" +
+                "/submittedAssignments/" +
                 assignmentCode +
                 "/" +
                 fileNames
@@ -470,12 +470,6 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                   </Button>
                                 );
                             })}
-
-                          <LinearProgress
-                            color="secondary"
-                            variant="determinate"
-                            value={progress}
-                          />
                         </Box>
                       </Paper>
                     </Box>
