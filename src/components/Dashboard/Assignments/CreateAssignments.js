@@ -39,6 +39,7 @@ import {
   arrayRemove,
   deleteDoc,
   getDocs,
+  addDoc,
 } from "firebase/firestore";
 import { Link, useLocation } from "react-router-dom";
 import { useUserAuth } from "../../../Context/UserAuthContext";
@@ -57,9 +58,9 @@ const CreateAssignments = () => {
   const { classCode } = location.state;
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [assignments, setAssignments] = useState([]);
   const [assignmentId, setAssignmentId] = useState("");
   const { userDetails } = useUserAuth();
+  const [assignments, setAssignments] = useState([]);
   const [joinedStudents, setJoinedStudents] = useState([]);
 
   const HeaderStyle = {
@@ -110,51 +111,111 @@ const CreateAssignments = () => {
       endDate &&
       endTime
     ) {
-      images.map((image) => {
-        const storageRef = ref(
-          storage,
-          "/assignments/" + classCode + "/" + image.name
-        );
-        const uploadTask = uploadBytesResumable(storageRef, image);
+      var docRef = "";
+      try {
+        if (assignmentId) {
+          docRef = await updateDoc(doc(db, "assignments", assignmentId), {
+            title: assignmentValue,
+            startDate: startDate,
+            startTime: startTime,
+            endDate: endDate,
+            endTime: endTime,
+          });
+        } else {
+          docRef = await addDoc(collection(db, "assignments"), {
+            title: assignmentValue,
+            classCode: classCode,
+            startDate: startDate,
+            startTime: startTime,
+            endDate: endDate,
+            endTime: endTime,
+          });
+        }
 
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const prog = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        if (joinedStudents.length !== 0 && assignmentId === "") {
+          joinedStudents.map(async (joinedStudent) => {
+            await setDoc(doc(collection(db, "submittedAssignments")), {
+              classCode: classCode,
+              studentFirstName: joinedStudent?.studentFirstName,
+              studentLastName: joinedStudent?.studentLastName,
+              studentEmail: joinedStudent?.studentEmail,
+              assignmentCode: docRef.id,
+              submittedFileName: [],
+              submittedFileUrl: [],
+              submittedTimestamp: "",
+              status: "Not Submitted",
+              marks: "Not yet posted",
+            });
+          });
+        }
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+        return;
+      }
+
+      await Promise.all(
+        images.map((image) => {
+          var storageRef = "";
+
+          if (assignmentId) {
+            storageRef = ref(
+              storage,
+              "CreatedClasses/" +
+                classCode +
+                "/assignments/" +
+                assignmentId +
+                "/" +
+                image.name
             );
-            setProgress(prog);
-          },
-          (err) => alert(err),
-          // on Success
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-              await fetchAssignment().then(async (response) => {
-                if (response) {
-                  const updateRef = doc(db, "assignments", response);
-                  await updateDoc(updateRef, {
-                    fileName: arrayUnion(image.name),
-                    fileUrl: arrayUnion(url),
-                  });
-                } else {
-                  await setDoc(doc(collection(db, "assignments")), {
-                    title: assignmentValue,
-                    classCode: classCode,
-                    startDate: startDate,
-                    startTime: startTime,
-                    endDate: endDate,
-                    endTime: endTime,
-                    fileName: [image.name],
-                    fileUrl: [url],
-                  }).then(async () => {
-                    await createSubmission();
-                  });
+          } else {
+            storageRef = ref(
+              storage,
+              "CreatedClasses/" +
+                classCode +
+                "/assignments/" +
+                docRef.id +
+                "/" +
+                image.name
+            );
+          }
+
+          const uploadTask = uploadBytesResumable(storageRef, image);
+
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const prog = Math.round(
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              );
+              setProgress(prog);
+            },
+            (err) => alert(err),
+
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+                try {
+                  if (assignmentId) {
+                    await updateDoc(doc(db, "assignments", assignmentId), {
+                      fileName: arrayUnion(image.name),
+                      fileUrl: arrayUnion(url),
+                    });
+                  } else {
+                    await updateDoc(doc(db, "assignments", docRef.id), {
+                      fileName: arrayUnion(image.name),
+                      fileUrl: arrayUnion(url),
+                    });
+                  }
+                } catch (error) {
+                  setSnackBarOpen(true);
+                  setMessage("An error occurred, please try again");
+                  return;
                 }
               });
-            });
-          }
-        );
-      });
+            }
+          );
+        })
+      );
 
       setImages((prevState) => []);
       fileInputRef.current.value = "";
@@ -165,6 +226,7 @@ const CreateAssignments = () => {
       setEndDate("");
       setEndTime("");
     } else if (
+      assignmentId &&
       assignmentValue &&
       images.length === 0 &&
       startDate &&
@@ -172,53 +234,30 @@ const CreateAssignments = () => {
       endDate &&
       endTime
     ) {
-      updateAssignment();
-    } else {
-      setSnackBarOpen(true);
-      setMessage("Please, fill in values correctly");
-    }
-  };
-
-  const fetchAssignment = async () => {
-    var docId = "";
-    const q = query(
-      collection(db, "assignments"),
-      where("classCode", "==", classCode),
-      where("title", "==", assignmentValue)
-    );
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      docId = doc.id;
-    });
-    return docId;
-  };
-
-  const updateAssignment = async () => {
-    const assignmentRef = doc(db, "assignments", assignmentId);
-
-    updateDoc(assignmentRef, {
-      title: assignmentValue,
-      startDate: startDate,
-      startTime: startTime,
-      endDate: endDate,
-      endTime: endTime,
-    })
-      .then(() => {
-        setProgress(100);
-        setSnackBarOpen(true);
-        setMessage("Updated Successfully");
+      try {
+        await updateDoc(doc(db, "assignments", assignmentId), {
+          title: assignmentValue,
+          startDate: startDate,
+          startTime: startTime,
+          endDate: endDate,
+          endTime: endTime,
+        });
         setAssignmentId("");
         setAssignmentValue("");
         setStartDate("");
         setStartTime("");
         setEndDate("");
         setEndTime("");
-      })
-      .catch((err) => {
+      } catch (error) {
         setSnackBarOpen(true);
-        setMessage("An error occurred, please try again");
-      });
+        setMessage("Please, fill in values correctly");
+        return;
+      }
+    } else {
+      setSnackBarOpen(true);
+      setMessage("Please, fill in values correctly");
+      return;
+    }
   };
 
   const handleUpdate = async (
@@ -243,37 +282,30 @@ const CreateAssignments = () => {
     }
   };
 
-  const handleDeleteAssignment = async (docId) => {
+  const handleDelete = async (docId, fileNames) => {
     let confirmAction = window.confirm(
       "Are you sure to delete? This will delete submission of students also"
     );
-
     if (confirmAction) {
-      deleteDoc(doc(db, "assignments", docId))
-        .then(() => {
-          handleDeleteSubmission(docId)
-            .then(() => {
-              setSnackBarOpen(true);
-              setMessage("Deleted Successfully");
-            })
-            .catch((err) => {
-              setSnackBarOpen(true);
-              setMessage("Assignment could not be deleted, please try again");
-            });
-        })
-        .catch((err) => {
-          setSnackBarOpen(true);
-          setMessage("Assignment could not be deleted, please try again");
-        });
+      try {
+        await deleteDoc(doc(db, "assignments", docId));
+        await handleDeleteSubmission(docId);
+        await handleDeleteObject(docId, fileNames);
+        setSnackBarOpen(true);
+        setMessage("Deleted Successfully");
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("Assignment could not be deleted, please try again");
+      }
     }
   };
 
-  const handleDeleteSubmission = async (assignmentCode) => {
+  const handleDeleteSubmission = async (docId) => {
     const docIds = [];
     const q = query(
       collection(db, "submittedAssignments"),
       where("classCode", "==", classCode),
-      where("assignmentCode", "==", assignmentCode)
+      where("assignmentCode", "==", docId)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
@@ -287,33 +319,51 @@ const CreateAssignments = () => {
     }
   };
 
-  const handleDeleteObject = async (docId, objFileName, objFileUrl) => {
+  const handleDeleteObject = async (docId, fileNames) => {
+    try {
+      fileNames.map(async (fileName) => {
+        const imagePathRef = ref(
+          storage,
+          "CreatedClasses/" +
+            classCode +
+            "/assignments/" +
+            docId +
+            "/" +
+            fileName
+        );
+        await deleteObject(imagePathRef);
+      });
+    } catch (error) {
+      setSnackBarOpen(true);
+      setMessage("An error occurred, please try again");
+    }
+  };
+
+  const handleDeleteOneObject = async (docId, objFileName, objFileUrl) => {
     let confirmAction = window.confirm("Are you sure to delete?");
     if (confirmAction) {
-      const imagePathRef = ref(
-        storage,
-        "assignments/" + classCode + "/" + objFileName
-      );
-      deleteObject(imagePathRef)
-        .then(() => {
-          const deleteFirestoreRef = doc(db, "assignments", docId);
-          updateDoc(deleteFirestoreRef, {
-            fileName: arrayRemove(objFileName),
-            fileUrl: arrayRemove(objFileUrl),
-          })
-            .then(() => {
-              setSnackBarOpen(true);
-              setMessage("Deleted Successfully");
-            })
-            .catch((err) => {
-              setSnackBarOpen(true);
-              setMessage("An error occurred, please try again");
-            });
-        })
-        .catch((err) => {
-          setSnackBarOpen(true);
-          setMessage("An error occurred, please try again");
+      try {
+        const imagePathRef = ref(
+          storage,
+          "CreatedClasses/" +
+            classCode +
+            "/assignments/" +
+            docId +
+            "/" +
+            objFileName
+        );
+
+        await deleteObject(imagePathRef);
+        await updateDoc(doc(db, "assignments", docId), {
+          fileName: arrayRemove(objFileName),
+          fileUrl: arrayRemove(objFileUrl),
         });
+        setSnackBarOpen(true);
+        setMessage("Deleted Successfully");
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      }
     }
   };
 
@@ -333,34 +383,6 @@ const CreateAssignments = () => {
     };
     getJoinedStudents();
   }, []);
-
-  const createSubmission = async () => {
-    await fetchAssignment().then((response) => {
-      if (response) {
-        if (joinedStudents) {
-          {
-            joinedStudents.map(async (joinedStudent) => {
-              await setDoc(doc(collection(db, "submittedAssignments")), {
-                classCode: classCode,
-                studentFirstName: joinedStudent?.studentFirstName,
-                studentLastName: joinedStudent?.studentLastName,
-                studentEmail: joinedStudent?.studentEmail,
-                assignmentCode: response,
-                submittedFileName: [],
-                submittedFileUrl: [],
-                submittedTimestamp: "",
-                status: "Not Submitted",
-                marks: "",
-              }).catch((err) => {
-                setSnackBarOpen(true);
-                setMessage("Students could not be added to assignment");
-              });
-            });
-          }
-        }
-      }
-    });
-  };
 
   // reading all assignments details
   useEffect(() => {
@@ -506,7 +528,7 @@ const CreateAssignments = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {assignments.map((assignment, index) => {
+                  {assignments?.map((assignment, index) => {
                     return (
                       <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
                         <TableCell>
@@ -517,7 +539,7 @@ const CreateAssignments = () => {
                         </TableCell>
                         <TableCell>{assignment.title}</TableCell>
                         <TableCell key={index}>
-                          {assignment.fileName.map((file, index) => {
+                          {assignment?.fileName?.map((file, index) => {
                             return (
                               <Grid container key={index}>
                                 <Grid item xs={6}>
@@ -537,7 +559,7 @@ const CreateAssignments = () => {
                                       color: "red",
                                     }}
                                     onClick={() => {
-                                      handleDeleteObject(
+                                      handleDeleteOneObject(
                                         assignment.id,
                                         file,
                                         assignment.fileUrl[index]
@@ -583,7 +605,7 @@ const CreateAssignments = () => {
                           <Button
                             sx={{ color: "red" }}
                             onClick={() => {
-                              handleDeleteAssignment(assignment.id);
+                              handleDelete(assignment.id, assignment.fileName);
                             }}
                           >
                             <CloseIcon />
