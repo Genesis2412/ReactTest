@@ -32,6 +32,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import CreateClass from "../CreateClass/CreateClass";
 
 const ClassesTutor = () => {
   const { user, userDetails, classes, setClasses } = useUserAuth();
@@ -207,7 +208,8 @@ const ClassesTutor = () => {
 
   return (
     <>
-      <Grid container rowSpacing={4} spacing={2}>
+      <CreateClass />
+      <Grid container rowSpacing={4} spacing={2} mt={1}>
         {classes.map((showClass) => {
           return (
             <Grid item xs={11} md={3} key={showClass.id}>
