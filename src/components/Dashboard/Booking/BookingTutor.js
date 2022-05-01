@@ -11,17 +11,16 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Box,
   Paper,
+  Grid,
+  Avatar,
   Button,
   Snackbar,
+  Typography,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import CommentIcon from "@mui/icons-material/Comment";
+import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
@@ -53,24 +52,6 @@ const BookingTutor = () => {
     }
     setSnackBarOpen(false);
   };
-
-  //reading all tutors details
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      query(
-        collection(db, "bookings"),
-        where("tutorEmail", "==", userDetails?.email),
-        where("status", "==", "Pending")
-      ),
-      (querySnapshot) => {
-        const bookingsData = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setUserBookings(bookingsData);
-      }
-    );
-  }, []);
 
   const deleteBookingTutor = async (bookingId) => {
     let confirmAction = window.confirm("Are you sure to reject this booking?");
@@ -147,79 +128,135 @@ const BookingTutor = () => {
     }
   };
 
+  //reading all tutors details
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "bookings"),
+        where("tutorEmail", "==", userDetails?.email),
+        where("status", "==", "Pending")
+      ),
+      (querySnapshot) => {
+        const bookingsData = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setUserBookings(bookingsData);
+      }
+    );
+  }, []);
+
   return (
     <>
-      <TableContainer
-        component={Paper}
-        sx={{ borderRadius: 2, boxShadow: 5, mt: 1 }}
-      >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead
-            sx={{
-              backgroundColor: "#1f2833",
-              fontWeight: "bold",
-            }}
-          >
-            <TableRow>
-              <TableCell style={HeaderStyle}>Name</TableCell>
-              <TableCell style={HeaderStyle}>Email</TableCell>
-              <TableCell style={HeaderStyle}>Subject</TableCell>
-              <TableCell style={HeaderStyle}>Grade</TableCell>
-              <TableCell style={HeaderStyle}>Add to class</TableCell>
-              <TableCell style={HeaderStyle}>Reject</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {userBookings.map((bookings, index) => {
-              return (
-                <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
-                  <TableCell>
-                    {bookings.studentFirstName + " " + bookings.studentLastName}
-                  </TableCell>
-                  <TableCell>
-                    <a
-                      href={"mailto: " + bookings.studentEmail}
-                      style={LinkStyles}
-                    >
-                      {bookings.studentEmail}
-                    </a>
-                  </TableCell>
-                  <TableCell>{bookings.subject}</TableCell>
-                  <TableCell>{bookings.grade}</TableCell>
-                  <TableCell>
-                    <Button
-                      sx={{ color: "green" }}
-                      onClick={() => {
-                        addToClass(
-                          bookings.id,
-                          bookings.subject,
-                          bookings.grade,
-                          bookings.studentEmail,
-                          bookings.studentFirstName,
-                          bookings.studentLastName,
-                          bookings.studentProfilePic
-                        );
-                      }}
-                    >
-                      <AddIcon />
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      sx={{ color: "red" }}
-                      onClick={() => {
-                        deleteBookingTutor(bookings.id);
-                      }}
-                    >
-                      <CloseIcon />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {userBookings?.map((bookings) => {
+        return (
+          <Box sx={{ mt: 2 }}>
+            <Paper sx={{ p: 2 }}>
+              <Box sx={{ float: "right" }}>
+                <Button
+                  sx={[
+                    {
+                      "&:hover": {
+                        backgroundColor: "#45a29e",
+                        color: "#0b0c10",
+                      },
+                      backgroundColor: "#c5c6c7",
+                      color: "green",
+                      mr: 1,
+                    },
+                  ]}
+                  onClick={() => {
+                    addToClass(
+                      bookings.id,
+                      bookings.subject,
+                      bookings.grade,
+                      bookings.studentEmail,
+                      bookings.studentFirstName,
+                      bookings.studentLastName,
+                      bookings.studentProfilePic
+                    );
+                  }}
+                >
+                  <AddIcon />
+                </Button>
+                <Button
+                  sx={[
+                    {
+                      "&:hover": {
+                        backgroundColor: "#45a29e",
+                      },
+                      backgroundColor: "#c5c6c7",
+                      color: "red",
+                    },
+                  ]}
+                  onClick={() => {
+                    deleteBookingTutor(bookings.id);
+                  }}
+                >
+                  <DeleteIcon />
+                </Button>
+              </Box>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={1}>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Avatar
+                      sx={{ width: 60, height: 60 }}
+                      alt={
+                        bookings.studentFirstName +
+                        " " +
+                        bookings.studentLastName
+                      }
+                      src={bookings.studentProfilePic}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={11}>
+                  <Paper
+                    sx={{ p: 2, backgroundColor: "#1f2833", color: "#fff" }}
+                  >
+                    <Typography>
+                      <span style={{ color: "#45a29e" }}>
+                        {bookings.studentFirstName +
+                          " " +
+                          bookings.studentLastName +
+                          " "}
+                      </span>
+                      wants to join your{" "}
+                      <span style={{ color: "#45a29e" }}>
+                        {bookings.day + " " + bookings.time}
+                      </span>
+                      , Grade{" "}
+                      <span style={{ color: "#45a29e" }}>
+                        {bookings?.grade + " " + bookings?.subject}
+                      </span>{" "}
+                      class
+                    </Typography>
+                    <Typography>
+                      Contact Here:{" "}
+                      <a
+                        href={"mailto:" + bookings?.studentEmail}
+                        style={{ textDecoration: "none", color: "#66fcf1" }}
+                      >
+                        {bookings?.studentEmail}
+                      </a>
+                    </Typography>
+                    <Typography>
+                      Or Chat Here:{" "}
+                      <CommentIcon
+                        sx={{ position: "relative", top: 8, color: "#66fcf1" }}
+                      />
+                    </Typography>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Box>
+        );
+      })}
 
       <Snackbar
         open={snackBarOpen}

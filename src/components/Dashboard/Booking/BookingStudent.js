@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { Box, Paper, Button, Typography, Snackbar } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
 const BookingStudent = () => {
@@ -94,7 +94,7 @@ const BookingStudent = () => {
                       deleteBookingStudent(bookings.id);
                     }}
                   >
-                    <CloseIcon />
+                    <DeleteIcon />
                   </Button>
                 )}
               </Box>
@@ -109,7 +109,11 @@ const BookingStudent = () => {
               </Typography>
               <Typography>
                 Status of booking:{" "}
-                <span style={{ color: "#66fcf1" }}>{bookings.status}</span>
+                {bookings?.status === "Rejected" ? (
+                  <span style={{ color: "#FF3D75" }}>{bookings.status}</span>
+                ) : (
+                  <span style={{ color: "#66fcf1" }}>{bookings.status}</span>
+                )}
               </Typography>
             </Paper>
           </Box>
