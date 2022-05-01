@@ -7,9 +7,8 @@ import {
   TextField,
   Alert,
   CircularProgress,
+  Grid,
 } from "@mui/material";
-import createClassIcon from "../../../images/createClassIcon.svg";
-import { Image } from "./FormElements";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
@@ -84,13 +83,14 @@ const CreateClass = () => {
 
   const grades = [7, 8, 9, 10, 11, 12, 13];
 
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const days = ["Mon", "Tues", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const validationSchema = Yup.object({
     subject: Yup.string().required("Subject is required"),
     grade: Yup.number().required("Grade is required"),
+    description: Yup.string().required("Description is required"),
+    day: Yup.string().required("Available Day One is required"),
+    time: Yup.string().required("Available Time One is required"),
   });
 
   const classId = uuidv4();
@@ -98,58 +98,41 @@ const CreateClass = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setisSubmitting] = useState(false);
-
-  // check if class already exists
-  const readClass = async (subject, grade) => {
-    var classExists = "";
-    const q = query(
-      collection(db, "createdClasses"),
-      where("subject", "==", subject),
-      where("grade", "==", grade)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      classExists = doc.id;
-    });
-    return classExists;
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setOpen(false);
+    setSuccess("");
+    setError("");
   };
 
-  const createClass = async (subject, grade) => {
+  const createClass = async (values) => {
     setisSubmitting(true);
     setSuccess("");
     setError("");
-    readClass(subject, grade).then(async (value) => {
-      try {
-        if (!value) {
-          // creating Class
-          const tutorsRef = collection(db, "createdClasses");
-          setDoc(doc(tutorsRef, classId), {
-            classCode: classId,
-            tutorFirstName: userDetails?.name?.firstName,
-            tutorLastName: userDetails?.name?.lastName,
-            tutorEmail: userDetails?.email,
-            tutorProfilePic: userDetails?.profilePic
-              ? userDetails?.profilePic
-              : "",
-            subject: subject,
-            grade: grade,
-          });
-          const modifyTutorRef = doc(db, "tutors", user.uid);
-          await updateDoc(modifyTutorRef, {
-            subjects: arrayUnion(subject),
-            grades: arrayUnion(grade),
-          });
-          setSuccess("Class Created");
-          setisSubmitting(false);
-        } else {
-          setError("Class exists");
-          setisSubmitting(false);
-        }
-      } catch (err) {
-        setError("Class not created!");
-        setisSubmitting(false);
-      }
-    });
+
+    try {
+      // creating Class
+      const tutorsRef = collection(db, "createdClasses");
+
+      await setDoc(doc(tutorsRef, classId), {
+        classCode: classId,
+        tutorEmail: userDetails?.email,
+        subject: values?.subject,
+        grade: values?.grade,
+        description: values?.description,
+        day: values?.day,
+        time: values?.time,
+      });
+
+      setSuccess("Class Created");
+      setisSubmitting(false);
+      handleClose();
+    } catch (err) {
+      console.log(err);
+      setError("Class not created!");
+      setisSubmitting(false);
+    }
   };
 
   return (
@@ -175,32 +158,6 @@ const CreateClass = () => {
         </Button>
       </Box>
 
-      <Box
-        sx={{
-          boxShadow: 3,
-          p: 3,
-          mt: 2,
-        }}
-      >
-        Using TutorHuntz at a school with students? If so, your school must sign
-        up for a free Google Workspace for Education account before you can use
-        TutorHuntz. Learn More Google Workspace for Education lets schools
-        decide which Google services their students can use, and provides
-        additional privacy and security protections that are important in a
-        school setting. Students cannot use Google TutorHuntz at a school with
-        personal accounts.
-      </Box>
-
-      <Box
-        sx={{
-          p: 3,
-          mt: 2,
-          textAlign: "center",
-        }}
-      >
-        <Image src={createClassIcon} alt="banner" />
-      </Box>
-
       <Modal
         open={open}
         onClose={handleClose}
@@ -213,9 +170,12 @@ const CreateClass = () => {
             initialValues={{
               subject: "",
               grade: "",
+              description: "",
+              day: "",
+              time: "",
             }}
             onSubmit={async (values) => {
-              createClass(values.subject, values.grade);
+              createClass(values);
             }}
           >
             {(formikProps) => (
@@ -223,7 +183,7 @@ const CreateClass = () => {
                 <Field
                   as={TextField}
                   name="subject"
-                  label="Subject (Required)"
+                  label="Subject"
                   select
                   variant="filled"
                   error={
@@ -244,7 +204,7 @@ const CreateClass = () => {
                 <Field
                   as={TextField}
                   name="grade"
-                  label="Grade (Required)"
+                  label="Grade"
                   select
                   variant="filled"
                   error={
@@ -261,6 +221,63 @@ const CreateClass = () => {
                     </MenuItem>
                   ))}
                 </Field>
+
+                <Field
+                  as={TextField}
+                  name="description"
+                  label="Description"
+                  variant="filled"
+                  multiline
+                  error={
+                    formikProps.touched.description &&
+                    Boolean(formikProps.errors.description)
+                  }
+                  helperText={
+                    formikProps.touched.description &&
+                    formikProps.errors.description
+                  }
+                />
+                <Grid container spacing={1}>
+                  <Grid item xs={6}>
+                    <Field
+                      as={TextField}
+                      name="day"
+                      label="Day"
+                      variant="filled"
+                      select
+                      multiple
+                      error={
+                        formikProps.touched.day &&
+                        Boolean(formikProps.errors.day)
+                      }
+                      helperText={
+                        formikProps.touched.day && formikProps.errors.day
+                      }
+                    >
+                      {days.map((day) => (
+                        <MenuItem key={day} value={day}>
+                          {day}
+                        </MenuItem>
+                      ))}
+                    </Field>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Field
+                      as={TextField}
+                      name="time"
+                      label="Time"
+                      variant="filled"
+                      type={"time"}
+                      error={
+                        formikProps.touched.time &&
+                        Boolean(formikProps.errors.time)
+                      }
+                      helperText={
+                        formikProps.touched.time && formikProps.errors.time
+                      }
+                    />
+                  </Grid>
+                </Grid>
 
                 <Button
                   fullWidth

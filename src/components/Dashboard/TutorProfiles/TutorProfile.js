@@ -7,6 +7,7 @@ import {
   addDoc,
   serverTimestamp,
   getDocs,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { useLocation } from "react-router-dom";
@@ -28,6 +29,7 @@ const BookingOne = () => {
   const location = useLocation();
   const { email } = location.state;
   const [profiles, setProfiles] = useState([]);
+  const [classes, setClasses] = useState([]);
   const { user, userDetails } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
@@ -37,11 +39,16 @@ const BookingOne = () => {
     color: "#45a29e",
     textDecoration: "none",
     fontWeight: "bold",
+  };
 
-    "&:hover": {
-      color: "#0b0c10",
-      backgroundColor: "#c5c6c7",
-    },
+  const btnStyles = {
+    backgroundColor: "#45a29e",
+    color: "#fff",
+    marginTop: 4,
+  };
+
+  const typoStyles = {
+    fontSize: 15,
   };
 
   const handleClose = (event, reason) => {
@@ -60,6 +67,25 @@ const BookingOne = () => {
         id: doc.id,
       }));
       setProfiles(newProfiles);
+    });
+  }, []);
+
+  //reading all tutors details
+  useEffect(() => {
+    const q = query(
+      collection(db, "createdClasses"),
+      where("tutorEmail", "==", email),
+      orderBy("subject"),
+      orderBy("grade"),
+      orderBy("day"),
+      orderBy("time")
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const newClasses = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setClasses(newClasses);
     });
   }, []);
 
@@ -82,13 +108,23 @@ const BookingOne = () => {
     }
   };
 
-  const addBooking = async (tutorEmail, classSubject, classGrade) => {
+  const addBooking = async (
+    tutorEmail,
+    classSubject,
+    classGrade,
+    classDay,
+    classTime
+  ) => {
     let confirmAction = window.confirm(
-      "Are you sure to do booking for " +
+      "Are you sure to book " +
         "" +
         classSubject +
-        ", Grade " +
+        ", for Grade " +
         classGrade +
+        " on " +
+        classDay +
+        " at " +
+        classTime +
         "?"
     );
     if (confirmAction) {
@@ -98,15 +134,15 @@ const BookingOne = () => {
             await addDoc(collection(db, "bookings"), {
               subject: classSubject,
               grade: classGrade,
+              day: classDay,
+              time: classTime,
               dateOfBooking: serverTimestamp(),
               status: "Pending",
-
-              tutorEmail: tutorEmail,
-
               studentFirstName: userDetails?.name?.firstName,
               studentLastName: userDetails?.name?.lastName,
               studentEmail: userDetails?.email,
               studentProfilePic: userDetails?.profilePic,
+              tutorEmail: tutorEmail,
             });
             setSnackBarOpen(true);
             setMessage("Booked Successfully");
@@ -135,21 +171,21 @@ const BookingOne = () => {
         </Logo>
       </Typography>
 
-      {profiles.map((profile) => {
+      {profiles?.map((profile) => {
         return (
           <Box mt={5} key={profile?.email}>
             <Grid container spacing={4}>
               <Grid item md={4} xs={12}>
-                <Avatar
-                  sx={{
-                    width: 250,
-                    height: 250,
-                    position: "relative",
-                    left: "20%",
-                  }}
-                  alt={profile?.name?.firstName}
-                  src={profile.profilePic}
-                />
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <Avatar
+                    sx={{
+                      width: 250,
+                      height: 250,
+                    }}
+                    alt={profile?.name?.firstName}
+                    src={profile?.name?.profilePic}
+                  />
+                </Box>
               </Grid>
               <Grid item md={8} xs={12}>
                 <Box>
@@ -161,13 +197,15 @@ const BookingOne = () => {
                         " " +
                         profile?.name?.lastName}
                     </Typography>
-                    {profile?.subjects.map((subject, index) => {
+                    {classes?.map((availableClass, index) => {
                       return (
                         <Typography
                           sx={{ fontSize: 15, color: "#45a29e" }}
                           key={index}
                         >
-                          {subject}
+                          {availableClass?.subject +
+                            ", Grade " +
+                            availableClass?.grade}
                         </Typography>
                       );
                     })}
@@ -193,10 +231,10 @@ const BookingOne = () => {
                         <Typography sx={{ fontSize: 15 }}>
                           Call me on:{" "}
                           <a
-                            href={"tel: " + profile.contact.mobileNumber}
+                            href={"tel: " + profile?.contact?.mobileNumber}
                             style={LinkStyles}
                           >
-                            {profile.contact.mobileNumber}
+                            {profile?.contact?.mobileNumber}
                           </a>
                         </Typography>
                         <Typography sx={{ fontSize: 15 }}>
@@ -228,31 +266,43 @@ const BookingOne = () => {
                 <Box mt={2}>
                   <Paper sx={{ p: 2, boxShadow: 5 }}>
                     <Typography variant="h3" sx={{ fontSize: 18 }}>
-                      Book Here for your classes
+                      Book your classes here
                     </Typography>
-                    {profile.subjects.map((subject, index) => {
+                    {classes?.map((availableClass, key) => {
                       return (
-                        <Typography mt={1} key={index}>
-                          {subject + ", Grade " + profile.grades[index]}{" "}
-                          <Button
-                            size="small"
-                            sx={[
-                              {
-                                "&:hover": {
-                                  color: "#0b0c10",
-                                  backgroundColor: "#c5c6c7",
-                                },
-                                backgroundColor: "#45a29e",
-                                color: "#fff",
-                              },
-                            ]}
-                            onClick={() => {
-                              addBooking(email, subject, profile.grades[index]);
-                            }}
-                          >
-                            Book
-                          </Button>
-                        </Typography>
+                        <>
+                          <Typography mt={1} key={key}>
+                            {availableClass?.subject +
+                              ", Grade " +
+                              availableClass?.grade}{" "}
+                          </Typography>
+                          <Grid container item spacing={2}>
+                            {availableClass?.day && (
+                              <Grid item>
+                                <Button
+                                  style={btnStyles}
+                                  onClick={() => {
+                                    addBooking(
+                                      profile.email,
+                                      availableClass.subject,
+                                      availableClass.grade,
+                                      availableClass.day,
+                                      availableClass.time
+                                    );
+                                  }}
+                                >
+                                  <Typography style={typoStyles}>
+                                    <>
+                                      {availableClass?.day}
+                                      <br />
+                                      {availableClass?.time}
+                                    </>
+                                  </Typography>
+                                </Button>
+                              </Grid>
+                            )}
+                          </Grid>
+                        </>
                       );
                     })}
                   </Paper>

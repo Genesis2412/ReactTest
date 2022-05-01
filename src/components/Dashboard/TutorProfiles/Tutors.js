@@ -5,11 +5,13 @@ import { db } from "../../../firebase-config";
 import { Link } from "react-router-dom";
 import { Logo } from "../../GlobalStyles";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import { useUserAuth } from "../../../Context/UserAuthContext";
 import { TutorProfileIcon } from "../../GlobalStyles";
 import NoTutorProfileIcon from "../../../images/NoTutorProfileIcon.svg";
 
 const Tutors = () => {
   const [profiles, setProfiles] = useState([]);
+  const [profileClasses, setProfileClasses] = useState([]);
 
   //reading all tutors details
   useEffect(() => {
@@ -20,6 +22,17 @@ const Tutors = () => {
         id: doc.id,
       }));
       setProfiles(newProfiles);
+    });
+  }, []);
+
+  useEffect(() => {
+    const q = query(collection(db, "createdClasses"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const newClasses = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setProfileClasses(newClasses);
     });
   }, []);
 
@@ -56,74 +69,32 @@ const Tutors = () => {
         />
       </Box>
       <Grid container spacing={2}>
-        {profiles
-          .filter((profile) => {
-            if (profile.subjects.length !== 0) {
-              // filter by subjects
-              for (let i = 0; i < profile.subjects.length; i++) {
-                if (
-                  profile.subjects[i]
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ) {
-                  return profile;
-                }
-              }
-
-              // filter by grades
-              for (let i = 0; i < profile.grades.length; i++) {
-                if (
-                  (
-                    "grade " + profile.grades[i].toString().toLowerCase()
-                  ).includes(searchTerm.toLowerCase())
-                ) {
-                  return profile;
-                }
-              }
-
-              if (searchTerm === "") {
-                return profile;
-              } else if (
-                profile?.name?.firstName
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return profile;
-              } else if (
-                profile?.name?.lastName
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return profile;
-              }
-            }
-          })
-          .map((profile) => {
-            return (
-              <Grid item xs={12} md={4} key={profile.email}>
-                <Link
-                  to="tutor"
-                  state={{
-                    email: profile.email,
+        {profiles.map((profile, key) => {
+          return (
+            <Grid item xs={12} md={4} key={key}>
+              <Link
+                to="tutor"
+                state={{
+                  email: profile.email,
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <Box
+                  <Avatar
+                    alt={profile.tutorFirstName}
+                    src={profile.tutorProfilePic}
                     sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+                      width: 200,
+                      height: 200,
                     }}
-                  >
-                    <Avatar
-                      alt={profile.name.firstName}
-                      src={profile.profilePic}
-                      sx={{
-                        width: 200,
-                        height: 200,
-                      }}
-                    />
-                  </Box>
-                </Link>
+                  />
+                </Box>
+
                 <Box
                   sx={{
                     display: "flex",
@@ -147,30 +118,33 @@ const Tutors = () => {
                       variant={"h3"}
                       sx={{ fontSize: 18, color: "#c5c6c7" }}
                     >
-                      {profile.title +
+                      {profile?.title +
                         " " +
-                        profile.name.firstName +
+                        profile?.name?.firstName +
                         " " +
-                        profile.name.lastName}
+                        profile?.name?.lastName}
                     </Typography>
 
-                    <Box>
-                      {profile.subjects.map((subject, index) => {
-                        return (
-                          <Typography
-                            sx={{ fontSize: 14, pl: 1, color: "#66fcf1" }}
-                            key={index++}
-                          >
-                            {subject}, Grade {profile.grades[index]}{" "}
+                    <Typography sx={{ fontSize: 16, color: "#c5c6c7" }}>
+                      Teaches:
+                    </Typography>
+                    {profileClasses?.map((profileClass, key) => {
+                      return (
+                        <Box key={key}>
+                          <Typography sx={{ fontSize: 15, color: "#66fcf1" }}>
+                            {profileClass.subject +
+                              " Grade " +
+                              profileClass.grade}
                           </Typography>
-                        );
-                      })}
-                    </Box>
+                        </Box>
+                      );
+                    })}
                   </Paper>
                 </Box>
-              </Grid>
-            );
-          })}
+              </Link>
+            </Grid>
+          );
+        })}
       </Grid>
     </>
   );
