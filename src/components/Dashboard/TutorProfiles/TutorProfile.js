@@ -183,7 +183,7 @@ const BookingOne = () => {
                       height: 250,
                     }}
                     alt={profile?.name?.firstName}
-                    src={profile?.name?.profilePic}
+                    src={profile?.profilePic}
                   />
                 </Box>
               </Grid>

@@ -86,8 +86,8 @@ const Tutors = () => {
                   }}
                 >
                   <Avatar
-                    alt={profile.tutorFirstName}
-                    src={profile.tutorProfilePic}
+                    alt={profile?.name?.firstName}
+                    src={profile?.profilePic}
                     sx={{
                       width: 200,
                       height: 200,
