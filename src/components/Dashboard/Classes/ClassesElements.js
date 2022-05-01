@@ -21,3 +21,9 @@ export const Image = styled.img`
     height: auto;
   }
 `;
+
+export const TabsLinks = styled.span`
+  @media screen and (max-width: 768px) {
+    font-size: 12px;
+  }
+`;

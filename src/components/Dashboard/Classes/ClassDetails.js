@@ -1,12 +1,12 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Paper, Typography, Grid } from "@mui/material";
+import { Box, Paper, Typography, Grid, Tabs, Tab } from "@mui/material";
 import ClassesDetailsBanner from "../../../images/ClassesDetailsBanner.jpg";
 import { NavLink, Routes, Route } from "react-router-dom";
 import Streams from "../Streams/Streams";
 import CreateAssignments from "../Assignments/CreateAssignments";
 import People from "../People/People";
-import { Image } from "./ClassesElements";
+import { Image, TabsLinks } from "./ClassesElements";
 import { Logo } from "../../GlobalStyles";
 
 const ClassDetails = () => {
@@ -23,6 +23,12 @@ const ClassDetails = () => {
       textDecoration: "none",
       borderBottom: isActive ? "2px solid #66fcf1" : "none",
     };
+  };
+
+  const [value, setValue] = React.useState(2);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (
@@ -68,7 +74,7 @@ const ClassDetails = () => {
                     classGrade: classGrade,
                   }}
                 >
-                  Stream
+                  <TabsLinks>Streams</TabsLinks>
                 </NavLink>
               </Grid>
               <Grid item xs={4}>
@@ -81,7 +87,7 @@ const ClassDetails = () => {
                     classGrade: classGrade,
                   }}
                 >
-                  Assignments
+                  <TabsLinks>Assignments</TabsLinks>
                 </NavLink>
               </Grid>
               <Grid item xs={4}>
@@ -96,7 +102,7 @@ const ClassDetails = () => {
                     classTime: classTime,
                   }}
                 >
-                  People
+                  <TabsLinks>People</TabsLinks>
                 </NavLink>
               </Grid>
             </Grid>
