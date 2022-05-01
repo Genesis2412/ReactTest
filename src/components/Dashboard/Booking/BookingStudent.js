@@ -8,18 +8,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  Typography,
-  Snackbar,
-} from "@mui/material";
+import { Box, Paper, Button, Typography, Snackbar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
@@ -52,6 +41,20 @@ const BookingStudent = () => {
     setSnackBarOpen(false);
   };
 
+  const deleteBookingStudent = async (bookingId) => {
+    let confirmAction = window.confirm("Are you sure to delete this booking?");
+    if (confirmAction) {
+      try {
+        await deleteDoc(doc(db, "bookings", bookingId));
+        setSnackBarOpen(true);
+        setMessage("Deleted Successfully");
+      } catch (err) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      }
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       query(
@@ -68,78 +71,50 @@ const BookingStudent = () => {
     );
   }, []);
 
-  const deleteBookingStudent = async (bookingId) => {
-    let confirmAction = window.confirm("Are you sure to delete this booking?");
-    if (confirmAction) {
-      try {
-        await deleteDoc(doc(db, "bookings", bookingId));
-        setSnackBarOpen(true);
-        setMessage("Deleted Successfully");
-      } catch (err) {
-        setSnackBarOpen(true);
-        setMessage("An error occurred, please try again");
-      }
-    }
-  };
-
   return (
     <>
-      <TableContainer
-        component={Paper}
-        sx={{ borderRadius: 2, boxShadow: 5, mt: 1 }}
-      >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead
-            sx={{
-              backgroundColor: "#1f2833",
-              fontWeight: "bold",
-            }}
-          >
-            <TableRow>
-              <TableCell style={HeaderStyle}>Subject</TableCell>
-              <TableCell style={HeaderStyle}>Grade</TableCell>
-              <TableCell style={HeaderStyle} sx={{ textAlign: "center" }}>
-                Status
-              </TableCell>
-              <TableCell style={HeaderStyle}>Delete</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {userBookings.map((bookings, index) => {
-              return (
-                <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
-                  <TableCell>{bookings.subject}</TableCell>
-                  <TableCell>{bookings.grade}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    <Typography
-                      sx={{
-                        backgroundColor: "#4f4f4f",
-                        padding: "4px",
-                        borderRadius: 8,
-                        color: "#fff",
-                      }}
-                    >
-                      {bookings.status}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    {bookings.status !== "Joined" && (
-                      <Button
-                        sx={{ color: "red" }}
-                        onClick={() => {
-                          deleteBookingStudent(bookings.id);
-                        }}
-                      >
-                        <CloseIcon />
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {userBookings?.map((bookings, key) => {
+        return (
+          <Box sx={{ mt: 2 }} key={key}>
+            <Paper sx={{ p: 2, backgroundColor: "#1f2833", color: "#fff" }}>
+              <Box sx={{ float: "right" }}>
+                {bookings.status !== "Joined" && (
+                  <Button
+                    sx={[
+                      {
+                        "&:hover": {
+                          backgroundColor: "#45a29e",
+                        },
+                        backgroundColor: "#fff",
+                        color: "red",
+                      },
+                    ]}
+                    size={"small"}
+                    onClick={() => {
+                      deleteBookingStudent(bookings.id);
+                    }}
+                  >
+                    <CloseIcon />
+                  </Button>
+                )}
+              </Box>
+              <Typography>
+                You have scheduled a{" "}
+                <span style={{ color: "#45a29e" }}>
+                  Grade {bookings?.grade + " " + bookings?.subject}
+                </span>{" "}
+                class on{" "}
+                <span style={{ color: "#45a29e" }}>{bookings?.day}</span> at{" "}
+                <span style={{ color: "#45a29e" }}>{bookings?.time}</span>.
+              </Typography>
+              <Typography>
+                Status of booking:{" "}
+                <span style={{ color: "#66fcf1" }}>{bookings.status}</span>
+              </Typography>
+            </Paper>
+          </Box>
+        );
+      })}
 
       <Snackbar
         open={snackBarOpen}
