@@ -8,17 +8,13 @@ import {
   onSnapshot,
   deleteDoc,
   getDocs,
+  orderBy,
 } from "firebase/firestore";
 import {
   Box,
   Paper,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Grid,
   Snackbar,
   Avatar,
   Typography,
@@ -73,32 +69,15 @@ const People = () => {
       "Are you sure to remove " + firstName + " " + lastName + "?"
     );
     if (confirmAction) {
-      deleteDoc(doc(db, "joinedClasses", personId))
-        .then(() => {
-          deleteUserSubmission(studentEmail)
-            .then(() => {
-              setSnackBarOpen(true);
-              setMessage(firstName + " " + lastName + " removed from class");
-            })
-            .catch((err) => {
-              setSnackBarOpen(true);
-              setMessage(
-                firstName +
-                  " " +
-                  lastName +
-                  " could not removed from class ,please try again"
-              );
-            });
-        })
-        .catch((err) => {
-          setSnackBarOpen(true);
-          setMessage(
-            firstName +
-              " " +
-              lastName +
-              " could not removed from class ,please try again"
-          );
-        });
+      try {
+        await deleteDoc(doc(db, "joinedClasses", personId));
+        await deleteUserSubmission(studentEmail);
+        setSnackBarOpen(true);
+        setMessage(firstName + " " + lastName + " removed from class");
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      }
     }
   };
 
@@ -125,7 +104,8 @@ const People = () => {
   useEffect(() => {
     const q = query(
       collection(db, "joinedClasses"),
-      where("classCode", "==", classCode)
+      where("classCode", "==", classCode),
+      orderBy("studentLastName")
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const data = querySnapshot.docs.map((doc) => ({
@@ -139,91 +119,101 @@ const People = () => {
   if (persons.length !== 0) {
     return (
       <>
-        <Box>
-          <TableContainer
-            component={Paper}
-            sx={{
-              borderRadius: 2,
-              boxShadow: 5,
-              mt: 2,
-            }}
-          >
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead
-                sx={{
-                  backgroundColor: "#BCBCBC",
-                  fontWeight: "bold",
-                }}
-              >
-                <TableRow>
-                  <TableCell style={headerStyles}>Name</TableCell>
-                  <TableCell style={headerStyles}>Email</TableCell>
-                  <TableCell style={headerStyles}>Chat</TableCell>
-                  {userDetails?.accountType === "Tutor" && (
-                    <>
-                      <TableCell style={headerStyles}>Remove</TableCell>
-                    </>
+        <Box sx={{ mt: 4, ml: 1 }}>
+          <Grid container spacing={1}>
+            {persons?.map((person, key) => {
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  md={3}
+                  key={key}
+                  sx={{
+                    p: 1,
+                    borderRadius: 3,
+                    boxShadow: 10,
+                  }}
+                >
+                  {userDetails.accountType === "Tutor" && (
+                    <Box sx={{ float: "right" }}>
+                      <Button
+                        size="small"
+                        sx={{ color: "red" }}
+                        onClick={() => {
+                          deleteStudent(
+                            person.id,
+                            person.studentFirstName,
+                            person.studentLastName,
+                            person.studentEmail
+                          );
+                        }}
+                      >
+                        <DeleteSweepIcon />
+                      </Button>
+                    </Box>
                   )}
-                </TableRow>
-              </TableHead>
-              <TableBody
-                sx={{
-                  backgroundColor: "#D7D7D7",
-                  fontWeight: "bold",
-                }}
-              >
-                {persons.map((person, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell style={bodyStyle}>
-                        <Avatar
-                          sx={{ backgroundColor: "orange" }}
-                          alt={person.studentLastName}
-                          src={person.studentProfilePic}
-                        />
-                        {person.studentFirstName + " " + person.studentLastName}
-                      </TableCell>
-                      <TableCell style={bodyStyle}>
-                        <a
-                          href={"mailto:" + person.studentEmail}
-                          style={LinkStyles}
-                        >
-                          {person.studentEmail}
-                        </a>
-                      </TableCell>
-                      <TableCell style={bodyStyle}>
-                        <Link to="/dashboard/chats" style={LinkStyles}>
-                          <ChatIcon />
-                        </Link>
-                      </TableCell>
 
-                      {userDetails.accountType === "Tutor" && (
-                        <>
-                          <TableCell style={bodyStyle}>
-                            <Button
-                              size="small"
-                              sx={{ color: "red" }}
-                              onClick={() => {
-                                deleteStudent(
-                                  person.id,
-                                  person.studentFirstName,
-                                  person.studentLastName,
-                                  person.studentEmail
-                                );
-                              }}
-                            >
-                              <DeleteSweepIcon />
-                            </Button>
-                          </TableCell>
-                        </>
-                      )}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{ mt: 4 }}
+                  >
+                    <Avatar
+                      sx={{ backgroundColor: "orange", height: 60, width: 60 }}
+                      alt={person?.studentLastName}
+                      src={person?.studentProfilePic}
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>
+                      {person?.studentFirstName + " " + person?.studentLastName}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>
+                      <a
+                        href={"mailto:" + person?.studentEmail}
+                        style={LinkStyles}
+                      >
+                        {person?.studentEmail}
+                      </a>
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>
+                      Chat:
+                      <Link to="/dashboard/chats" style={LinkStyles}>
+                        <ChatIcon
+                          sx={{ position: "relative", top: 7, left: 2 }}
+                        />
+                      </Link>
+                    </Typography>
+                  </Box>
+                </Grid>
+              );
+            })}
+          </Grid>
         </Box>
+
         <Snackbar
           open={snackBarOpen}
           autoHideDuration={3000}

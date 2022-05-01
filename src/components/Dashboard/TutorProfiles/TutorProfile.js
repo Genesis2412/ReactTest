@@ -25,7 +25,7 @@ import { Logo } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { Link } from "react-router-dom";
 
-const BookingOne = () => {
+const TutorProfile = () => {
   const location = useLocation();
   const { email } = location.state;
   const [profiles, setProfiles] = useState([]);
@@ -173,7 +173,7 @@ const BookingOne = () => {
 
       {profiles?.map((profile) => {
         return (
-          <Box mt={5} key={profile?.email}>
+          <Box mt={5} key={profile?.id}>
             <Grid container spacing={4}>
               <Grid item md={4} xs={12}>
                 <Box display="flex" justifyContent="center" alignItems="center">
@@ -201,7 +201,7 @@ const BookingOne = () => {
                       return (
                         <Typography
                           sx={{ fontSize: 15, color: "#45a29e" }}
-                          key={index}
+                          key={availableClass?.id}
                         >
                           {availableClass?.subject +
                             ", Grade " +
@@ -270,8 +270,8 @@ const BookingOne = () => {
                     </Typography>
                     {classes?.map((availableClass, key) => {
                       return (
-                        <>
-                          <Typography mt={1} key={key}>
+                        <Box key={key}>
+                          <Typography mt={1}>
                             {availableClass?.subject +
                               ", Grade " +
                               availableClass?.grade}{" "}
@@ -302,7 +302,7 @@ const BookingOne = () => {
                               </Grid>
                             )}
                           </Grid>
-                        </>
+                        </Box>
                       );
                     })}
                   </Paper>
@@ -323,4 +323,4 @@ const BookingOne = () => {
   );
 };
 
-export default BookingOne;
+export default TutorProfile;

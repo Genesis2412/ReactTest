@@ -148,9 +148,9 @@ const BookingTutor = () => {
 
   return (
     <>
-      {userBookings?.map((bookings) => {
+      {userBookings?.map((bookings, key) => {
         return (
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ mt: 2 }} key={key}>
             <Paper sx={{ p: 2 }}>
               <Box sx={{ float: "right" }}>
                 <Button
