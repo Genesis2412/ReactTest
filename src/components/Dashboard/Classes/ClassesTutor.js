@@ -227,6 +227,8 @@ const ClassesTutor = () => {
                       classCode: showClass.classCode,
                       classSubject: showClass.subject,
                       classGrade: showClass.grade,
+                      classDay: showClass.day,
+                      classTime: showClass.time,
                     }}
                     style={{ textDecoration: "none" }}
                   >

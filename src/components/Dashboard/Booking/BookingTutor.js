@@ -88,6 +88,8 @@ const BookingTutor = () => {
     bookingId,
     subject,
     grade,
+    day,
+    time,
     studentEmail,
     studentFirstName,
     studentLastName,
@@ -102,6 +104,8 @@ const BookingTutor = () => {
             classCode: classCode,
             subject: subject,
             grade: grade,
+            day: day,
+            time: time,
 
             tutorTitle: userDetails?.title,
             tutorFirstName: userDetails?.name.firstName,
@@ -167,13 +171,15 @@ const BookingTutor = () => {
                   ]}
                   onClick={() => {
                     addToClass(
-                      bookings.id,
-                      bookings.subject,
-                      bookings.grade,
-                      bookings.studentEmail,
-                      bookings.studentFirstName,
-                      bookings.studentLastName,
-                      bookings.studentProfilePic
+                      bookings?.id,
+                      bookings?.subject,
+                      bookings?.grade,
+                      bookings?.day,
+                      bookings?.time,
+                      bookings?.studentEmail,
+                      bookings?.studentFirstName,
+                      bookings?.studentLastName,
+                      bookings?.studentProfilePic
                     );
                   }}
                 >

@@ -14,6 +14,8 @@ const ClassDetails = () => {
   const { classCode } = location.state;
   const { classSubject } = location.state;
   const { classGrade } = location.state;
+  const { classDay } = location.state;
+  const { classTime } = location.state;
 
   const navStyles = ({ isActive }) => {
     return {
@@ -90,6 +92,8 @@ const ClassDetails = () => {
                     classCode: classCode,
                     classSubject: classSubject,
                     classGrade: classGrade,
+                    classDay: classDay,
+                    classTime: classTime,
                   }}
                 >
                   People

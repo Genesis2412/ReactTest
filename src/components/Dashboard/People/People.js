@@ -30,31 +30,16 @@ const People = () => {
   const [persons, setPersons] = useState([]);
   const location = useLocation();
   const { classCode } = location.state;
+  const { classDay } = location.state;
+  const { classTime } = location.state;
   const { userDetails } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
-
-  const headerStyles = {
-    color: "#000",
-    fontSize: 16,
-    textAlign: "center",
-    border: "1px solid #fff",
-  };
-
-  const bodyStyle = {
-    textAlign: "center",
-    border: "1px solid #fff",
-  };
 
   const LinkStyles = {
     color: "#45a29e",
     textDecoration: "none",
     fontWeight: "bold",
-
-    "&:hover": {
-      color: "#0b0c10",
-      backgroundColor: "#c5c6c7",
-    },
   };
 
   const handleClose = (event, reason) => {
@@ -68,10 +53,12 @@ const People = () => {
     let confirmAction = window.confirm(
       "Are you sure to remove " + firstName + " " + lastName + "?"
     );
+
     if (confirmAction) {
       try {
         await deleteDoc(doc(db, "joinedClasses", personId));
         await deleteUserSubmission(studentEmail);
+        await deleteUserBooking(studentEmail);
         setSnackBarOpen(true);
         setMessage(firstName + " " + lastName + " removed from class");
       } catch (error) {
@@ -99,6 +86,25 @@ const People = () => {
         deleteDoc(doc(db, "submittedAssignments", studentAssignmentsId));
       });
     }
+  };
+
+  const deleteUserBooking = async (studentEmail) => {
+    var studentBookingIds = [];
+    const q = query(
+      collection(db, "bookings"),
+      where("studentEmail", "==", studentEmail),
+      where("day", "==", classDay),
+      where("time", "==", classTime)
+    );
+
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      studentBookingIds.push(doc.id);
+    });
+
+    studentBookingIds.map((studentBookingId) => {
+      deleteDoc(doc(db, "bookings", studentBookingId));
+    });
   };
 
   useEffect(() => {
@@ -139,6 +145,12 @@ const People = () => {
                       <Button
                         size="small"
                         sx={{ color: "red" }}
+                        title={
+                          "Remove " +
+                          person.studentFirstName +
+                          " " +
+                          person.studentLastName
+                        }
                         onClick={() => {
                           deleteStudent(
                             person.id,
