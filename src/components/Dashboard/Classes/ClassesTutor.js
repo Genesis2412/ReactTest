@@ -216,7 +216,7 @@ const ClassesTutor = () => {
               <Card
                 variant="outlined"
                 style={{
-                  backgroundColor: "#c5c6c7",
+                  backgroundColor: "#615F66",
                   borderRadius: 10,
                 }}
               >
@@ -228,7 +228,7 @@ const ClassesTutor = () => {
                       classSubject: showClass.subject,
                       classGrade: showClass.grade,
                     }}
-                    style={{ color: "#000", textDecoration: "none" }}
+                    style={{ textDecoration: "none" }}
                   >
                     <CardMedia
                       component="img"
@@ -237,22 +237,28 @@ const ClassesTutor = () => {
                       alt="picture"
                     />
                     <CardContent sx={{ height: "15vh" }}>
-                      <Typography gutterBottom variant="body1" component="div">
+                      <Typography
+                        sx={{
+                          fontSize: 16,
+                          fontWeight: "bold",
+                          color: "#f6f6f6",
+                        }}
+                      >
                         {showClass.subject}
                       </Typography>
-                      <Typography
-                        variant="body1"
-                        color="text.secondary"
-                        sx={{ fontSize: 15 }}
-                      >
+
+                      <Typography sx={{ fontSize: 14, color: "#f6f6f6" }}>
                         Grade: {showClass.grade}
                       </Typography>
+
+                      <Typography sx={{ fontSize: 14, color: "#f6f6f6" }}>
+                        {showClass.day + ", " + showClass.time}
+                      </Typography>
+
                       <Typography
-                        variant="h6"
-                        color="text.secondary"
-                        sx={{ pt: 1, fontSize: 13 }}
+                        sx={{ pt: 3, fontSize: 15, color: "#66fcf1" }}
                       >
-                        Class Code: {showClass.id}
+                        Description: {showClass.description}
                       </Typography>
                     </CardContent>
                   </Link>
@@ -264,7 +270,7 @@ const ClassesTutor = () => {
                         <>
                           <MoreVertIcon
                             {...bindTrigger(popupState)}
-                            sx={{ cursor: "pointer", color: "#1f2833" }}
+                            sx={{ cursor: "pointer", color: "#52d6f4" }}
                           />
                           <Menu {...bindMenu(popupState)}>
                             <MenuItem>
