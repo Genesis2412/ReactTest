@@ -7,7 +7,6 @@ import ClassDetails from "./Classes/ClassDetails";
 import Chats from "./Chats/Chats";
 import Videocall from "./Videocall/Videocall";
 import Notifications from "./Notifications/Notifications";
-import CreateClass from "./CreateClass/CreateClass";
 import Tutors from "./TutorProfiles/Tutors";
 import TutorProfile from "./TutorProfiles/TutorProfile";
 import Bookings from "./Booking/Bookings";
@@ -67,7 +66,6 @@ const Dashboard = () => {
             <Route path="chats" element={<Chats />} />
             <Route path="videocall" element={<Videocall />} />
             <Route path="notifications" element={<Notifications />} />
-            <Route path="create" element={<CreateClass />} />
             <Route path="tutors/*" element={<Tutors />} />
             <Route path="tutors/tutor" element={<TutorProfile />} />
             <Route path="bookings" element={<Bookings />} />

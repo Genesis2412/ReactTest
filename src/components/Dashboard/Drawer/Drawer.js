@@ -69,12 +69,6 @@ const Sidebar = () => {
             <Text clicked={click}>Videocall</Text>
           </Item>
 
-          {userDetails?.accountType === "Tutor" && (
-            <Item onClick={() => setClick(false)} to="/dashboard/create">
-              <AddMaterialIcon />
-              <Text clicked={click}>Create Class</Text>
-            </Item>
-          )}
           {userDetails?.accountType === "Student" && (
             <Item onClick={() => setClick(false)} to="/dashboard/tutors">
               <PeopleMaterialIcon />

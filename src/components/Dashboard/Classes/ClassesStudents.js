@@ -174,35 +174,20 @@ const ClassesStudents = () => {
                       </Box>
                     </CardContent>
 
-                    <CardContent sx={{ height: "15vh" }}>
-                      <Typography gutterBottom variant="body1" component="div">
-                        {showClass.subject}
-                      </Typography>
-                      <Typography
-                        gutterBottom
-                        variant="body2"
-                        component="div"
-                        sx={{ pt: 1, pl: 1 }}
-                      >
-                        Taught By:{" "}
-                        {" " +
+                    <CardContent sx={{ height: "10vh" }}>
+                      <Typography>
+                        {showClass.tutorTitle +
+                          " " +
                           showClass.tutorFirstName +
                           " " +
                           showClass.tutorLastName}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ pt: 1, pl: 1 }}
-                      >
-                        Grade: {showClass.grade}
+                      <Typography sx={{ pt: 1, fontSize: 15 }}>
+                        {showClass.subject}
                       </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ pt: 1, pl: 1 }}
-                      >
-                        Class Code: {showClass.classCode}
+
+                      <Typography sx={{ fontSize: 15 }}>
+                        Grade: {showClass.grade}
                       </Typography>
                     </CardContent>
                   </Link>
