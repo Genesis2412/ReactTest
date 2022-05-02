@@ -58,35 +58,22 @@ const UploadButton = () => {
           setMessage("Failed to upload Profile Picture");
         },
         () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            updateStudentProfile(url).then(() => {
-              updateBookings(url)
-                .then(() => {
-                  updateJoinedClasses(url)
-                    .then(() => {
-                      setSnackBarOpen(true);
-                      setMessage("Profile Picture Uploaded Successfully");
-                      setFile([]);
-                      setViewUploadBtn(false);
-                      setLoading(false);
-                    })
-                    .catch((err) => {
-                      setSnackBarOpen(true);
-                      setMessage("Failed to upload Profile Picture");
-                      setLoading(false);
-                    })
-                    .catch((err) => {
-                      setSnackBarOpen(true);
-                      setMessage("Failed to upload Profile Picture");
-                      setLoading(false);
-                    });
-                })
-                .catch((err) => {
-                  setSnackBarOpen(true);
-                  setMessage("Failed to upload Profile Picture");
-                  setLoading(false);
-                });
-            });
+          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+            try {
+              await updateStudentProfile(url);
+              await updateBookings(url);
+              await updateJoinedClasses(url);
+
+              setSnackBarOpen(true);
+              setMessage("Profile Picture Uploaded Successfully");
+              setFile([]);
+              setViewUploadBtn(false);
+              setLoading(false);
+            } catch (error) {
+              setSnackBarOpen(true);
+              setMessage("Failed to upload Profile Picture");
+              setLoading(false);
+            }
           });
         }
       );
