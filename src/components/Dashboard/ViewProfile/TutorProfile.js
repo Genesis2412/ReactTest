@@ -144,39 +144,12 @@ const TutorProfile = (props) => {
     });
   };
 
-  //   update createdClasses(firstName, lastName, profilePic where useruid)
-  const updateCreatedClasses = async (values) => {
-    const dataArray = [];
-    const q = query(
-      collection(db, "createdClasses"),
-      where("userUid", "==", user.uid)
-    );
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      dataArray.push(doc.id);
-    });
-
-    // updating
-    if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "createdClasses", docId);
-          await updateDoc(docRef, {
-            firstName: values.firstName,
-            lastName: values.lastName,
-          });
-        });
-      }
-    }
-  };
-
   //   update joinedClasses (firstName, lastName,title)
   const updateJoinedClasses = async (values) => {
     const dataArray = [];
     const q = query(
       collection(db, "joinedClasses"),
-      where("userUid", "==", user.uid)
+      where("tutorEmail", "==", tutor?.email)
     );
 
     const querySnapshot = await getDocs(q);
@@ -186,48 +159,30 @@ const TutorProfile = (props) => {
 
     // updating
     if (dataArray) {
-      {
-        dataArray.map(async (docId) => {
-          const docRef = doc(db, "joinedClasses", docId);
-          await updateDoc(docRef, {
-            title: values.title,
-            firstName: values.firstName,
-            lastName: values.lastName,
-          });
+      dataArray.map(async (docId) => {
+        const docRef = doc(db, "joinedClasses", docId);
+        await updateDoc(docRef, {
+          tutorTitle: values.title,
+          tutorFirstName: values.firstName,
+          tutorLastName: values.lastName,
         });
-      }
+      });
     }
   };
 
-  const handleSubmit = (values, setSubmitting) => {
-    updateTutorProfile(values)
-      .then(() => {
-        updateCreatedClasses(values)
-          .then(() => {
-            updateJoinedClasses(values)
-              .then(() => {
-                setSubmitting(false);
-                setEditField(true);
-                setSnackBarOpen(true);
-                setMessage("Updated Successfully");
-              })
-              .catch((err) => {
-                setSubmitting(false);
-                setSnackBarOpen(true);
-                setMessage("Failed to update, try again");
-              });
-          })
-          .catch((err) => {
-            setSubmitting(false);
-            setSnackBarOpen(true);
-            setMessage("Failed to update, try again");
-          });
-      })
-      .catch((err) => {
-        setSubmitting(false);
-        setSnackBarOpen(true);
-        setMessage("Failed to update, try again");
-      });
+  const handleSubmit = async (values, setSubmitting) => {
+    try {
+      await updateTutorProfile(values);
+      await updateJoinedClasses(values);
+      setSubmitting(false);
+      setEditField(true);
+      setSnackBarOpen(true);
+      setMessage("Updated Successfully");
+    } catch (err) {
+      setSubmitting(false);
+      setSnackBarOpen(true);
+      setMessage("Failed to update, try again");
+    }
   };
 
   return (
