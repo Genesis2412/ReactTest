@@ -8,6 +8,9 @@ import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { TutorProfileIcon } from "../../GlobalStyles";
 import NoTutorProfileIcon from "../../../images/NoTutorProfileIcon.svg";
+import TutorProfileBanner from "../../../images/TutorProfileBanner.png";
+import WavesTutorProfile from "../../../images/WavesTutorProfile.svg";
+import { TutorBannerContainer } from "../../GlobalStyles";
 
 const Tutors = () => {
   const [profiles, setProfiles] = useState([]);
@@ -37,38 +40,101 @@ const Tutors = () => {
   }, []);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [hideTextField, setHideTextField] = useState(false);
 
   return (
     <>
-      <Typography textAlign={"right"}>
-        <Logo
-          to="/dashboard/classes"
-          style={{ textAlign: "left", color: "#2f3c7e", fontSize: 30 }}
-        >
-          Tutorhuntz
-        </Logo>
-      </Typography>
+      <Box
+        sx={{
+          boxShadow: 15,
+          borderRadius: 2,
+        }}
+      >
+        <Typography textAlign={"right"}>
+          <Logo
+            to="/dashboard/classes"
+            style={{
+              textAlign: "left",
+              color: "#2f3c7e",
+              paddingRight: "15px",
+              fontSize: 30,
+            }}
+          >
+            Tutorhuntz
+          </Logo>
+        </Typography>
 
-      {/* search */}
-      <Box sx={{ float: "right", mt: 1 }}>
-        {hideTextField && (
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <TutorBannerContainer src={TutorProfileBanner} alt="banner" />
+        </Box>
+
+        <Box sx={{ textAlign: "center", pt: 5 }}>
+          <Typography
+            sx={{
+              fontSize: 20,
+              color: "#0f5298",
+              fontFamily: "Cursive",
+              fontWeight: "bold",
+            }}
+          >
+            Focus on the skills you need
+          </Typography>
+          <Typography
+            sx={{
+              pt: 1,
+              fontSize: 17,
+              color: "#0f5298",
+              fontFamily: "Monospace",
+            }}
+          >
+            Prepare to achieve your goals with private tutors
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: 17,
+              color: "#0f5298",
+              fontFamily: "Monospace",
+            }}
+          >
+            Immerse yourself in a new culture
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: 17,
+              color: "#0f5298",
+              fontFamily: "Monospace",
+            }}
+          >
+            Succeed in your career
+          </Typography>
+          <Typography
+            sx={{
+              pt: 1,
+              fontSize: 20,
+              color: "#900C3F",
+              fontFamily: "Serif",
+            }}
+          >
+            Find your tutor now
+          </Typography>
+        </Box>
+
+        <Box sx={{ textAlign: "center", mt: 2 }}>
           <TextField
+            label={"Search"}
             size="small"
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
           />
-        )}
-
-        <PersonSearchIcon
-          sx={{ cursor: "pointer", position: "relative", top: 6, ml: 1 }}
-          onClick={() => {
-            setHideTextField((prevCheck) => !prevCheck);
-          }}
+        </Box>
+        <img
+          src={WavesTutorProfile}
+          alt="waves"
+          style={{ width: "100%", height: "16vh" }}
         />
       </Box>
-      <Grid container spacing={2}>
+
+      <Grid container spacing={2} sx={{ mt: 3 }}>
         {profiles.map((profile, key) => {
           return (
             <Grid item xs={12} md={4} key={key}>
