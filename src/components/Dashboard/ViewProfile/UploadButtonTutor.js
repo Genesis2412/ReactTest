@@ -59,26 +59,18 @@ const UploadButtonTutor = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            await updateTutorProfile(url).catch((err) => {
+            try {
+              await updateTutorProfile(url);
+              await updateJoinedClasses(url);
+              setSnackBarOpen(true);
+              setMessage("Profile Picture updated successfully");
+              setLoading(false);
+            } catch (error) {
               setSnackBarOpen(true);
               setMessage("Failed to upload Profile Picture");
               setLoading(false);
-            });
-
-            await updateCreatedClasses(url).catch((err) => {
-              setSnackBarOpen(true);
-              setMessage("Failed to upload Profile Picture");
-              setLoading(false);
-            });
-
-            await updateJoinedClasses(url).catch((err) => {
-              setSnackBarOpen(true);
-              setMessage("Failed to upload Profile Picture");
-              setLoading(false);
-            });
-            setSnackBarOpen(true);
-            setMessage("Profile Picture updated successfully");
-            setLoading(false);
+              return;
+            }
           });
         }
       );
@@ -93,27 +85,6 @@ const UploadButtonTutor = () => {
     const docRef = doc(db, "tutors", user.uid);
     await updateDoc(docRef, {
       profilePic: url,
-    });
-  };
-
-  // update createdClasses
-  const updateCreatedClasses = async (url) => {
-    const dataArray = [];
-    const q = query(
-      collection(db, "createdClasses"),
-      where("tutorEmail", "==", userDetails?.email)
-    );
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      dataArray.push(doc.id);
-    });
-
-    dataArray.map(async (createdClassesId) => {
-      const docRef = doc(db, "createdClasses", createdClassesId);
-      await updateDoc(docRef, {
-        tutorProfilePic: url,
-      });
     });
   };
 
