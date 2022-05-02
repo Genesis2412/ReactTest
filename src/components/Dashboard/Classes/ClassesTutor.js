@@ -148,14 +148,16 @@ const ClassesTutor = () => {
     }
   };
 
-  const deleteBookings = async (subject, grade) => {
+  const deleteBookings = async (subject, grade, day, time) => {
     try {
       const data = [];
       const q = query(
         collection(db, "bookings"),
         where("tutorEmail", "==", userDetails?.email),
         where("subject", "==", subject),
-        where("grade", "==", grade)
+        where("grade", "==", grade),
+        where("day", "==", day),
+        where("time", "==", time)
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
@@ -170,20 +172,7 @@ const ClassesTutor = () => {
     }
   };
 
-  const deleteClassProfile = async (subject, grade) => {
-    try {
-      const updateArray = doc(db, "tutors", user?.uid);
-      updateDoc(updateArray, {
-        grades: arrayRemove(grade),
-        subjects: arrayRemove(subject),
-      });
-    } catch (error) {
-      setSnackBarOpen(true);
-      setMessage("An error occurred, please try again");
-    }
-  };
-
-  const handleDelete = async (classCode, subject, grade) => {
+  const handleDelete = async (classCode, subject, grade, day, time) => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
       if (confirmAction) {
@@ -191,12 +180,8 @@ const ClassesTutor = () => {
         await deleteAssignments(classCode);
         await deleteAnnouncements(classCode);
         await deleteJoinedClasses(classCode);
-        await deleteBookings(subject, grade);
-        await deleteClassProfile(subject, grade);
-        await deleteDoc(doc(db, "createdClasses", classCode)).catch((err) => {
-          setSnackBarOpen(true);
-          setMessage("An error occurred, please try again");
-        });
+        await deleteBookings(subject, grade, day, time);
+        await deleteDoc(doc(db, "createdClasses", classCode));
         setSnackBarOpen(true);
         setMessage("Deleted Successfully");
       }
@@ -322,7 +307,9 @@ const ClassesTutor = () => {
                                 handleDelete(
                                   showClass.classCode,
                                   showClass.subject,
-                                  showClass.grade
+                                  showClass.grade,
+                                  showClass.day,
+                                  showClass.time
                                 );
                               }}
                             >

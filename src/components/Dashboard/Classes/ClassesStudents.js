@@ -85,14 +85,16 @@ const ClassesStudents = () => {
     }
   };
 
-  const deleteBookings = async (subject, grade) => {
+  const deleteBookings = async (subject, grade, day, time) => {
     try {
       const data = [];
       const q = query(
         collection(db, "bookings"),
         where("studentEmail", "==", userDetails?.email),
         where("subject", "==", subject),
-        where("grade", "==", grade)
+        where("grade", "==", grade),
+        where("day", "==", day),
+        where("time", "==", time)
       );
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
@@ -107,12 +109,19 @@ const ClassesStudents = () => {
     }
   };
 
-  const handleDelete = async (joinedClassesId, classCode, subject, grade) => {
+  const handleDelete = async (
+    joinedClassesId,
+    classCode,
+    subject,
+    grade,
+    day,
+    time
+  ) => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
       if (confirmAction) {
         await deleteSubmittedAssignments(classCode);
-        await deleteBookings(subject, grade);
+        await deleteBookings(subject, grade, day, time);
         await deleteDoc(doc(db, "joinedClasses", joinedClassesId)).catch(
           (err) => {
             setSnackBarOpen(true);
@@ -250,7 +259,9 @@ const ClassesStudents = () => {
                                   showClass.id,
                                   showClass.classCode,
                                   showClass.subject,
-                                  showClass.grade
+                                  showClass.grade,
+                                  showClass.day,
+                                  showClass.time
                                 );
                               }}
                             >

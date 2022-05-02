@@ -287,7 +287,7 @@ const Streams = () => {
     <>
       {userDetails?.accountType === "Tutor" && (
         <Box sx={{ boxShadow: 5, mt: 3, p: 2 }}>
-          <Box>
+          <Box sx={{ width: "99%" }}>
             <CKEditor
               editor={Editor}
               data={announcementValue}
