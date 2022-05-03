@@ -335,22 +335,24 @@ const Streams = () => {
         </Box>
       )}
 
-      <Box
-        sx={{
-          mt: 2,
-          display: "flex",
-          justifyContent: "right",
-          alignItems: "right",
-        }}
-      >
-        <TextField
-          size={"small"}
-          label={"Search streams"}
-          onChange={(event) => {
-            setSearchTerm(event.target.value);
+      {showFiles.length !== 0 && (
+        <Box
+          sx={{
+            mt: 2,
+            display: "flex",
+            justifyContent: "right",
+            alignItems: "right",
           }}
-        />
-      </Box>
+        >
+          <TextField
+            size={"small"}
+            label={"Search streams"}
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
+            }}
+          />
+        </Box>
+      )}
 
       {showFiles
         ?.filter((showFile) => {
@@ -371,7 +373,7 @@ const Streams = () => {
             showFile?.context
               .toString()
               .toLowerCase()
-              .includes(searchTerm.toString())
+              .includes(searchTerm.toLowerCase())
           ) {
             return showFile;
           }

@@ -7,6 +7,7 @@ import {
   Button,
   LinearProgress,
   Snackbar,
+  TextField,
 } from "@mui/material";
 import { db } from "../../../firebase-config";
 import {
@@ -32,6 +33,7 @@ import {
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ShowIcons from "../ShowIcons";
 import ReactHtmlParser from "react-html-parser";
+import moment from "moment";
 
 const ViewAssignmentsStudent = ({ classCode }) => {
   const [assignments, setAssignments] = useState([]);
@@ -42,6 +44,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
   const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState("");
   const fileInputRef = useRef();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const LinkStyles = {
     color: "#45a29e",
@@ -252,234 +255,325 @@ const ViewAssignmentsStudent = ({ classCode }) => {
 
   return (
     <>
-      {assignments.map((assignment, index) => {
-        var assignmentTimestamp = new Date(
-          assignment?.startDate + "," + assignment?.startTime
-        );
-        if (todayTimestamp >= assignmentTimestamp.getTime() && assignments) {
-          return (
-            <Box sx={{ boxShadow: 3, mt: 3 }} key={index}>
-              <Paper sx={{ p: 2 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={8}>
-                    <Box>
-                      <Paper
-                        sx={{
-                          p: 1,
-                          backgroundColor: "#45a29e",
-                          color: "#fff",
-                        }}
-                      >
-                        <Typography variant={"h4"} sx={{ fontSize: 16 }}>
-                          Assigned on:{" "}
-                          <span>
-                            {assignment.startDate + ", " + assignment.startTime}
-                          </span>
-                        </Typography>
-                      </Paper>
+      {assignments.length !== 0 && (
+        <Box
+          sx={{
+            mt: 2,
+            display: "flex",
+            justifyContent: "right",
+            alignItems: "right",
+          }}
+        >
+          <TextField
+            size={"small"}
+            label={"Search assignments"}
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
+            }}
+          />
+        </Box>
+      )}
 
-                      <Typography sx={{ fontSize: 15, mt: 2, ml: 1 }}>
-                        {ReactHtmlParser(assignment.title)}
-                      </Typography>
-
+      {assignments
+        ?.filter((assignment) => {
+          if (assignment.fileName.length !== 0) {
+            for (let i = 0; i < assignment.fileName.length; i++) {
+              if (
+                assignment.fileName[i]
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ) {
+                return assignment;
+              }
+            }
+          }
+          if (searchTerm === "") {
+            return assignment;
+          } else if (
+            assignment.title
+              .toString()
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            return assignment;
+          }
+          if (
+            assignment.startDate
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            return assignment;
+          }
+          if (
+            assignment.endDate.toLowerCase().includes(searchTerm.toLowerCase())
+          ) {
+            return assignment;
+          }
+          if (
+            assignment.startTime
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            return assignment;
+          }
+          if (
+            assignment.endTime.toLowerCase().includes(searchTerm.toLowerCase())
+          ) {
+            return assignment;
+          }
+          if (
+            moment(assignment.timestamp.toDate())
+              .fromNow()
+              .toString()
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          ) {
+            return assignment;
+          }
+        })
+        ?.map((assignment, index) => {
+          var assignmentTimestamp = new Date(
+            assignment?.startDate + "," + assignment?.startTime
+          );
+          if (todayTimestamp >= assignmentTimestamp.getTime() && assignments) {
+            return (
+              <Box sx={{ boxShadow: 3, mt: 2 }} key={index}>
+                <Paper sx={{ p: 2 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={8}>
                       <Box>
-                        <Grid container item spacing={2} mt={1}>
-                          {assignment.fileName.map((assignmentFile, key) => {
-                            return (
-                              <Grid item xs={12} md={2}>
-                                <Paper key={key} sx={{ mt: 1, pl: 1 }}>
-                                  <Box
-                                    sx={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <a
-                                      href={assignment.fileUrl[key]}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      style={{
-                                        textDecoration: "none",
-                                        color: "#000",
+                        <Paper
+                          sx={{
+                            p: 1,
+                            backgroundColor: "#45a29e",
+                            color: "#fff",
+                          }}
+                        >
+                          <Typography variant={"h4"} sx={{ fontSize: 16 }}>
+                            Assigned on:{" "}
+                            <span>
+                              {assignment.startDate +
+                                ", " +
+                                assignment.startTime}
+                            </span>
+                          </Typography>
+                          <Typography
+                            variant={"h4"}
+                            sx={{ fontSize: 13, color: "#c5c6c7" }}
+                          >
+                            Posted on:{" "}
+                            <span style={{ fontStyle: "italic" }}>
+                              {moment(
+                                assignment?.timestamp?.toDate()
+                              )?.fromNow()}
+                            </span>
+                          </Typography>
+                        </Paper>
+
+                        <Typography sx={{ fontSize: 15, mt: 2, ml: 1 }}>
+                          {ReactHtmlParser(assignment.title)}
+                        </Typography>
+
+                        <Box>
+                          <Grid container item spacing={2} mt={1}>
+                            {assignment.fileName.map((assignmentFile, key) => {
+                              return (
+                                <Grid item xs={12} md={2}>
+                                  <Paper key={key} sx={{ mt: 1, pl: 1 }}>
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
                                       }}
                                     >
-                                      <Box p={1}>
-                                        <ShowIcons fileName={assignmentFile} />
-                                        <Typography sx={{ fontSize: 15 }}>
-                                          {assignmentFile}
-                                        </Typography>
-                                      </Box>
-                                    </a>
-                                  </Box>
-                                </Paper>
-                              </Grid>
-                            );
-                          })}
-                        </Grid>
-                      </Box>
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <Box sx={{ boxShadow: 3 }}>
-                      <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
-                        {submittedAssignments
-                          .filter((submittedAssignment) => {
-                            if (
-                              assignment?.id ===
-                              submittedAssignment.assignmentCode
-                            ) {
-                              return submittedAssignment;
-                            }
-                          })
-                          .map((submittedAssignment, index) => {
-                            return (
-                              <Typography>
-                                Your Marks:{" "}
-                                <span style={{ color: "blue" }}>
-                                  {submittedAssignment.marks}
-                                </span>
-                              </Typography>
-                            );
-                          })}
-                      </Paper>
-                      <Paper sx={{ p: 2 }}>
-                        <Typography sx={{ fontSize: 15 }}>
-                          Due Date:{" "}
-                          <span style={{ color: "red" }}>
-                            {assignment.endDate + ", " + assignment.endTime}
-                          </span>
-                        </Typography>
-
-                        {submittedAssignments
-                          .filter((submittedAssignment) => {
-                            if (
-                              assignment?.id ===
-                              submittedAssignment.assignmentCode
-                            ) {
-                              return submittedAssignment;
-                            }
-                          })
-                          .map((submittedAssignment, index) => {
-                            return (
-                              <Box key={index}>
-                                <Typography sx={{ fontSize: 15 }}>
-                                  Submitted:{" "}
-                                  <span>{submittedAssignment.status}</span>
-                                </Typography>
-                                {submittedAssignment.submittedFileName.map(
-                                  (fileName, index) => {
-                                    return (
-                                      <Paper
-                                        sx={{
-                                          p: 1,
-                                          mt: 1,
-                                          textAlign: "center",
-                                          backgroundColor: "#c5c6c7",
+                                      <a
+                                        href={assignment.fileUrl[key]}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        style={{
+                                          textDecoration: "none",
+                                          color: "#000",
                                         }}
-                                        key={index}
                                       >
-                                        <Typography
-                                          sx={{
-                                            fontSize: 15,
-                                          }}
-                                        >
-                                          <a
-                                            href={
-                                              submittedAssignment
-                                                .submittedFileUrl[index]
-                                            }
-                                            target="blank"
-                                            style={LinkStyles}
-                                          >
-                                            {fileName}
-                                          </a>
-                                        </Typography>
-                                      </Paper>
-                                    );
-                                  }
-                                )}
-                              </Box>
-                            );
-                          })}
-
-                        <Box sx={{ mt: 2 }}>
-                          <input
-                            type={"file"}
-                            multiple
-                            ref={fileInputRef}
-                            onChange={handleChange}
-                          />
+                                        <Box p={1}>
+                                          <ShowIcons
+                                            fileName={assignmentFile}
+                                          />
+                                          <Typography sx={{ fontSize: 15 }}>
+                                            {assignmentFile}
+                                          </Typography>
+                                        </Box>
+                                      </a>
+                                    </Box>
+                                  </Paper>
+                                </Grid>
+                              );
+                            })}
+                          </Grid>
                         </Box>
-                        <Box mt={1}>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <Box sx={{ boxShadow: 3 }}>
+                        <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
                           {submittedAssignments
-                            .filter((value) => {
-                              if (assignment?.id === value.assignmentCode) {
-                                return value;
+                            .filter((submittedAssignment) => {
+                              if (
+                                assignment?.id ===
+                                submittedAssignment.assignmentCode
+                              ) {
+                                return submittedAssignment;
                               }
                             })
-                            .map((value, index) => {
-                              if (value.status !== "Not Submitted") {
-                                return (
-                                  <Button
-                                    key={index}
-                                    size={"small"}
-                                    fullWidth
-                                    sx={[
-                                      {
-                                        "&:hover": {
-                                          backgroundColor: "#c5c6c7",
-                                          color: "#000",
-                                        },
-                                        backgroundColor: "#B01F00",
-                                        color: "#fff",
-                                      },
-                                    ]}
-                                    onClick={() => {
-                                      handleUnsubmit(value.id);
-                                    }}
-                                  >
-                                    Unsubmit
-                                  </Button>
-                                );
-                              } else
-                                return (
-                                  <Button
-                                    key={index}
-                                    size={"small"}
-                                    fullWidth
-                                    sx={[
-                                      {
-                                        "&:hover": {
-                                          backgroundColor: "#c5c6c7",
-                                          color: "#000",
-                                        },
-                                        backgroundColor: "#45a29e",
-                                        color: "#fff",
-                                      },
-                                    ]}
-                                    onClick={() => {
-                                      handleSubmit(
-                                        assignment.id,
-                                        assignment.endDate,
-                                        assignment.endTime
-                                      );
-                                    }}
-                                  >
-                                    Submit
-                                  </Button>
-                                );
+                            .map((submittedAssignment, index) => {
+                              return (
+                                <Typography>
+                                  Your Marks:{" "}
+                                  <span style={{ color: "blue" }}>
+                                    {submittedAssignment.marks}
+                                  </span>
+                                </Typography>
+                              );
                             })}
-                        </Box>
-                      </Paper>
-                    </Box>
+                        </Paper>
+                        <Paper sx={{ p: 2 }}>
+                          <Typography sx={{ fontSize: 15 }}>
+                            Due Date:{" "}
+                            <span style={{ color: "red" }}>
+                              {assignment.endDate + ", " + assignment.endTime}
+                            </span>
+                          </Typography>
+
+                          {submittedAssignments
+                            .filter((submittedAssignment) => {
+                              if (
+                                assignment?.id ===
+                                submittedAssignment.assignmentCode
+                              ) {
+                                return submittedAssignment;
+                              }
+                            })
+                            .map((submittedAssignment, index) => {
+                              return (
+                                <Box key={index}>
+                                  <Typography sx={{ fontSize: 15 }}>
+                                    Submitted:{" "}
+                                    <span>{submittedAssignment.status}</span>
+                                  </Typography>
+                                  {submittedAssignment.submittedFileName.map(
+                                    (fileName, index) => {
+                                      return (
+                                        <Paper
+                                          sx={{
+                                            p: 1,
+                                            mt: 1,
+                                            textAlign: "center",
+                                            backgroundColor: "#c5c6c7",
+                                          }}
+                                          key={index}
+                                        >
+                                          <Typography
+                                            sx={{
+                                              fontSize: 15,
+                                            }}
+                                          >
+                                            <a
+                                              href={
+                                                submittedAssignment
+                                                  .submittedFileUrl[index]
+                                              }
+                                              target="blank"
+                                              style={LinkStyles}
+                                            >
+                                              {fileName}
+                                            </a>
+                                          </Typography>
+                                        </Paper>
+                                      );
+                                    }
+                                  )}
+                                </Box>
+                              );
+                            })}
+
+                          <Box sx={{ mt: 2 }}>
+                            <input
+                              type={"file"}
+                              multiple
+                              ref={fileInputRef}
+                              onChange={handleChange}
+                            />
+                          </Box>
+                          <Box mt={1}>
+                            {submittedAssignments
+                              .filter((value) => {
+                                if (assignment?.id === value.assignmentCode) {
+                                  return value;
+                                }
+                              })
+                              .map((value, index) => {
+                                if (value.status !== "Not Submitted") {
+                                  return (
+                                    <Button
+                                      key={index}
+                                      size={"small"}
+                                      fullWidth
+                                      sx={[
+                                        {
+                                          "&:hover": {
+                                            backgroundColor: "#c5c6c7",
+                                            color: "#000",
+                                          },
+                                          backgroundColor: "#B01F00",
+                                          color: "#fff",
+                                        },
+                                      ]}
+                                      onClick={() => {
+                                        handleUnsubmit(value.id);
+                                      }}
+                                    >
+                                      Unsubmit
+                                    </Button>
+                                  );
+                                } else
+                                  return (
+                                    <Button
+                                      key={index}
+                                      size={"small"}
+                                      fullWidth
+                                      sx={[
+                                        {
+                                          "&:hover": {
+                                            backgroundColor: "#c5c6c7",
+                                            color: "#000",
+                                          },
+                                          backgroundColor: "#45a29e",
+                                          color: "#fff",
+                                        },
+                                      ]}
+                                      onClick={() => {
+                                        handleSubmit(
+                                          assignment.id,
+                                          assignment.endDate,
+                                          assignment.endTime
+                                        );
+                                      }}
+                                    >
+                                      Submit
+                                    </Button>
+                                  );
+                              })}
+                          </Box>
+                        </Paper>
+                      </Box>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Paper>
-            </Box>
-          );
-        }
-      })}
+                </Paper>
+              </Box>
+            );
+          }
+        })}
       <Snackbar
         open={snackBarOpen}
         autoHideDuration={3000}
