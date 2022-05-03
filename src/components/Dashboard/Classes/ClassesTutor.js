@@ -28,8 +28,9 @@ import {
   doc,
   onSnapshot,
   getDocs,
-  arrayRemove,
   updateDoc,
+  deleteField,
+  arrayUnion,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import CreateClass from "../CreateClass/CreateClass";
@@ -172,6 +173,43 @@ const ClassesTutor = () => {
     }
   };
 
+  const handleUpdateProfile = async () => {
+    const classesArray = [];
+    try {
+      // delete field classes from tutor
+      const tutorRef = doc(db, "tutors", user?.uid);
+      await updateDoc(tutorRef, {
+        classes: deleteField(),
+      })
+        .then(async () => {
+          // check if there are any created classes by tutoremail
+          const q = query(
+            collection(db, "createdClasses"),
+            where("tutorEmail", "==", userDetails?.email)
+          );
+
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            classesArray.push(doc.data());
+          });
+        })
+        .then(() => {
+          classesArray.map(async (classArray) => {
+            // update profile and push subjects and grades in array
+            await updateDoc(doc(db, "tutors", user?.uid), {
+              classes: arrayUnion({
+                subject: classArray?.subject,
+                grade: classArray?.grade,
+              }),
+            });
+          });
+        });
+    } catch (error) {
+      setSnackBarOpen(true);
+      setMessage("An error occurred, please try again");
+    }
+  };
+
   const handleDelete = async (classCode, subject, grade, day, time) => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
@@ -182,6 +220,7 @@ const ClassesTutor = () => {
         await deleteJoinedClasses(classCode);
         await deleteBookings(subject, grade, day, time);
         await deleteDoc(doc(db, "createdClasses", classCode));
+        await handleUpdateProfile();
         setSnackBarOpen(true);
         setMessage("Deleted Successfully");
       }
