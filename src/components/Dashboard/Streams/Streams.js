@@ -399,7 +399,6 @@ const Streams = () => {
           }
         })
         ?.map((showFile) => {
-          console.log();
           return (
             <Box sx={{ boxShadow: 5, mt: 2 }} key={showFile.id + 1}>
               <Paper>

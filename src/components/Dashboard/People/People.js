@@ -18,6 +18,7 @@ import {
   Snackbar,
   Avatar,
   Typography,
+  TextField,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
 import { useUserAuth } from "../../../Context/UserAuthContext";
@@ -35,6 +36,7 @@ const People = () => {
   const { userDetails } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const LinkStyles = {
     color: "#45a29e",
@@ -125,94 +127,160 @@ const People = () => {
   if (persons.length !== 0) {
     return (
       <>
-        <Grid container spacing={2}>
-          {persons?.map((person, key) => {
-            return (
-              <Grid item xs={12} md={3} key={key}>
-                <Paper sx={{ p: 1 }}>
-                  {userDetails.accountType === "Tutor" && (
-                    <Box sx={{ float: "right" }}>
-                      <Button
-                        size="small"
-                        sx={{ color: "red" }}
-                        title={
-                          "Remove " +
-                          person.studentFirstName +
-                          " " +
-                          person.studentLastName
-                        }
-                        onClick={() => {
-                          deleteStudent(
-                            person.id,
-                            person.studentFirstName,
-                            person.studentLastName,
-                            person.studentEmail
-                          );
+        {persons.length !== 0 && (
+          <Box
+            sx={{
+              mt: 2,
+              display: "flex",
+              justifyContent: "right",
+              alignItems: "right",
+            }}
+          >
+            <TextField
+              size={"small"}
+              label={"Search people"}
+              onChange={(event) => {
+                setSearchTerm(event.target.value);
+              }}
+            />
+          </Box>
+        )}
+        <Grid container spacing={2} sx={{ mt: 1 }}>
+          {persons
+            ?.filter((person) => {
+              if (searchTerm === "") {
+                return person;
+              } else if (
+                person.studentFirstName
+                  .toString()
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ) {
+                return person;
+              } else if (
+                person.studentLastName
+                  .toString()
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ) {
+                return person;
+              } else if (
+                (person.studentFirstName + " " + person.studentLastName)
+                  .toString()
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ) {
+                return person;
+              } else if (
+                (person.studentLastName + " " + person.studentFirstName)
+                  .toString()
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ) {
+                return person;
+              } else if (
+                person.studentEmail
+                  .toString()
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
+              ) {
+                return person;
+              }
+            })
+
+            ?.map((person, key) => {
+              return (
+                <Grid item xs={12} md={3} key={key}>
+                  <Paper sx={{ p: 1, boxShadow: 15 }}>
+                    {userDetails.accountType === "Tutor" && (
+                      <Box sx={{ float: "right" }}>
+                        <Button
+                          size="small"
+                          sx={{ color: "red" }}
+                          title={
+                            "Remove " +
+                            person.studentFirstName +
+                            " " +
+                            person.studentLastName
+                          }
+                          onClick={() => {
+                            deleteStudent(
+                              person.id,
+                              person.studentFirstName,
+                              person.studentLastName,
+                              person.studentEmail
+                            );
+                          }}
+                        >
+                          <DeleteSweepIcon />
+                        </Button>
+                      </Box>
+                    )}
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      sx={{ mt: 4 }}
+                    >
+                      <Avatar
+                        sx={{
+                          backgroundColor: "orange",
+                          height: 60,
+                          width: 60,
                         }}
-                      >
-                        <DeleteSweepIcon />
-                      </Button>
+                        alt={person?.studentLastName}
+                        src={person?.studentProfilePic}
+                      />
                     </Box>
-                  )}
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    sx={{ mt: 4 }}
-                  >
-                    <Avatar
-                      sx={{ backgroundColor: "orange", height: 60, width: 60 }}
-                      alt={person?.studentLastName}
-                      src={person?.studentProfilePic}
-                    />
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Typography>
-                      {person?.studentFirstName + " " + person?.studentLastName}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Typography>
-                      <a
-                        href={"mailto:" + person?.studentEmail}
-                        style={LinkStyles}
-                      >
-                        {person?.studentEmail}
-                      </a>
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Typography>
-                      Chat:
-                      <Link to="/dashboard/chats" style={LinkStyles}>
-                        <ChatIcon
-                          sx={{ position: "relative", top: 7, left: 2 }}
-                        />
-                      </Link>
-                    </Typography>
-                  </Box>
-                </Paper>
-              </Grid>
-            );
-          })}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography>
+                        {person?.studentFirstName +
+                          " " +
+                          person?.studentLastName}
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography>
+                        <a
+                          href={"mailto:" + person?.studentEmail}
+                          style={LinkStyles}
+                        >
+                          {person?.studentEmail}
+                        </a>
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography>
+                        Chat:
+                        <Link to="/dashboard/chats" style={LinkStyles}>
+                          <ChatIcon
+                            sx={{ position: "relative", top: 7, left: 2 }}
+                          />
+                        </Link>
+                      </Typography>
+                    </Box>
+                  </Paper>
+                </Grid>
+              );
+            })}
         </Grid>
 
         <Snackbar
