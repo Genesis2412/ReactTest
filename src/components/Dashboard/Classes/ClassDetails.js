@@ -38,7 +38,7 @@ const ClassDetails = () => {
           to="/dashboard/classes"
           style={{ position: "absolute", color: "#fff" }}
         >
-          Tutorhuntz
+          MauTutorz
         </Logo>
         <Image src={ClassesDetailsBanner} alt="bannerImg" />
       </Box>

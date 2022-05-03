@@ -167,7 +167,7 @@ const TutorProfile = () => {
           to="/dashboard/tutors"
           style={{ textAlign: "left", color: "#2f3c7e", fontSize: 30 }}
         >
-          Tutorhuntz
+          MauTutorz
         </Logo>
       </Typography>
 

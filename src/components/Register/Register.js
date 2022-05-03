@@ -206,7 +206,7 @@ const Register = () => {
       <BannerContainer container direction="column">
         <BannerItems>
           <Logo to="/" style={{ color: "white" }}>
-            Tutorhuntz
+            MauTutorz
           </Logo>
 
           <LoginLink to="/login" style={{ color: "white" }}>

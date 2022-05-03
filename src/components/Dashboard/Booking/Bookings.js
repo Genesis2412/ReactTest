@@ -15,7 +15,7 @@ const Bookings = () => {
           to="/dashboard/classes"
           style={{ position: "absolute", color: "#fff" }}
         >
-          Tutorhuntz
+          MauTutorz
         </Logo>
         <Image
           src="https://www.incimages.com/uploaded_files/image/1920x1080/getty_509646667_126517.jpg"

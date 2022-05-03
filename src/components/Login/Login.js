@@ -105,7 +105,7 @@ const Login = () => {
     <>
       <LoginWrapper container spacing={0}>
         <BannerGrid item xs={12} md={5}>
-          <Logo to="/">Tutorhuntz</Logo>
+          <Logo to="/">MauTutorz</Logo>
           <BannerHeading>Enjoy the Experience</BannerHeading>
           <IconCopyright />
           <FormFooter>All rights reserved</FormFooter>

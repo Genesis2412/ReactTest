@@ -46,7 +46,7 @@ const Tutors = () => {
               fontSize: 30,
             }}
           >
-            Tutorhuntz
+            MauTutorz
           </Logo>
         </Typography>
 
