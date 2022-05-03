@@ -125,6 +125,10 @@ const CreateClass = () => {
         time: values?.time,
       });
 
+      await updateDoc(doc(db, "tutors", user?.uid), {
+        classes: arrayUnion({ subject: values?.subject, grade: values?.grade }),
+      });
+
       setSuccess("Class Created");
       setisSubmitting(false);
       handleClose();

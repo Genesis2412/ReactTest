@@ -14,7 +14,7 @@ import { TutorBannerContainer } from "../../GlobalStyles";
 
 const Tutors = () => {
   const [profiles, setProfiles] = useState([]);
-  const [profileClasses, setProfileClasses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   //reading all tutors details
   useEffect(() => {
@@ -27,19 +27,6 @@ const Tutors = () => {
       setProfiles(newProfiles);
     });
   }, []);
-
-  useEffect(() => {
-    const q = query(collection(db, "createdClasses"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const newClasses = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setProfileClasses(newClasses);
-    });
-  }, []);
-
-  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <>
@@ -116,6 +103,11 @@ const Tutors = () => {
           >
             Find your tutor now
           </Typography>
+          <Typography
+            sx={{ fontSize: 14, color: "#0f5298", fontFamily: "Monospace" }}
+          >
+            Search by name, email, subjects, grades
+          </Typography>
         </Box>
 
         <Box sx={{ textAlign: "center", mt: 2 }}>
@@ -136,7 +128,26 @@ const Tutors = () => {
 
       <Grid container spacing={2} sx={{ mt: 3 }}>
         {profiles
-          .filter((profile) => {
+          ?.filter((profile) => {
+            if (profile.classes.length !== 0) {
+              for (let i = 0; i < profile.classes.length; i++) {
+                if (
+                  profile.classes[i].subject
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return profile;
+                }
+                if (
+                  (
+                    "grade " + profile.classes[i].grade.toString().toLowerCase()
+                  ).includes(searchTerm.toLowerCase())
+                ) {
+                  return profile;
+                }
+              }
+            }
+
             if (searchTerm === "") {
               return profile;
             } else if (
@@ -173,7 +184,7 @@ const Tutors = () => {
               return profile;
             }
           })
-          .map((profile, key) => {
+          ?.map((profile, key) => {
             return (
               <Grid item xs={12} md={4} key={key}>
                 <Link
@@ -232,29 +243,15 @@ const Tutors = () => {
                       <Typography sx={{ fontSize: 16, color: "#c5c6c7" }}>
                         Teaches:
                       </Typography>
-                      <Box key={key}>
-                        <Typography sx={{ fontSize: 15, color: "#66fcf1" }}>
-                          {profileClasses
-                            ?.filter((profileClass) => {
-                              if (profileClass?.tutorEmail === profile?.email) {
-                                return profileClass;
-                              }
-                            })
-                            .map((profileClass, key) => {
-                              return (
-                                <Box key={key}>
-                                  <Typography
-                                    sx={{ fontSize: 15, color: "#66fcf1" }}
-                                  >
-                                    {profileClass.subject +
-                                      " Grade " +
-                                      profileClass.grade}
-                                  </Typography>
-                                </Box>
-                              );
-                            })}
-                        </Typography>
-                      </Box>
+                      {profile.classes?.map((classx, key) => {
+                        return (
+                          <Box key={key}>
+                            <Typography sx={{ fontSize: 15, color: "#66fcf1" }}>
+                              {classx?.subject + " Grade " + classx?.grade}
+                            </Typography>
+                          </Box>
+                        );
+                      })}
                     </Paper>
                   </Box>
                 </Link>
