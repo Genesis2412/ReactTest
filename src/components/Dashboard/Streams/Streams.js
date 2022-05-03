@@ -45,6 +45,7 @@ import ShowIcons from "../ShowIcons";
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ReactHtmlParser from "react-html-parser";
+import moment from "moment";
 
 const Streams = () => {
   const location = useLocation();
@@ -337,6 +338,18 @@ const Streams = () => {
         return (
           <Box sx={{ boxShadow: 5, mt: 5 }} key={showFile.id + 1}>
             <Paper>
+              <Box
+                sx={{ width: "100%", backgroundColor: "#1f2833", height: 30 }}
+              >
+                <Typography
+                  sx={{ pl: 1, pt: 0.5, fontSize: 14, color: "#66fcf1" }}
+                >
+                  <span style={{ color: "#fff" }}>Posted: </span>
+                  <span style={{ fontFamily: "Verdana" }}>
+                    {moment(showFile.timestamp.toDate()).fromNow()}
+                  </span>
+                </Typography>
+              </Box>
               <Box>
                 <Paper>
                   <Box
@@ -350,6 +363,7 @@ const Streams = () => {
                     <span style={{ flex: 1 }}>
                       {ReactHtmlParser(showFile.context)}
                     </span>
+
                     {userDetails?.accountType === "Tutor" && (
                       <Box>
                         <PopupState variant="popover" popupId="demo-popup-menu">
@@ -405,6 +419,7 @@ const Streams = () => {
                   </Box>
                 </Paper>
               </Box>
+
               <Grid container spacing={2} sx={{ p: 2 }}>
                 {showFile.fileName?.map((showFilesName, index) => {
                   return (
