@@ -129,10 +129,10 @@ const Tutors = () => {
       <Grid container spacing={2} sx={{ mt: 3 }}>
         {profiles
           ?.filter((profile) => {
-            if (profile.classes.length !== 0) {
-              for (let i = 0; i < profile.classes.length; i++) {
+            if (profile?.classes?.length !== 0) {
+              for (let i = 0; i < profile?.classes?.length; i++) {
                 if (
-                  profile.classes[i].subject
+                  profile?.classes[i].subject
                     .toLowerCase()
                     .includes(searchTerm.toLowerCase())
                 ) {
@@ -140,7 +140,8 @@ const Tutors = () => {
                 }
                 if (
                   (
-                    "grade " + profile.classes[i].grade.toString().toLowerCase()
+                    "grade " +
+                    profile?.classes[i]?.grade.toString().toLowerCase()
                   ).includes(searchTerm.toLowerCase())
                 ) {
                   return profile;
@@ -189,6 +190,7 @@ const Tutors = () => {
               <Grid item xs={12} md={4} key={key}>
                 <Link
                   to="tutor"
+                  style={{ textDecoration: "none" }}
                   state={{
                     email: profile.email,
                   }}
