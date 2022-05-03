@@ -125,21 +125,11 @@ const People = () => {
   if (persons.length !== 0) {
     return (
       <>
-        <Box sx={{ mt: 4, ml: 1 }}>
-          <Grid container spacing={1}>
-            {persons?.map((person, key) => {
-              return (
-                <Grid
-                  item
-                  xs={12}
-                  md={3}
-                  key={key}
-                  sx={{
-                    p: 1,
-                    borderRadius: 3,
-                    boxShadow: 10,
-                  }}
-                >
+        <Grid container spacing={2}>
+          {persons?.map((person, key) => {
+            return (
+              <Grid item xs={12} md={3} key={key}>
+                <Paper sx={{ p: 1 }}>
                   {userDetails.accountType === "Tutor" && (
                     <Box sx={{ float: "right" }}>
                       <Button
@@ -164,7 +154,6 @@ const People = () => {
                       </Button>
                     </Box>
                   )}
-
                   <Box
                     display="flex"
                     justifyContent="center"
@@ -220,11 +209,11 @@ const People = () => {
                       </Link>
                     </Typography>
                   </Box>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </Box>
+                </Paper>
+              </Grid>
+            );
+          })}
+        </Grid>
 
         <Snackbar
           open={snackBarOpen}
