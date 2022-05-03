@@ -419,7 +419,6 @@ const Streams = () => {
                       fullWidth
                       sx={{
                         p: 1,
-                        // backgroundColor: "#c5c6c7",
                         display: "flex",
                       }}
                     >
