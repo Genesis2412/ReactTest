@@ -237,8 +237,6 @@ const ClassesTutor = () => {
     }
   };
 
-  console.log(showLoader);
-
   return (
     <>
       <CreateClass />
