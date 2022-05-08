@@ -24,6 +24,7 @@ import ChatIcon from "@mui/icons-material/Chat";
 import { Logo } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { Link } from "react-router-dom";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const TutorProfile = () => {
   const location = useLocation();
@@ -33,6 +34,7 @@ const TutorProfile = () => {
   const { user, userDetails } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   //Styling
   const LinkStyles = {
@@ -60,6 +62,7 @@ const TutorProfile = () => {
 
   //reading all tutors details
   useEffect(() => {
+    setShowLoader(true);
     const q = query(collection(db, "tutors"), where("email", "==", email));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const newProfiles = querySnapshot.docs.map((doc) => ({
@@ -67,11 +70,13 @@ const TutorProfile = () => {
         id: doc.id,
       }));
       setProfiles(newProfiles);
+      setShowLoader(false);
     });
   }, []);
 
   //reading all tutors details
   useEffect(() => {
+    setShowLoader(true);
     const q = query(
       collection(db, "createdClasses"),
       where("tutorEmail", "==", email),
@@ -86,6 +91,7 @@ const TutorProfile = () => {
         id: doc.id,
       }));
       setClasses(newClasses);
+      setShowLoader(false);
     });
   }, []);
 
@@ -162,6 +168,8 @@ const TutorProfile = () => {
 
   return (
     <>
+      <LoadingSpinner stateLoader={showLoader} />
+
       <Typography textAlign={"right"}>
         <Logo
           to="/dashboard/tutors"

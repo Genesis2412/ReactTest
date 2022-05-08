@@ -4,20 +4,20 @@ import { collection, query, onSnapshot } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { Link } from "react-router-dom";
 import { Logo } from "../../GlobalStyles";
-import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import { TutorProfileIcon } from "../../GlobalStyles";
-import NoTutorProfileIcon from "../../../images/NoTutorProfileIcon.svg";
 import TutorProfileBanner from "../../../images/TutorProfileBanner.png";
 import WavesTutorProfile from "../../../images/WavesTutorProfile.svg";
 import { TutorBannerContainer } from "../../GlobalStyles";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const Tutors = () => {
   const [profiles, setProfiles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   //reading all tutors details
   useEffect(() => {
+    setShowLoader(true);
     const q = query(collection(db, "tutors"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const newProfiles = querySnapshot.docs.map((doc) => ({
@@ -25,11 +25,14 @@ const Tutors = () => {
         id: doc.id,
       }));
       setProfiles(newProfiles);
+      setShowLoader(false);
     });
   }, []);
 
   return (
     <>
+      <LoadingSpinner stateLoader={showLoader} />
+
       <Box
         sx={{
           boxShadow: 15,
