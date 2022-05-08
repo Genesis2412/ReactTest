@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import TutorNoAccessRoutes from "../../Redirect/TutorNoAccessRoutes";
 import Box from "@mui/material/Box";
 import Drawer from "./Drawer/Drawer";
 import Classes from "./Classes/Classes";
@@ -66,8 +67,22 @@ const Dashboard = () => {
             <Route path="chats" element={<Chats />} />
             <Route path="videocall" element={<Videocall />} />
             <Route path="notifications" element={<Notifications />} />
-            <Route path="tutors/*" element={<Tutors />} />
-            <Route path="tutors/tutor" element={<TutorProfile />} />
+            <Route
+              path="tutors/*"
+              element={
+                <TutorNoAccessRoutes>
+                  <Tutors />
+                </TutorNoAccessRoutes>
+              }
+            />
+            <Route
+              path="tutors/tutor"
+              element={
+                <TutorNoAccessRoutes>
+                  <TutorProfile />
+                </TutorNoAccessRoutes>
+              }
+            />
             <Route path="bookings" element={<Bookings />} />
             <Route
               path="classesdetails/assignments/viewsubmissions"
