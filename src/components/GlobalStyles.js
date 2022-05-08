@@ -123,6 +123,13 @@ export const TutorBookingEmpty = styled.img`
   }
 `;
 
+export const StreamEmpty = styled.img`
+  @media screen and (max-width: 768px) {
+    margin-top: 5vh;
+    width: 95%;
+  }
+`;
+
 export const ClassesIcon = styled.img`
   width: 40%;
   height: auto;

@@ -47,6 +47,8 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ReactHtmlParser from "react-html-parser";
 import moment from "moment";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import StreamBoard from "../../../images/NoExistBanner/StreamBoard.svg";
+import { StreamEmpty } from "../../GlobalStyles";
 
 const Streams = () => {
   const location = useLocation();
@@ -566,7 +568,24 @@ const Streams = () => {
 
       {!showLoader &&
         showFiles.length === 0 &&
-        userDetails.accountType === "Student" && <h1>No streams by tutor</h1>}
+        userDetails.accountType === "Student" && (
+          <Box mt={5}>
+            <Box display="flex" justifyContent="center" alignItems="center">
+              <StreamEmpty src={StreamBoard} alt={"image"} />
+            </Box>
+
+            <Typography
+              sx={{
+                textAlign: "center",
+                mt: 2,
+                fontFamily: "Montserrat",
+                fontSize: 19,
+              }}
+            >
+              No streams posted yet
+            </Typography>
+          </Box>
+        )}
 
       <Snackbar
         open={snackBarOpen}
