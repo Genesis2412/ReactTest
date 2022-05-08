@@ -109,6 +109,13 @@ export const TutorEmpty = styled.img`
   }
 `;
 
+export const StudentBookingEmpty = styled.img`
+  @media screen and (max-width: 768px) {
+    margin-top: 5vh;
+    width: 90%;
+  }
+`;
+
 export const ClassesIcon = styled.img`
   width: 40%;
   height: auto;
