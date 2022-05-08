@@ -23,12 +23,16 @@ import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useUserAuth } from "../../../Context/UserAuthContext";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import { TutorBookingEmpty } from "../../GlobalStyles";
+import TutorBookingBoard from "../../../images/NoExistBanner/TutorBookingBoard.svg";
 
 const BookingTutor = () => {
   const { user, userDetails } = useUserAuth();
   const [userBookings, setUserBookings] = useState([]);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   const HeaderStyle = {
     color: "#66fcf1",
@@ -134,6 +138,7 @@ const BookingTutor = () => {
 
   //reading all tutors details
   useEffect(() => {
+    setShowLoader(true);
     const unsubscribe = onSnapshot(
       query(
         collection(db, "bookings"),
@@ -146,123 +151,152 @@ const BookingTutor = () => {
           id: doc.id,
         }));
         setUserBookings(bookingsData);
+        setShowLoader(false);
       }
     );
   }, []);
 
   return (
     <>
-      {userBookings?.map((bookings, key) => {
-        return (
-          <Box sx={{ mt: 2 }} key={key}>
-            <Paper sx={{ p: 2 }}>
-              <Box sx={{ float: "right" }}>
-                <Button
-                  sx={[
-                    {
-                      "&:hover": {
-                        backgroundColor: "#45a29e",
-                        color: "#0b0c10",
-                      },
-                      backgroundColor: "#c5c6c7",
-                      color: "green",
-                      mr: 1,
-                    },
-                  ]}
-                  onClick={() => {
-                    addToClass(
-                      bookings?.id,
-                      bookings?.subject,
-                      bookings?.grade,
-                      bookings?.day,
-                      bookings?.time,
-                      bookings?.studentEmail,
-                      bookings?.studentFirstName,
-                      bookings?.studentLastName,
-                      bookings?.studentProfilePic
-                    );
-                  }}
-                >
-                  <AddIcon />
-                </Button>
-                <Button
-                  sx={[
-                    {
-                      "&:hover": {
-                        backgroundColor: "#45a29e",
-                      },
-                      backgroundColor: "#c5c6c7",
-                      color: "red",
-                    },
-                  ]}
-                  onClick={() => {
-                    deleteBookingTutor(bookings.id);
-                  }}
-                >
-                  <DeleteIcon />
-                </Button>
-              </Box>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={1}>
-                  <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <Avatar
-                      sx={{ width: 60, height: 60 }}
-                      alt={
-                        bookings.studentFirstName +
-                        " " +
-                        bookings.studentLastName
-                      }
-                      src={bookings.studentProfilePic}
-                    />
+      <LoadingSpinner stateLoader={showLoader} />
+      {!showLoader && userBookings.length !== 0 && (
+        <Box>
+          {userBookings?.map((bookings, key) => {
+            return (
+              <Box sx={{ mt: 2 }} key={key}>
+                <Paper sx={{ p: 2 }}>
+                  <Box sx={{ float: "right" }}>
+                    <Button
+                      sx={[
+                        {
+                          "&:hover": {
+                            backgroundColor: "#45a29e",
+                            color: "#0b0c10",
+                          },
+                          backgroundColor: "#c5c6c7",
+                          color: "green",
+                          mr: 1,
+                        },
+                      ]}
+                      onClick={() => {
+                        addToClass(
+                          bookings?.id,
+                          bookings?.subject,
+                          bookings?.grade,
+                          bookings?.day,
+                          bookings?.time,
+                          bookings?.studentEmail,
+                          bookings?.studentFirstName,
+                          bookings?.studentLastName,
+                          bookings?.studentProfilePic
+                        );
+                      }}
+                    >
+                      <AddIcon />
+                    </Button>
+                    <Button
+                      sx={[
+                        {
+                          "&:hover": {
+                            backgroundColor: "#45a29e",
+                          },
+                          backgroundColor: "#c5c6c7",
+                          color: "red",
+                        },
+                      ]}
+                      onClick={() => {
+                        deleteBookingTutor(bookings.id);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </Button>
                   </Box>
-                </Grid>
-                <Grid item xs={12} md={11}>
-                  <Paper
-                    sx={{ p: 2, backgroundColor: "#1f2833", color: "#fff" }}
-                  >
-                    <Typography>
-                      <span style={{ color: "#45a29e" }}>
-                        {bookings.studentFirstName +
-                          " " +
-                          bookings.studentLastName +
-                          " "}
-                      </span>
-                      wants to join your{" "}
-                      <span style={{ color: "#45a29e" }}>
-                        {bookings.day + " " + bookings.time}
-                      </span>
-                      , Grade{" "}
-                      <span style={{ color: "#45a29e" }}>
-                        {bookings?.grade + " " + bookings?.subject}
-                      </span>{" "}
-                      class
-                    </Typography>
-                    <Typography>
-                      Contact Here:{" "}
-                      <a
-                        href={"mailto:" + bookings?.studentEmail}
-                        style={{ textDecoration: "none", color: "#66fcf1" }}
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={1}>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
                       >
-                        {bookings?.studentEmail}
-                      </a>
-                    </Typography>
-                    <Typography>
-                      Or Chat Here:{" "}
-                      <CommentIcon
-                        sx={{ position: "relative", top: 8, color: "#66fcf1" }}
-                      />
-                    </Typography>
-                  </Paper>
-                </Grid>
-              </Grid>
-            </Paper>
+                        <Avatar
+                          sx={{ width: 60, height: 60 }}
+                          alt={
+                            bookings.studentFirstName +
+                            " " +
+                            bookings.studentLastName
+                          }
+                          src={bookings.studentProfilePic}
+                        />
+                      </Box>
+                    </Grid>
+                    <Grid item xs={12} md={11}>
+                      <Paper
+                        sx={{ p: 2, backgroundColor: "#1f2833", color: "#fff" }}
+                      >
+                        <Typography>
+                          <span style={{ color: "#45a29e" }}>
+                            {bookings.studentFirstName +
+                              " " +
+                              bookings.studentLastName +
+                              " "}
+                          </span>
+                          wants to join your{" "}
+                          <span style={{ color: "#45a29e" }}>
+                            {bookings.day + " " + bookings.time}
+                          </span>
+                          , Grade{" "}
+                          <span style={{ color: "#45a29e" }}>
+                            {bookings?.grade + " " + bookings?.subject}
+                          </span>{" "}
+                          class
+                        </Typography>
+                        <Typography>
+                          Contact Here:{" "}
+                          <a
+                            href={"mailto:" + bookings?.studentEmail}
+                            style={{ textDecoration: "none", color: "#66fcf1" }}
+                          >
+                            {bookings?.studentEmail}
+                          </a>
+                        </Typography>
+                        <Typography>
+                          Or Chat Here:{" "}
+                          <CommentIcon
+                            sx={{
+                              position: "relative",
+                              top: 8,
+                              color: "#66fcf1",
+                            }}
+                          />
+                        </Typography>
+                      </Paper>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Box>
+            );
+          })}
+        </Box>
+      )}
+
+      {!showLoader && userBookings.length === 0 && (
+        <Box mt={5}>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <TutorBookingEmpty src={TutorBookingBoard} alt={"image"} />
           </Box>
-        );
-      })}
+
+          <Typography
+            sx={{
+              textAlign: "center",
+              mt: 2,
+              fontFamily: "Montserrat",
+              fontSize: 19,
+            }}
+          >
+            No bookings available
+          </Typography>
+        </Box>
+      )}
 
       <Snackbar
         open={snackBarOpen}
