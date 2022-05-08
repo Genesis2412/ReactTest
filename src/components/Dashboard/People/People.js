@@ -25,7 +25,8 @@ import { useUserAuth } from "../../../Context/UserAuthContext";
 import ChatIcon from "@mui/icons-material/Chat";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import { PeopleViewIcon } from "../../GlobalStyles";
-import PeopleEmptyIcon from "../../../images/PeopleEmptyIcon.svg";
+import PeopleBoard from "../../../images/NoExistBanner/PeopleBoard.svg";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const People = () => {
   const [persons, setPersons] = useState([]);
@@ -37,6 +38,7 @@ const People = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   const LinkStyles = {
     color: "#45a29e",
@@ -110,6 +112,7 @@ const People = () => {
   };
 
   useEffect(() => {
+    setShowLoader(true);
     const q = query(
       collection(db, "joinedClasses"),
       where("classCode", "==", classCode),
@@ -121,185 +124,193 @@ const People = () => {
         id: doc.id,
       }));
       setPersons(data);
+      setShowLoader(false);
     });
   }, []);
 
-  if (persons.length !== 0) {
-    return (
-      <>
-        {persons.length !== 0 && (
-          <Box
+  return (
+    <>
+      <LoadingSpinner stateLoader={showLoader} />
+
+      {!showLoader && persons.length !== 0 && (
+        <Box
+          sx={{
+            mt: 2,
+            display: "flex",
+            justifyContent: "right",
+            alignItems: "right",
+          }}
+        >
+          <TextField
+            size={"small"}
+            label={"Search people"}
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
+            }}
+          />
+        </Box>
+      )}
+      <Grid container spacing={2} sx={{ mt: 1 }}>
+        {persons
+          ?.filter((person) => {
+            if (searchTerm === "") {
+              return person;
+            } else if (
+              person.studentFirstName
+                .toString()
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+            ) {
+              return person;
+            } else if (
+              person.studentLastName
+                .toString()
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+            ) {
+              return person;
+            } else if (
+              (person.studentFirstName + " " + person.studentLastName)
+                .toString()
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+            ) {
+              return person;
+            } else if (
+              (person.studentLastName + " " + person.studentFirstName)
+                .toString()
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+            ) {
+              return person;
+            } else if (
+              person.studentEmail
+                .toString()
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+            ) {
+              return person;
+            }
+          })
+
+          ?.map((person, key) => {
+            return (
+              <Grid item xs={12} md={3} key={key}>
+                <Paper sx={{ p: 1, boxShadow: 15 }}>
+                  {userDetails.accountType === "Tutor" && (
+                    <Box sx={{ float: "right" }}>
+                      <Button
+                        size="small"
+                        sx={{ color: "red" }}
+                        title={
+                          "Remove " +
+                          person.studentFirstName +
+                          " " +
+                          person.studentLastName
+                        }
+                        onClick={() => {
+                          deleteStudent(
+                            person.id,
+                            person.studentFirstName,
+                            person.studentLastName,
+                            person.studentEmail
+                          );
+                        }}
+                      >
+                        <DeleteSweepIcon />
+                      </Button>
+                    </Box>
+                  )}
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    sx={{ mt: 4 }}
+                  >
+                    <Avatar
+                      sx={{
+                        backgroundColor: "orange",
+                        height: 60,
+                        width: 60,
+                      }}
+                      alt={person?.studentLastName}
+                      src={person?.studentProfilePic}
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>
+                      {person?.studentFirstName + " " + person?.studentLastName}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>
+                      <a
+                        href={"mailto:" + person?.studentEmail}
+                        style={LinkStyles}
+                      >
+                        {person?.studentEmail}
+                      </a>
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography>
+                      Chat:
+                      <Link to="/dashboard/chats" style={LinkStyles}>
+                        <ChatIcon
+                          sx={{ position: "relative", top: 7, left: 2 }}
+                        />
+                      </Link>
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            );
+          })}
+      </Grid>
+
+      {!showLoader && persons.length === 0 && (
+        <Box sx={{ textAlign: "center", mt: 3 }}>
+          <PeopleViewIcon src={PeopleBoard} alt="icon" />
+          <Typography
             sx={{
+              textAlign: "center",
               mt: 2,
-              display: "flex",
-              justifyContent: "right",
-              alignItems: "right",
+              fontFamily: "Montserrat",
+              fontSize: 19,
             }}
           >
-            <TextField
-              size={"small"}
-              label={"Search people"}
-              onChange={(event) => {
-                setSearchTerm(event.target.value);
-              }}
-            />
-          </Box>
-        )}
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          {persons
-            ?.filter((person) => {
-              if (searchTerm === "") {
-                return person;
-              } else if (
-                person.studentFirstName
-                  .toString()
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return person;
-              } else if (
-                person.studentLastName
-                  .toString()
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return person;
-              } else if (
-                (person.studentFirstName + " " + person.studentLastName)
-                  .toString()
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return person;
-              } else if (
-                (person.studentLastName + " " + person.studentFirstName)
-                  .toString()
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return person;
-              } else if (
-                person.studentEmail
-                  .toString()
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return person;
-              }
-            })
+            No one in class
+          </Typography>
+        </Box>
+      )}
 
-            ?.map((person, key) => {
-              return (
-                <Grid item xs={12} md={3} key={key}>
-                  <Paper sx={{ p: 1, boxShadow: 15 }}>
-                    {userDetails.accountType === "Tutor" && (
-                      <Box sx={{ float: "right" }}>
-                        <Button
-                          size="small"
-                          sx={{ color: "red" }}
-                          title={
-                            "Remove " +
-                            person.studentFirstName +
-                            " " +
-                            person.studentLastName
-                          }
-                          onClick={() => {
-                            deleteStudent(
-                              person.id,
-                              person.studentFirstName,
-                              person.studentLastName,
-                              person.studentEmail
-                            );
-                          }}
-                        >
-                          <DeleteSweepIcon />
-                        </Button>
-                      </Box>
-                    )}
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      sx={{ mt: 4 }}
-                    >
-                      <Avatar
-                        sx={{
-                          backgroundColor: "orange",
-                          height: 60,
-                          width: 60,
-                        }}
-                        alt={person?.studentLastName}
-                        src={person?.studentProfilePic}
-                      />
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography>
-                        {person?.studentFirstName +
-                          " " +
-                          person?.studentLastName}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography>
-                        <a
-                          href={"mailto:" + person?.studentEmail}
-                          style={LinkStyles}
-                        >
-                          {person?.studentEmail}
-                        </a>
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography>
-                        Chat:
-                        <Link to="/dashboard/chats" style={LinkStyles}>
-                          <ChatIcon
-                            sx={{ position: "relative", top: 7, left: 2 }}
-                          />
-                        </Link>
-                      </Typography>
-                    </Box>
-                  </Paper>
-                </Grid>
-              );
-            })}
-        </Grid>
-
-        <Snackbar
-          open={snackBarOpen}
-          autoHideDuration={3000}
-          onClose={handleClose}
-          message={message}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        />
-      </>
-    );
-  } else {
-    return (
-      <Box sx={{ textAlign: "center", mt: 3 }}>
-        <PeopleViewIcon src={PeopleEmptyIcon} alt="icon" />
-        <Typography>No one in Class</Typography>
-      </Box>
-    );
-  }
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+    </>
+  );
 };
 
 export default People;
