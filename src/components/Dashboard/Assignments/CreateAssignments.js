@@ -139,7 +139,7 @@ const CreateAssignments = () => {
           });
         }
 
-        if (joinedStudents.length !== 0 && assignmentId === "") {
+        if (joinedStudents?.length !== 0 && assignmentId === "") {
           joinedStudents.map(async (joinedStudent) => {
             await setDoc(doc(collection(db, "submittedAssignments")), {
               classCode: classCode,
@@ -505,7 +505,7 @@ const CreateAssignments = () => {
             />
           </Box>
 
-          {assignments.length !== 0 && (
+          {assignments?.length !== 0 && (
             <Box
               sx={{
                 mt: 2,
@@ -526,8 +526,8 @@ const CreateAssignments = () => {
 
           {assignments
             ?.filter((assignment) => {
-              if (assignment.fileName.length !== 0) {
-                for (let i = 0; i < assignment.fileName.length; i++) {
+              if (assignment?.fileName?.length !== 0) {
+                for (let i = 0; i < assignment?.fileName?.length; i++) {
                   if (
                     assignment.fileName[i]
                       .toLowerCase()
