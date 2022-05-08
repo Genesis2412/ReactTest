@@ -18,6 +18,8 @@ import VideoCallIcon from "@mui/icons-material/VideoCall";
 import ChatIcon from "@mui/icons-material/Chat";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ClassesBanner from "../../../images/ClassesBanner.jpg";
+import ScrumBoard from "../../../images/NoExistBanner/ScrumBoard.svg";
+import { TutorEmpty } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { db } from "../../../firebase-config";
 import {
@@ -34,11 +36,13 @@ import {
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import CreateClass from "../CreateClass/CreateClass";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const ClassesTutor = () => {
   const { user, userDetails, classes, setClasses } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -50,6 +54,7 @@ const ClassesTutor = () => {
   useEffect(() => {
     const getCreatedClasses = async () => {
       try {
+        setShowLoader(true);
         const data = query(
           collection(db, "createdClasses"),
           where("tutorEmail", "==", userDetails?.email)
@@ -60,8 +65,10 @@ const ClassesTutor = () => {
             id: doc.id,
           }));
           setClasses(newFiles);
+          setShowLoader(false);
         });
       } catch (err) {
+        setShowLoader(false);
         setSnackBarOpen(true);
         setMessage("An error occurred, please try again");
       }
@@ -230,150 +237,185 @@ const ClassesTutor = () => {
     }
   };
 
+  console.log(showLoader);
+
   return (
     <>
       <CreateClass />
-      <Grid container rowSpacing={4} spacing={2} mt={1}>
-        {classes.map((showClass) => {
-          return (
-            <Grid item xs={11} md={3} key={showClass.id}>
-              <Card
-                variant="outlined"
-                style={{
-                  backgroundColor: "#615F66",
-                  borderRadius: 10,
-                }}
-              >
-                <CardActionArea>
-                  <Link
-                    to={"/dashboard/classesdetails/streams"}
-                    state={{
-                      classCode: showClass.classCode,
-                      classSubject: showClass.subject,
-                      classGrade: showClass.grade,
-                      classDay: showClass.day,
-                      classTime: showClass.time,
-                    }}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <CardMedia
-                      component="img"
-                      height="150"
-                      image={ClassesBanner}
-                      alt="picture"
-                    />
-                    <CardContent sx={{ height: "15vh" }}>
-                      <Typography
-                        sx={{
-                          fontSize: 16,
-                          fontWeight: "bold",
-                          color: "#f6f6f6",
-                        }}
-                      >
-                        {showClass.subject}
-                      </Typography>
+      <LoadingSpinner stateLoader={showLoader} />
 
-                      <Typography sx={{ fontSize: 14, color: "#f6f6f6" }}>
-                        Grade: {showClass.grade}
-                      </Typography>
+      {!showLoader && classes.length !== 0 && (
+        <Grid container rowSpacing={4} spacing={2} mt={1}>
+          {classes.map((showClass) => {
+            return (
+              <Grid item xs={11} md={3} key={showClass.id}>
+                <Card
+                  variant="outlined"
+                  style={{
+                    backgroundColor: "#615F66",
+                    borderRadius: 10,
+                  }}
+                >
+                  <CardActionArea>
+                    <Link
+                      to={"/dashboard/classesdetails/streams"}
+                      state={{
+                        classCode: showClass.classCode,
+                        classSubject: showClass.subject,
+                        classGrade: showClass.grade,
+                        classDay: showClass.day,
+                        classTime: showClass.time,
+                      }}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <CardMedia
+                        component="img"
+                        height="150"
+                        image={ClassesBanner}
+                        alt="picture"
+                      />
+                      <CardContent sx={{ height: "15vh" }}>
+                        <Typography
+                          sx={{
+                            fontSize: 16,
+                            fontWeight: "bold",
+                            color: "#f6f6f6",
+                          }}
+                        >
+                          {showClass.subject}
+                        </Typography>
 
-                      <Typography sx={{ fontSize: 14, color: "#f6f6f6" }}>
-                        {showClass.day + ", " + showClass.time}
-                      </Typography>
+                        <Typography sx={{ fontSize: 14, color: "#f6f6f6" }}>
+                          Grade: {showClass.grade}
+                        </Typography>
 
-                      <Typography
-                        sx={{ pt: 3, fontSize: 15, color: "#66fcf1" }}
-                      >
-                        Description: {showClass.description}
-                      </Typography>
-                    </CardContent>
-                  </Link>
-                </CardActionArea>
-                <CardActions>
-                  <Box sx={{ position: "relative", left: "90%" }}>
-                    <PopupState variant="popover" popupId="demo-popup-menu">
-                      {(popupState) => (
-                        <>
-                          <MoreVertIcon
-                            {...bindTrigger(popupState)}
-                            sx={{ cursor: "pointer", color: "#52d6f4" }}
-                          />
-                          <Menu {...bindMenu(popupState)}>
-                            <MenuItem>
-                              <Link
-                                size="small"
-                                style={{
-                                  textDecoration: "none",
-                                }}
-                                to="/dashboard/chats"
-                              >
-                                <ChatIcon
-                                  sx={{
-                                    color: "#45a29e",
-                                    fontSize: "20px",
-                                    mr: 1,
-                                    position: "relative",
-                                    top: 5,
+                        <Typography sx={{ fontSize: 14, color: "#f6f6f6" }}>
+                          {showClass.day + ", " + showClass.time}
+                        </Typography>
+
+                        <Typography
+                          sx={{ pt: 3, fontSize: 15, color: "#66fcf1" }}
+                        >
+                          Description: {showClass.description}
+                        </Typography>
+                      </CardContent>
+                    </Link>
+                  </CardActionArea>
+                  <CardActions>
+                    <Box sx={{ position: "relative", left: "90%" }}>
+                      <PopupState variant="popover" popupId="demo-popup-menu">
+                        {(popupState) => (
+                          <>
+                            <MoreVertIcon
+                              {...bindTrigger(popupState)}
+                              sx={{ cursor: "pointer", color: "#52d6f4" }}
+                            />
+                            <Menu {...bindMenu(popupState)}>
+                              <MenuItem>
+                                <Link
+                                  size="small"
+                                  style={{
+                                    textDecoration: "none",
                                   }}
-                                />
-                                <span style={{ color: "#0b0c10" }}>Chat</span>
-                              </Link>
-                            </MenuItem>
-                            <MenuItem>
-                              <Link
-                                size="small"
-                                style={{
-                                  textDecoration: "none",
+                                  to="/dashboard/chats"
+                                >
+                                  <ChatIcon
+                                    sx={{
+                                      color: "#45a29e",
+                                      fontSize: "20px",
+                                      mr: 1,
+                                      position: "relative",
+                                      top: 5,
+                                    }}
+                                  />
+                                  <span style={{ color: "#0b0c10" }}>Chat</span>
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <Link
+                                  size="small"
+                                  style={{
+                                    textDecoration: "none",
+                                  }}
+                                  to="/dashboard/videocall"
+                                >
+                                  <VideoCallIcon
+                                    sx={{
+                                      color: "#45a29e",
+                                      fontSize: "20px",
+                                      mr: 1,
+                                      position: "relative",
+                                      top: 5,
+                                    }}
+                                  />
+                                  <span style={{ color: "#0b0c10" }}>
+                                    Videocall
+                                  </span>
+                                </Link>
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleDelete(
+                                    showClass.classCode,
+                                    showClass.subject,
+                                    showClass.grade,
+                                    showClass.day,
+                                    showClass.time
+                                  );
                                 }}
-                                to="/dashboard/videocall"
                               >
-                                <VideoCallIcon
+                                <DeleteOutlineIcon
                                   sx={{
-                                    color: "#45a29e",
                                     fontSize: "20px",
                                     mr: 1,
-                                    position: "relative",
-                                    top: 5,
+                                    color: "red",
                                   }}
                                 />
                                 <span style={{ color: "#0b0c10" }}>
-                                  Videocall
+                                  Delete Class
                                 </span>
-                              </Link>
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => {
-                                handleDelete(
-                                  showClass.classCode,
-                                  showClass.subject,
-                                  showClass.grade,
-                                  showClass.day,
-                                  showClass.time
-                                );
-                              }}
-                            >
-                              <DeleteOutlineIcon
-                                sx={{
-                                  fontSize: "20px",
-                                  mr: 1,
-                                  color: "red",
-                                }}
-                              />
-                              <span style={{ color: "#0b0c10" }}>
-                                Delete Class
-                              </span>
-                            </MenuItem>
-                          </Menu>
-                        </>
-                      )}
-                    </PopupState>
-                  </Box>
-                </CardActions>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
+                              </MenuItem>
+                            </Menu>
+                          </>
+                        )}
+                      </PopupState>
+                    </Box>
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      )}
+
+      {!showLoader && classes.length === 0 && (
+        <Box mt={5}>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <TutorEmpty src={ScrumBoard} alt={"image"} />
+          </Box>
+
+          <Typography
+            sx={{
+              textAlign: "center",
+              mt: 2,
+              fontFamily: "Montserrat",
+              fontSize: 19,
+            }}
+          >
+            Let's begin the new adventure
+          </Typography>
+          <Typography
+            sx={{
+              textAlign: "center",
+              fontFamily: "Montserrat",
+              fontSize: 16,
+            }}
+          >
+            Create your class
+          </Typography>
+        </Box>
+      )}
+
       <Snackbar
         open={snackBarOpen}
         autoHideDuration={3000}

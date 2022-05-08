@@ -24,6 +24,7 @@ import {
 } from "firebase/firestore";
 import { ViewSubmissionsImg } from "../../GlobalStyles";
 import ViewSubmissionIcon from "../../../images/ViewSubmissionIcon.svg";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const ViewSubmissions = () => {
   const location = useLocation();
@@ -32,6 +33,7 @@ const ViewSubmissions = () => {
   const [submittedAssignments, setSubmittedAssignments] = useState([]);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   const HeaderStyle = {
     color: "#66fcf1",
@@ -97,6 +99,7 @@ const ViewSubmissions = () => {
 
   // reading all submitted assignments
   useEffect(() => {
+    setShowLoader(true);
     const q = query(
       collection(db, "submittedAssignments"),
       where("classCode", "==", classCode),
@@ -108,12 +111,15 @@ const ViewSubmissions = () => {
         id: doc.id,
       }));
       setSubmittedAssignments(data);
+      setShowLoader(false);
     });
   }, []);
 
-  if (submittedAssignments.length !== 0) {
-    return (
-      <>
+  return (
+    <>
+      <LoadingSpinner stateLoader={showLoader} />
+
+      {!showLoader && submittedAssignments.length !== 0 && (
         <Box>
           <TableContainer
             component={Paper}
@@ -252,23 +258,42 @@ const ViewSubmissions = () => {
             </Table>
           </TableContainer>
         </Box>
-        <Snackbar
-          open={snackBarOpen}
-          autoHideDuration={3000}
-          onClose={handleClose}
-          message={message}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-        />
-      </>
-    );
-  } else {
-    return (
-      <Box sx={{ textAlign: "center", mt: 10 }}>
-        <ViewSubmissionsImg src={ViewSubmissionIcon} alt="icon" />
-        <Typography>No Submissions yet</Typography>
-      </Box>
-    );
-  }
+      )}
+
+      {!showLoader && submittedAssignments.length === 0 && (
+        <Box sx={{ textAlign: "center", mt: 10 }}>
+          <ViewSubmissionsImg src={ViewSubmissionIcon} alt="icon" />
+          <Typography
+            sx={{
+              textAlign: "center",
+              mt: 2,
+              fontFamily: "Montserrat",
+              fontSize: 19,
+            }}
+          >
+            No assignment submitted
+          </Typography>
+          <Typography
+            sx={{
+              textAlign: "center",
+              fontFamily: "Montserrat",
+              fontSize: 16,
+            }}
+          >
+            No student available in class
+          </Typography>
+        </Box>
+      )}
+
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+    </>
+  );
 };
 
 export default ViewSubmissions;
