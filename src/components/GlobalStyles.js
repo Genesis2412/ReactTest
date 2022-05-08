@@ -100,6 +100,15 @@ export const FormFooter = styled.h1`
     display: none;
   }
 `;
+
+// Empty banner icons
+export const TutorEmpty = styled.img`
+  @media screen and (max-width: 768px) {
+    margin-top: 10vh;
+    width: 100%;
+  }
+`;
+
 export const ClassesIcon = styled.img`
   width: 40%;
   height: auto;
@@ -131,7 +140,8 @@ export const PeopleViewIcon = styled.img`
   width: 20%;
   height: auto;
   @media screen and (max-width: 768px) {
-    width: 95%;
+    margin-top: 5vh;
+    width: 90%;
   }
 `;
 

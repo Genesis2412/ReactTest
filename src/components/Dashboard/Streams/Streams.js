@@ -46,6 +46,7 @@ import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ReactHtmlParser from "react-html-parser";
 import moment from "moment";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const Streams = () => {
   const location = useLocation();
@@ -63,6 +64,7 @@ const Streams = () => {
   const [showFiles, setShowFiles] = useState([]);
   const [streamCode, setStreamCode] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -271,6 +273,7 @@ const Streams = () => {
   };
 
   useEffect(() => {
+    setShowLoader(true);
     const q = query(
       collection(db, "announcements"),
       where("classCode", "==", classCode),
@@ -282,11 +285,14 @@ const Streams = () => {
         id: doc.id,
       }));
       setShowFiles(newFiles);
+      setShowLoader(false);
     });
   }, []);
 
   return (
     <>
+      <LoadingSpinner stateLoader={showLoader} />
+
       {userDetails?.accountType === "Tutor" && (
         <Box sx={{ boxShadow: 5, mt: 3, p: 2 }}>
           <Box sx={{ width: "99%" }}>
@@ -335,209 +341,232 @@ const Streams = () => {
         </Box>
       )}
 
-      {showFiles.length !== 0 && (
-        <Box
-          sx={{
-            mt: 2,
-            display: "flex",
-            justifyContent: "right",
-            alignItems: "right",
-          }}
-        >
-          <TextField
-            size={"small"}
-            label={"Search streams"}
-            onChange={(event) => {
-              setSearchTerm(event.target.value);
+      {!showLoader && showFiles.length !== 0 && (
+        <>
+          <Box
+            sx={{
+              mt: 2,
+              display: "flex",
+              justifyContent: "right",
+              alignItems: "right",
             }}
-          />
-        </Box>
-      )}
+          >
+            <TextField
+              size={"small"}
+              label={"Search streams"}
+              onChange={(event) => {
+                setSearchTerm(event.target.value);
+              }}
+            />
+          </Box>
 
-      {showFiles
-        ?.filter((showFile) => {
-          if (showFile.fileName.length !== 0) {
-            for (let i = 0; i < showFile.fileName.length; i++) {
-              if (
-                showFile.fileName[i]
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-              ) {
-                return showFile;
-              }
-            }
-          }
-          if (searchTerm === "") {
-            return showFile;
-          } else if (
-            showFile?.context
-              .toString()
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-          ) {
-            return showFile;
-          }
+          <Box>
+            {showFiles
+              ?.filter((showFile) => {
+                if (showFile.fileName.length !== 0) {
+                  for (let i = 0; i < showFile.fileName.length; i++) {
+                    if (
+                      showFile.fileName[i]
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                    ) {
+                      return showFile;
+                    }
+                  }
+                }
+                if (searchTerm === "") {
+                  return showFile;
+                } else if (
+                  showFile?.context
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return showFile;
+                }
 
-          if (
-            showFile.timestamp
-              .toDate()
-              .toString()
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-          ) {
-            return showFile;
-          }
+                if (
+                  showFile.timestamp
+                    .toDate()
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return showFile;
+                }
 
-          if (
-            moment(showFile.timestamp.toDate())
-              .fromNow()
-              .toString()
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase())
-          ) {
-            return showFile;
-          }
-        })
-        ?.map((showFile) => {
-          return (
-            <Box sx={{ boxShadow: 5, mt: 2 }} key={showFile.id + 1}>
-              <Paper>
-                <Box
-                  sx={{ width: "100%", backgroundColor: "#1f2833", height: 30 }}
-                >
-                  <Typography
-                    sx={{ pl: 1, pt: 0.5, fontSize: 14, color: "#66fcf1" }}
-                  >
-                    <span style={{ color: "#fff" }}>Posted: </span>
-                    <span style={{ fontFamily: "Verdana" }}>
-                      {moment(showFile?.timestamp?.toDate())?.fromNow()}
-                    </span>
-                  </Typography>
-                </Box>
-                <Box>
-                  <Paper>
-                    <Box
-                      fullWidth
-                      sx={{
-                        p: 1,
-                        display: "flex",
-                      }}
-                    >
-                      <span style={{ flex: 1 }}>
-                        {ReactHtmlParser(showFile.context)}
-                      </span>
-
-                      {userDetails?.accountType === "Tutor" && (
-                        <Box>
-                          <PopupState
-                            variant="popover"
-                            popupId="demo-popup-menu"
-                          >
-                            {(popupState) => (
-                              <>
-                                <MoreVertIcon
-                                  {...bindTrigger(popupState)}
-                                  sx={{ cursor: "pointer", color: "#1f2833" }}
-                                />
-                                <Menu {...bindMenu(popupState)}>
-                                  <MenuItem
-                                    onClick={() => {
-                                      updateStream(
-                                        showFile.id,
-                                        showFile.context
-                                      );
-                                    }}
-                                  >
-                                    <ChangeCircleIcon
-                                      sx={{
-                                        fontSize: "20px",
-                                        mr: 1,
-                                        color: "#45a29e",
-                                      }}
-                                    />
-                                    <span style={{ color: "#0b0c10" }}>
-                                      Update Stream
-                                    </span>
-                                  </MenuItem>
-
-                                  <MenuItem
-                                    onClick={() => {
-                                      handleDeleteStream(
-                                        showFile.id,
-                                        showFile.fileName
-                                      );
-                                    }}
-                                  >
-                                    <CloseIcon
-                                      sx={{
-                                        fontSize: "20px",
-                                        mr: 1,
-                                        color: "red",
-                                      }}
-                                    />
-                                    <span style={{ color: "#0b0c10" }}>
-                                      Delete Stream
-                                    </span>
-                                  </MenuItem>
-                                </Menu>
-                              </>
-                            )}
-                          </PopupState>
-                        </Box>
-                      )}
-                    </Box>
-                  </Paper>
-                </Box>
-
-                <Grid container spacing={2} sx={{ p: 2 }}>
-                  {showFile.fileName?.map((showFilesName, index) => {
-                    return (
-                      <Grid item md={3} xs={12} key={index}>
-                        <Box
+                if (
+                  moment(showFile.timestamp.toDate())
+                    .fromNow()
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return showFile;
+                }
+              })
+              ?.map((showFile) => {
+                return (
+                  <Box sx={{ boxShadow: 5, mt: 2 }} key={showFile.id + 1}>
+                    <Paper>
+                      <Box
+                        sx={{
+                          width: "100%",
+                          backgroundColor: "#1f2833",
+                          height: 30,
+                        }}
+                      >
+                        <Typography
                           sx={{
-                            boxShadow: 1,
-                            textAlign: "center",
+                            pl: 1,
+                            pt: 0.5,
+                            fontSize: 14,
+                            color: "#66fcf1",
                           }}
                         >
-                          <Paper sx={{ p: 1 }}>
+                          <span style={{ color: "#fff" }}>Posted: </span>
+                          <span style={{ fontFamily: "Verdana" }}>
+                            {moment(showFile?.timestamp?.toDate())?.fromNow()}
+                          </span>
+                        </Typography>
+                      </Box>
+                      <Box>
+                        <Paper>
+                          <Box
+                            fullWidth
+                            sx={{
+                              p: 1,
+                              display: "flex",
+                            }}
+                          >
+                            <span style={{ flex: 1 }}>
+                              {ReactHtmlParser(showFile.context)}
+                            </span>
+
                             {userDetails?.accountType === "Tutor" && (
-                              <RemoveCircleOutlineIcon
-                                sx={{
-                                  color: "red",
-                                  fontSize: 20,
-                                  float: "right",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() =>
-                                  handleObjectDelete(
-                                    showFile.id,
-                                    showFilesName,
-                                    showFile.fileUrl[index]
-                                  )
-                                }
-                              />
-                            )}
-                            <a
-                              href={showFile.fileUrl[index]}
-                              target="_blank"
-                              rel="noreferrer"
-                              style={{ textDecoration: "none", color: "#000" }}
-                            >
-                              <Box p={1}>
-                                <ShowIcons fileName={showFilesName} />
-                                <Typography>{showFilesName}</Typography>
+                              <Box>
+                                <PopupState
+                                  variant="popover"
+                                  popupId="demo-popup-menu"
+                                >
+                                  {(popupState) => (
+                                    <>
+                                      <MoreVertIcon
+                                        {...bindTrigger(popupState)}
+                                        sx={{
+                                          cursor: "pointer",
+                                          color: "#1f2833",
+                                        }}
+                                      />
+                                      <Menu {...bindMenu(popupState)}>
+                                        <MenuItem
+                                          onClick={() => {
+                                            updateStream(
+                                              showFile.id,
+                                              showFile.context
+                                            );
+                                          }}
+                                        >
+                                          <ChangeCircleIcon
+                                            sx={{
+                                              fontSize: "20px",
+                                              mr: 1,
+                                              color: "#45a29e",
+                                            }}
+                                          />
+                                          <span style={{ color: "#0b0c10" }}>
+                                            Update Stream
+                                          </span>
+                                        </MenuItem>
+
+                                        <MenuItem
+                                          onClick={() => {
+                                            handleDeleteStream(
+                                              showFile.id,
+                                              showFile.fileName
+                                            );
+                                          }}
+                                        >
+                                          <CloseIcon
+                                            sx={{
+                                              fontSize: "20px",
+                                              mr: 1,
+                                              color: "red",
+                                            }}
+                                          />
+                                          <span style={{ color: "#0b0c10" }}>
+                                            Delete Stream
+                                          </span>
+                                        </MenuItem>
+                                      </Menu>
+                                    </>
+                                  )}
+                                </PopupState>
                               </Box>
-                            </a>
-                          </Paper>
-                        </Box>
+                            )}
+                          </Box>
+                        </Paper>
+                      </Box>
+
+                      <Grid container spacing={2} sx={{ p: 2 }}>
+                        {showFile.fileName?.map((showFilesName, index) => {
+                          return (
+                            <Grid item md={3} xs={12} key={index}>
+                              <Box
+                                sx={{
+                                  boxShadow: 1,
+                                  textAlign: "center",
+                                }}
+                              >
+                                <Paper sx={{ p: 1 }}>
+                                  {userDetails?.accountType === "Tutor" && (
+                                    <RemoveCircleOutlineIcon
+                                      sx={{
+                                        color: "red",
+                                        fontSize: 20,
+                                        float: "right",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        handleObjectDelete(
+                                          showFile.id,
+                                          showFilesName,
+                                          showFile.fileUrl[index]
+                                        )
+                                      }
+                                    />
+                                  )}
+                                  <a
+                                    href={showFile.fileUrl[index]}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    style={{
+                                      textDecoration: "none",
+                                      color: "#000",
+                                    }}
+                                  >
+                                    <Box p={1}>
+                                      <ShowIcons fileName={showFilesName} />
+                                      <Typography>{showFilesName}</Typography>
+                                    </Box>
+                                  </a>
+                                </Paper>
+                              </Box>
+                            </Grid>
+                          );
+                        })}
                       </Grid>
-                    );
-                  })}
-                </Grid>
-              </Paper>
-            </Box>
-          );
-        })}
+                    </Paper>
+                  </Box>
+                );
+              })}
+          </Box>
+        </>
+      )}
+
+      {!showLoader &&
+        showFiles.length === 0 &&
+        userDetails.accountType === "Student" && <h1>No streams by tutor</h1>}
 
       <Snackbar
         open={snackBarOpen}
