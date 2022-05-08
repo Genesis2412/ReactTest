@@ -19,7 +19,7 @@ import ChatIcon from "@mui/icons-material/Chat";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ClassesBanner from "../../../images/ClassesBanner.jpg";
 import ScrumBoard from "../../../images/NoExistBanner/ScrumBoard.svg";
-import { TutorEmpty } from "../../GlobalStyles";
+import { ClassesEmpty } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { db } from "../../../firebase-config";
 import {
@@ -391,7 +391,7 @@ const ClassesTutor = () => {
       {!showLoader && classes.length === 0 && (
         <Box mt={5}>
           <Box display="flex" justifyContent="center" alignItems="center">
-            <TutorEmpty src={ScrumBoard} alt={"image"} />
+            <ClassesEmpty src={ScrumBoard} alt={"image"} />
           </Box>
 
           <Typography

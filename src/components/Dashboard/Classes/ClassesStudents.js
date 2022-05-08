@@ -29,11 +29,15 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import ScrumBoard from "../../../images/NoExistBanner/ScrumBoard.svg";
+import { ClassesEmpty } from "../../GlobalStyles";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const ClassesStudents = () => {
   const { user, userDetails, classes, setClasses } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -44,6 +48,7 @@ const ClassesStudents = () => {
 
   useEffect(() => {
     const read = async () => {
+      setShowLoader(true);
       try {
         const data = query(
           collection(db, "joinedClasses"),
@@ -55,8 +60,10 @@ const ClassesStudents = () => {
             id: doc.id,
           }));
           setClasses(newFiles);
+          setShowLoader(false);
         });
       } catch (err) {
+        setShowLoader(false);
         setSnackBarOpen(true);
         setMessage("An error occurred, please try again");
       }
@@ -139,152 +146,193 @@ const ClassesStudents = () => {
 
   return (
     <>
-      <Grid container rowSpacing={4} spacing={2}>
-        {classes.map((showClass) => {
-          return (
-            <Grid item xs={11} md={3} key={showClass.id}>
-              <Card
-                variant="outlined"
-                style={{
-                  backgroundColor: "#c5c6c7",
-                  borderRadius: 10,
-                }}
-              >
-                <CardActionArea>
-                  <Link
-                    to={"/dashboard/classesdetails/streams"}
-                    state={{
-                      classCode: showClass.classCode,
-                      classSubject: showClass.subject,
-                      classGrade: showClass.grade,
-                    }}
-                    style={{ color: "#000", textDecoration: "none" }}
-                  >
-                    <CardContent
-                      sx={{
-                        backgroundImage:
-                          "url(https://wallpaperaccess.com/full/187161.jpg)",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
-                        backgroundSize: "cover",
+      <LoadingSpinner stateLoader={showLoader} />
+
+      {!showLoader && classes.length !== 0 && (
+        <Grid container rowSpacing={4} spacing={2}>
+          {classes.map((showClass) => {
+            return (
+              <Grid item xs={11} md={3} key={showClass.id}>
+                <Card
+                  variant="outlined"
+                  style={{
+                    backgroundColor: "#c5c6c7",
+                    borderRadius: 10,
+                  }}
+                >
+                  <CardActionArea>
+                    <Link
+                      to={"/dashboard/classesdetails/streams"}
+                      state={{
+                        classCode: showClass.classCode,
+                        classSubject: showClass.subject,
+                        classGrade: showClass.grade,
                       }}
+                      style={{ color: "#000", textDecoration: "none" }}
                     >
-                      <Box
+                      <CardContent
                         sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
+                          backgroundImage:
+                            "url(https://wallpaperaccess.com/full/187161.jpg)",
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
                         }}
                       >
-                        <AvatarContainer
-                          alt={showClass.tutorFirstName}
-                          src={showClass.tutorProfilePic}
-                        />
-                      </Box>
-                    </CardContent>
-
-                    <CardContent sx={{ height: "10vh" }}>
-                      <Typography>
-                        {showClass.tutorTitle +
-                          " " +
-                          showClass.tutorFirstName +
-                          " " +
-                          showClass.tutorLastName}
-                      </Typography>
-                      <Typography sx={{ pt: 1, fontSize: 15 }}>
-                        {showClass.subject}
-                      </Typography>
-
-                      <Typography sx={{ fontSize: 15 }}>
-                        Grade: {showClass.grade}
-                      </Typography>
-                    </CardContent>
-                  </Link>
-                </CardActionArea>
-                <CardActions>
-                  <Box sx={{ position: "relative", left: "90%" }}>
-                    <PopupState variant="popover" popupId="demo-popup-menu">
-                      {(popupState) => (
-                        <>
-                          <MoreVertIcon
-                            {...bindTrigger(popupState)}
-                            sx={{ cursor: "pointer", color: "#1f2833" }}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <AvatarContainer
+                            alt={showClass.tutorFirstName}
+                            src={showClass.tutorProfilePic}
                           />
-                          <Menu {...bindMenu(popupState)}>
-                            <MenuItem>
-                              <Link
-                                size="small"
-                                style={{
-                                  textDecoration: "none",
-                                }}
-                                to="/dashboard/chats"
-                              >
-                                <ChatIcon
-                                  sx={{
-                                    color: "#45a29e",
-                                    fontSize: "20px",
-                                    mr: 1,
-                                    position: "relative",
-                                    top: 5,
+                        </Box>
+                      </CardContent>
+
+                      <CardContent sx={{ height: "10vh" }}>
+                        <Typography>
+                          {showClass.tutorTitle +
+                            " " +
+                            showClass.tutorFirstName +
+                            " " +
+                            showClass.tutorLastName}
+                        </Typography>
+                        <Typography sx={{ pt: 1, fontSize: 15 }}>
+                          {showClass.subject}
+                        </Typography>
+
+                        <Typography sx={{ fontSize: 15 }}>
+                          Grade: {showClass.grade}
+                        </Typography>
+                      </CardContent>
+                    </Link>
+                  </CardActionArea>
+                  <CardActions>
+                    <Box sx={{ position: "relative", left: "90%" }}>
+                      <PopupState variant="popover" popupId="demo-popup-menu">
+                        {(popupState) => (
+                          <>
+                            <MoreVertIcon
+                              {...bindTrigger(popupState)}
+                              sx={{ cursor: "pointer", color: "#1f2833" }}
+                            />
+                            <Menu {...bindMenu(popupState)}>
+                              <MenuItem>
+                                <Link
+                                  size="small"
+                                  style={{
+                                    textDecoration: "none",
                                   }}
-                                />
-                                <span style={{ color: "#0b0c10" }}>Chat</span>
-                              </Link>
-                            </MenuItem>
-                            <MenuItem>
-                              <Link
-                                size="small"
-                                style={{
-                                  textDecoration: "none",
+                                  to="/dashboard/chats"
+                                >
+                                  <ChatIcon
+                                    sx={{
+                                      color: "#45a29e",
+                                      fontSize: "20px",
+                                      mr: 1,
+                                      position: "relative",
+                                      top: 5,
+                                    }}
+                                  />
+                                  <span style={{ color: "#0b0c10" }}>Chat</span>
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <Link
+                                  size="small"
+                                  style={{
+                                    textDecoration: "none",
+                                  }}
+                                  to="/dashboard/videocall"
+                                >
+                                  <VideoCallIcon
+                                    sx={{
+                                      color: "#45a29e",
+                                      fontSize: "20px",
+                                      mr: 1,
+                                      position: "relative",
+                                      top: 5,
+                                    }}
+                                  />
+                                  <span style={{ color: "#0b0c10" }}>
+                                    Videocall
+                                  </span>
+                                </Link>
+                              </MenuItem>
+                              <MenuItem
+                                onClick={() => {
+                                  handleDelete(
+                                    showClass.id,
+                                    showClass.classCode,
+                                    showClass.subject,
+                                    showClass.grade,
+                                    showClass.day,
+                                    showClass.time
+                                  );
                                 }}
-                                to="/dashboard/videocall"
                               >
-                                <VideoCallIcon
+                                <DeleteOutlineIcon
                                   sx={{
-                                    color: "#45a29e",
                                     fontSize: "20px",
                                     mr: 1,
-                                    position: "relative",
-                                    top: 5,
+                                    color: "red",
                                   }}
                                 />
                                 <span style={{ color: "#0b0c10" }}>
-                                  Videocall
+                                  Unenroll
                                 </span>
-                              </Link>
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() => {
-                                handleDelete(
-                                  showClass.id,
-                                  showClass.classCode,
-                                  showClass.subject,
-                                  showClass.grade,
-                                  showClass.day,
-                                  showClass.time
-                                );
-                              }}
-                            >
-                              <DeleteOutlineIcon
-                                sx={{
-                                  fontSize: "20px",
-                                  mr: 1,
-                                  color: "red",
-                                }}
-                              />
-                              <span style={{ color: "#0b0c10" }}>Unenroll</span>
-                            </MenuItem>
-                          </Menu>
-                        </>
-                      )}
-                    </PopupState>
-                  </Box>
-                </CardActions>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
+                              </MenuItem>
+                            </Menu>
+                          </>
+                        )}
+                      </PopupState>
+                    </Box>
+                  </CardActions>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      )}
+
+      {!showLoader && classes.length === 0 && (
+        <Box mt={5}>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <ClassesEmpty src={ScrumBoard} alt={"image"} />
+          </Box>
+
+          <Typography
+            sx={{
+              textAlign: "center",
+              mt: 2,
+              fontFamily: "Montserrat",
+              fontSize: 19,
+            }}
+          >
+            Let's begin the new adventure
+          </Typography>
+          <Typography
+            sx={{
+              textAlign: "center",
+              fontFamily: "Montserrat",
+              fontSize: 16,
+            }}
+          >
+            Book your{" "}
+            <Link
+              to="/dashboard/tutors"
+              style={{ color: "#45a29e", textDecoration: "none" }}
+            >
+              tutors
+            </Link>
+          </Typography>
+        </Box>
+      )}
+
       <Snackbar
         open={snackBarOpen}
         autoHideDuration={3000}

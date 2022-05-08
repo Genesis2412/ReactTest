@@ -102,7 +102,7 @@ export const FormFooter = styled.h1`
 `;
 
 // Empty banner icons
-export const TutorEmpty = styled.img`
+export const ClassesEmpty = styled.img`
   @media screen and (max-width: 768px) {
     margin-top: 10vh;
     width: 100%;
