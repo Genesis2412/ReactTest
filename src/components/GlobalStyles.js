@@ -130,21 +130,19 @@ export const StreamEmpty = styled.img`
   }
 `;
 
+export const AssignmentEmpty = styled.img`
+  @media screen and (max-width: 768px) {
+    margin-top: 5vh;
+    width: 95%;
+  }
+`;
+
 export const ClassesIcon = styled.img`
   width: 40%;
   height: auto;
   @media screen and (max-width: 768px) {
     margin-top: 20vh;
     width: 90%;
-  }
-`;
-
-export const AssignmentIcon = styled.img`
-  width: 20%;
-  height: auto;
-  @media screen and (max-width: 768px) {
-    margin-top: 10px;
-    width: 80%;
   }
 `;
 

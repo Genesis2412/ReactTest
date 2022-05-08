@@ -34,6 +34,9 @@ import { useUserAuth } from "../../../Context/UserAuthContext";
 import ShowIcons from "../ShowIcons";
 import ReactHtmlParser from "react-html-parser";
 import moment from "moment";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import { AssignmentEmpty } from "../../GlobalStyles";
+import AssignmentBoard from "../../../images/NoExistBanner/AssignmentBoard.svg";
 
 const ViewAssignmentsStudent = ({ classCode }) => {
   const [assignments, setAssignments] = useState([]);
@@ -45,6 +48,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
   const [message, setMessage] = useState("");
   const fileInputRef = useRef();
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   const LinkStyles = {
     color: "#45a29e",
@@ -239,6 +243,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
   }, []);
 
   useEffect(() => {
+    setShowLoader(true);
     const q = query(
       collection(db, "submittedAssignments"),
       where("classCode", "==", classCode),
@@ -250,12 +255,15 @@ const ViewAssignmentsStudent = ({ classCode }) => {
         id: doc.id,
       }));
       setSubmittedAssignments(data);
+      setShowLoader(false);
     });
   }, []);
 
   return (
     <>
-      {assignments.length !== 0 && (
+      <LoadingSpinner stateLoader={showLoader} />
+
+      {!showLoader && assignments.length !== 0 && (
         <Box
           sx={{
             mt: 2,
@@ -574,6 +582,25 @@ const ViewAssignmentsStudent = ({ classCode }) => {
             );
           }
         })}
+
+      {!showLoader && assignments.length === 0 && (
+        <Box mt={5}>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <AssignmentEmpty src={AssignmentBoard} alt={"image"} />
+          </Box>
+
+          <Typography
+            sx={{
+              textAlign: "center",
+              mt: 2,
+              fontFamily: "Montserrat",
+              fontSize: 19,
+            }}
+          >
+            Yipee, no assignments
+          </Typography>
+        </Box>
+      )}
       <Snackbar
         open={snackBarOpen}
         autoHideDuration={3000}

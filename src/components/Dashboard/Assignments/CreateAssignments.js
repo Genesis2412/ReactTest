@@ -48,6 +48,7 @@ import ShowIcons from "../ShowIcons";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import moment from "moment";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const CreateAssignments = () => {
   const [images, setImages] = useState([]);
@@ -67,6 +68,7 @@ const CreateAssignments = () => {
   const [assignments, setAssignments] = useState([]);
   const [joinedStudents, setJoinedStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLoader, setShowLoader] = useState(true);
 
   const HeaderStyle = {
     color: "#66fcf1",
@@ -394,6 +396,7 @@ const CreateAssignments = () => {
 
   // reading all assignments details
   useEffect(() => {
+    setShowLoader(true);
     const q = query(
       collection(db, "assignments"),
       where("classCode", "==", classCode)
@@ -404,11 +407,14 @@ const CreateAssignments = () => {
         id: doc.id,
       }));
       setAssignments(data);
+      setShowLoader(false);
     });
   }, []);
 
   return (
     <>
+      <LoadingSpinner stateLoader={showLoader} />
+
       {userDetails.accountType === "Tutor" && (
         <>
           <Box sx={{ boxShadow: 5, mt: 3, p: 1 }}>
@@ -505,7 +511,7 @@ const CreateAssignments = () => {
             />
           </Box>
 
-          {assignments?.length !== 0 && (
+          {!showLoader && assignments?.length !== 0 && (
             <Box
               sx={{
                 mt: 2,
