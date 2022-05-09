@@ -1802,6 +1802,11 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@jitsi/react-sdk@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@jitsi/react-sdk/-/react-sdk-1.0.1.tgz#c0ede135ed2d61abacd8b1a407a9aaf7d907f402"
+  integrity sha512-p+CDBXlvUa0Q3icGEhejwGY796s8w88gJpzQsTA8m/uvyduaaYdhy0W4aVFddbwx3rjA46KWQLiyRMKojXRlAA==
+
 "@mui/base@5.0.0-alpha.66":
   version "5.0.0-alpha.66"
   resolved "https://registry.yarnpkg.com/@mui/base/-/base-5.0.0-alpha.66.tgz#5f03e641daecbc54a7b03d6368e625fef45cb7e4"
