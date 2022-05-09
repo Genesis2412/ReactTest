@@ -21,29 +21,28 @@ import {
   AvatarMaterial,
 } from "./DrawerElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const { logOut, userDetails, setUserDetails, setUser, setClasses } =
     useUserAuth();
-
   const [click, setClick] = useState(false);
   const handleClick = () => setClick(!click);
-
   const [profileClick, setprofileClick] = useState(false);
   const handleProfileClick = () => setprofileClick(!profileClick);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       setIsSubmitting(true);
       await logOut();
       setIsSubmitting(false);
-
       //emptying maps
       setUserDetails({});
       setUser({});
       setClasses([]);
+      navigate("/login");
     } catch (err) {
       alert(err.message); //To check for error codes
     }

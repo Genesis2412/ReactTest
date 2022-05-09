@@ -3,9 +3,9 @@ import { Navigate } from "react-router-dom";
 import { useUserAuth } from "../Context/UserAuthContext";
 
 const ProtectedRoutesRedirect = ({ children }) => {
-  let { user } = useUserAuth();
+  let { user, userDetails } = useUserAuth();
 
-  if (user) {
+  if (user && userDetails) {
     return <Navigate to="/dashboard/classes" />;
   }
   return children;
