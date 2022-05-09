@@ -15,13 +15,11 @@ import {
   Name,
   Logout,
   PowerMaterialIcon,
-  AddMaterialIcon,
   ContactMaterialCalendarIcon,
   ViewProfileLink,
   AvatarMaterial,
 } from "./DrawerElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
-import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const { logOut, userDetails, setUserDetails, setUser, setClasses } =
@@ -31,7 +29,6 @@ const Sidebar = () => {
   const [profileClick, setprofileClick] = useState(false);
   const handleProfileClick = () => setprofileClick(!profileClick);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -42,7 +39,6 @@ const Sidebar = () => {
       setUserDetails({});
       setUser({});
       setClasses([]);
-      navigate("/login");
     } catch (err) {
       alert(err.message); //To check for error codes
     }
