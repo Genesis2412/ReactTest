@@ -64,10 +64,13 @@ const Sidebar = () => {
             <ChatMaterialIcon />
             <Text clicked={click}>Chats</Text>
           </Item>
-          <Item onClick={() => setClick(false)} to="/dashboard/videocall">
-            <VideoMaterialIcon />
-            <Text clicked={click}>Videocall</Text>
-          </Item>
+
+          {userDetails?.accountType === "Tutor" && (
+            <Item onClick={() => setClick(false)} to="/dashboard/videocall">
+              <VideoMaterialIcon />
+              <Text clicked={click}>Videocall</Text>
+            </Item>
+          )}
 
           {userDetails?.accountType === "Student" && (
             <Item onClick={() => setClick(false)} to="/dashboard/tutors">
