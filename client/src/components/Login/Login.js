@@ -27,8 +27,11 @@ import {
 import { Alert, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { StreamChat } from "stream-chat";
+import Cookies from "universal-cookie";
+
 const apiKey = "k248hxcdpdqk";
 const client = StreamChat.getInstance(apiKey);
+const cookies = new Cookies();
 
 // Yup field Validation
 const validationSchema = yup.object({
@@ -88,15 +91,8 @@ const Login = () => {
       })
       .then(({ data }) => {
         if (data.token) {
-          client.connectUser(
-            {
-              id: data?.userId,
-              firstName: data?.firstName,
-              lastName: data?.lastName,
-              email: data?.email,
-            },
-            data.token
-          );
+          cookies.set("token", data?.token);
+          cookies.set("userId", data?.userId);
         }
       })
       .catch((err) => {
