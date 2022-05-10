@@ -17,6 +17,10 @@ import { db } from "../../firebase-config";
 import { collection, doc, setDoc } from "firebase/firestore";
 import { useUserAuth } from "../../Context/UserAuthContext";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { StreamChat } from "stream-chat";
+const apiKey = "k248hxcdpdqk";
+const client = StreamChat.getInstance(apiKey);
 
 const Register = () => {
   const [data, setData] = useState({
@@ -54,6 +58,34 @@ const Register = () => {
   });
 
   const { signUp } = useUserAuth();
+
+  const createUserChat = async (firstName, lastName, email, password) => {
+    const URL = "http://localhost:5000/auth/register";
+    await axios
+      .post(URL, {
+        firstName,
+        lastName,
+        email,
+        password,
+      })
+      .then(({ data }) => {
+        if (data.token) {
+          client.connectUser(
+            {
+              id: data?.userId,
+              firstName: data?.firstName,
+              lastName: data?.lastName,
+              email: data?.email,
+              hashedPassword: data?.hashedPassword,
+            },
+            data.token
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   //state for error
   const [error, setError] = useState("");
@@ -137,6 +169,13 @@ const Register = () => {
           });
         }
       });
+
+      await createUserChat(
+        data.firstName,
+        data.lastName,
+        data.email,
+        data.password
+      );
     } catch (err) {
       if (err.message.includes("auth/invalid-email")) {
         setError("Email is not valid");
