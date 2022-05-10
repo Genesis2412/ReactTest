@@ -15,7 +15,7 @@ const register = async (req, res) => {
     const serverClient = connect(api_key, api_secret, app_id);
     const hashedPassword = await bcrypt.hash(password, 10);
     const token = serverClient.createUserToken(userId);
-
+    console.log("Id is:" + password);
     res
       .status(200)
       .json({ token, userId, firstName, lastName, email, hashedPassword });
