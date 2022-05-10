@@ -16,7 +16,6 @@ const Read = () => {
         password,
       })
       .then(({ data }) => {
-        console.log(data);
         if (data.token) {
           client.connectUser(
             {
@@ -34,14 +33,28 @@ const Read = () => {
       });
   };
 
+  const logout = async () => {
+    await client.disconnectUser();
+  };
+
   return (
-    <button
-      onClick={() => {
-        loginUserChat();
-      }}
-    >
-      Click
-    </button>
+    <>
+      <button
+        onClick={() => {
+          loginUserChat();
+        }}
+      >
+        Click
+      </button>
+
+      <button
+        onClick={() => {
+          logout();
+        }}
+      >
+        Logout
+      </button>
+    </>
   );
 };
 

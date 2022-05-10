@@ -25,6 +25,10 @@ import {
   FormFooter,
 } from "../GlobalStyles";
 import { Alert, CircularProgress } from "@mui/material";
+import axios from "axios";
+import { StreamChat } from "stream-chat";
+const apiKey = "k248hxcdpdqk";
+const client = StreamChat.getInstance(apiKey);
 
 // Yup field Validation
 const validationSchema = yup.object({
@@ -75,6 +79,31 @@ const Login = () => {
       });
   };
 
+  const loginUserChat = async (email, password) => {
+    const URL = "http://localhost:5000/auth/login";
+    await axios
+      .post(URL, {
+        email,
+        password,
+      })
+      .then(({ data }) => {
+        if (data.token) {
+          client.connectUser(
+            {
+              id: data?.userId,
+              firstName: data?.firstName,
+              lastName: data?.lastName,
+              email: data?.email,
+            },
+            data.token
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   //Formik Form Submission and Validation
   const formik = useFormik({
     initialValues: {
@@ -88,6 +117,7 @@ const Login = () => {
       try {
         await logIn(values.email, values.password);
         navigate("/dashboard");
+        await loginUserChat(values.email, values.password);
         onSubmitProps.setSubmitting(false);
       } catch (err) {
         if (err.message.includes("user-not-found")) {
