@@ -15,7 +15,7 @@ const register = async (req, res) => {
     const serverClient = connect(api_key, api_secret, app_id);
     const hashedPassword = await bcrypt.hash(password, 10);
     const token = serverClient.createUserToken(userId);
-    console.log("Id is:" + password);
+
     res
       .status(200)
       .json({ token, userId, firstName, lastName, email, hashedPassword });
@@ -27,8 +27,27 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
-  } catch (error) {}
+    const { email, password } = req.body;
+    const serverClient = connect(api_key, api_secret, app_id);
+    const { users } = await client.queryUsers({ email: email });
+
+    if (!users.length) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const success = await bcrypt.compare(password, users[0].hashedPassword);
+
+    const token = serverClient.createUserToken(users[0].id);
+
+    if (success) {
+      res
+        .status(200)
+        .json({ token, userId: users[0].id, firstName, lastName, email });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
+  }
 };
 
 module.exports = { register, login };
