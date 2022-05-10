@@ -29,6 +29,7 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const serverClient = connect(api_key, api_secret, app_id);
+    const client = StreamChat.getInstance(api_key, api_secret);
     const { users } = await client.queryUsers({ email: email });
 
     if (!users.length) {
@@ -40,9 +41,13 @@ const login = async (req, res) => {
     const token = serverClient.createUserToken(users[0].id);
 
     if (success) {
-      res
-        .status(200)
-        .json({ token, userId: users[0].id, firstName, lastName, email });
+      res.status(200).json({
+        token,
+        userId: users[0].id,
+        firstName: users[0].firstName,
+        lastName: users[0].lastName,
+        email: users[0].email,
+      });
     }
   } catch (error) {
     console.log(error);

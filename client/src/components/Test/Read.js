@@ -1,62 +1,48 @@
-import React, { useEffect, useState } from "react";
-import { db } from "../../firebase-config";
-import {
-  doc,
-  getDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-  collectionGroup,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-} from "firebase/firestore";
+import React from "react";
+import axios from "axios";
+import { StreamChat } from "stream-chat";
+const apiKey = "k248hxcdpdqk";
+const client = StreamChat.getInstance(apiKey);
 
 const Read = () => {
-  const title = "Lecture 3";
+  const email = "Hire2p@hotmail.com";
+  const password = "Hiresh@20,";
 
-  const readOne = async () => {
-    var docId = "";
-    const q = query(
-      collection(db, "announcements"),
-      where("title", "==", title)
-    );
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      docId = doc.id;
-    });
-    return docId;
+  const loginUserChat = async () => {
+    const URL = "http://localhost:5000/auth/login";
+    await axios
+      .post(URL, {
+        email,
+        password,
+      })
+      .then(({ data }) => {
+        console.log(data);
+        if (data.token) {
+          client.connectUser(
+            {
+              id: data?.userId,
+              firstName: data?.firstName,
+              lastName: data?.lastName,
+              email: data?.email,
+            },
+            data.token
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  //modify announcement
-  const createAll = async () => {
-    readOne().then((response) => {
-      if (response) {
-        const washingtonRef = doc(db, "announcements", response);
-        updateDoc(washingtonRef, {
-          fileName: arrayUnion("Test2"),
-        });
-        console.log("Updated");
-      } else {
-        setDoc(doc(collection(db, "announcements")), {
-          subject: "classSubject",
-          grade: "classGrade",
-          fileUrl: ["url"],
-          classCode: "classCode",
-          fileName: ["Test1"],
-          format: ["image.type"],
-          title: title,
-        });
-        console.log("New Created");
-      }
-    });
-  };
-
-  const type = "sheet";
-
-  return <></>;
+  return (
+    <button
+      onClick={() => {
+        loginUserChat();
+      }}
+    >
+      Click
+    </button>
+  );
 };
 
 export default Read;
