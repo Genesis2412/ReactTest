@@ -27,7 +27,7 @@ const ChannelContainer = ({
   if (isEditing) {
     return (
       <div className="channel__container">
-        <EditChannel createType={createType} setIsCreating={setIsCreating} />
+        <EditChannel setIsEditing={setIsEditing} />
       </div>
     );
   }
