@@ -59,7 +59,13 @@ const Register = () => {
 
   const { signUp } = useUserAuth();
 
-  const createUserChat = async (firstName, lastName, email, password) => {
+  const createUserChat = async (
+    title,
+    firstName,
+    lastName,
+    email,
+    password
+  ) => {
     const URL = "http://localhost:5000/auth/register";
     await axios
       .post(URL, {
@@ -70,16 +76,27 @@ const Register = () => {
       })
       .then(({ data }) => {
         if (data.token) {
-          client.connectUser(
-            {
-              id: data?.userId,
-              firstName: data?.firstName,
-              lastName: data?.lastName,
-              email: data?.email,
-              hashedPassword: data?.hashedPassword,
-            },
-            data.token
-          );
+          if (title) {
+            client.connectUser(
+              {
+                id: data?.userId,
+                name: `${title} ${data?.firstName} ${data?.lastName}`,
+                email: data?.email,
+                hashedPassword: data?.hashedPassword,
+              },
+              data.token
+            );
+          } else {
+            client.connectUser(
+              {
+                id: data?.userId,
+                name: `${data?.firstName} ${data?.lastName}`,
+                email: data?.email,
+                hashedPassword: data?.hashedPassword,
+              },
+              data.token
+            );
+          }
         }
       })
       .catch((err) => {
@@ -171,6 +188,7 @@ const Register = () => {
       });
 
       await createUserChat(
+        data.title,
         data.firstName,
         data.lastName,
         data.email,
