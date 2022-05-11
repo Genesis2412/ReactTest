@@ -7,16 +7,6 @@ import {
 } from "./exportsFiles";
 import Cookies from "universal-cookie";
 
-const SideBar = () => {
-  return (
-    <div className="channel-list__sidebar">
-      <div className="channel-list__sidebar__icon1">
-        <div className="icon1_inner">{/* <h1>MauTutorz</h1> */}</div>
-      </div>
-    </div>
-  );
-};
-
 const customChannelTeamFilter = (channels) => {
   return channels.filter((channel) => channel.type === "team");
 };
@@ -45,7 +35,6 @@ const ChannelListContent = ({
   const filters = { members: { $in: [client.userID] } };
   return (
     <>
-      <SideBar />
       <div className="channel-list__list__wrapper">
         <CompanyHeader />
         <ChannelSearch setToggleContainer={setToggleContainer} />
@@ -120,8 +109,8 @@ const ChannelListContainer = ({
       <div
         className="channel-list__container-responsive"
         style={{
-          left: toggleContainer ? "0%" : "-89%",
-          backgroundColor: "005ff",
+          left: toggleContainer ? "20%" : "-65%",
+          backgroundColor: "#005ff",
         }}
       >
         <div
