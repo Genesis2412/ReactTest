@@ -178,7 +178,7 @@ const ContactDetails = (props) => {
     homeNumber: Yup.string()
       .required("Home number is required")
       .min(7, "Home number must be of 8 numbers")
-      .max(7, "Home valid home number")
+      .max(7, "Enter valid home number")
       .matches(
         /^\d+$/,
         "Home number cannot contain letters or special characters"
