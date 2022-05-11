@@ -7,6 +7,7 @@ import Register from "../components/Register/Register";
 import Landing from "../pages/Home";
 import Dashboard from "../components/Dashboard/Dashboard";
 import ErrorPage from "../components/ErrorPage";
+import Chats from "../components/Dashboard/Chats/Chats";
 
 // Testing
 import Insert from "../components/Test/Insert";
@@ -33,6 +34,7 @@ const Redirect = () => {
           <Route path="/insert" element={<Insert />} />
           <Route path="/read" element={<Read />} />
           <Route path="/error" element={<ErrorPage />} />
+          <Route path="/chats" element={<Chats />} />
         </Routes>
       </UserAuthContextProvider>
     </>
