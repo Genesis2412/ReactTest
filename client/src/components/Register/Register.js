@@ -60,6 +60,7 @@ const Register = () => {
   const { signUp } = useUserAuth();
 
   const createUserChat = async (
+    accountType,
     title,
     firstName,
     lastName,
@@ -76,7 +77,7 @@ const Register = () => {
       })
       .then(({ data }) => {
         if (data.token) {
-          if (title) {
+          if (accountType === "Tutor") {
             client.connectUser(
               {
                 id: data?.userId,
@@ -86,7 +87,8 @@ const Register = () => {
               },
               data.token
             );
-          } else {
+          }
+          if (accountType === "Student") {
             client.connectUser(
               {
                 id: data?.userId,
@@ -188,6 +190,7 @@ const Register = () => {
       });
 
       await createUserChat(
+        data.accountType,
         data.title,
         data.firstName,
         data.lastName,

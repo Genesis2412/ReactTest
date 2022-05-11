@@ -29,8 +29,6 @@ const TutorSuccess = (props) => {
     spacing = 3;
   }
 
-  console.log(spacing);
-
   return (
     <>
       <FormItems container item spacing={2}>
