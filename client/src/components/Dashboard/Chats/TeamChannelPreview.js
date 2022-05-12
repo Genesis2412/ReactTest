@@ -1,5 +1,6 @@
 import React from "react";
 import { Avatar, useChatContext } from "stream-chat-react";
+import { Box, Typography } from "@mui/material";
 
 const TeamChannelPreview = ({
   setActiveChannel,
@@ -11,9 +12,21 @@ const TeamChannelPreview = ({
 }) => {
   const { channel: activeChannel, client } = useChatContext();
   const ChannelPreview = () => (
-    <p className="channel-preview__item">
-      # {channel?.data?.name || channel?.data?.id}
-    </p>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        p: 1.5,
+        height: "100%",
+        width: "100%",
+        textOverflow: "ellipsis",
+        wordBreak: "break-all",
+      }}
+    >
+      <Typography sx={{ fontSize: "14px", color: "#fff" }}>
+        # {channel?.data?.name || channel?.data?.id}
+      </Typography>
+    </Box>
   );
 
   const DirectPreview = () => {
@@ -21,24 +34,31 @@ const TeamChannelPreview = ({
       ({ user }) => user.id !== client.userID
     );
     return (
-      <div className="channel-preview__item single">
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          p: 1,
+          height: "100%",
+          width: "100%",
+          textOverflow: "ellipsis",
+          wordBreak: "break-all",
+        }}
+      >
         <Avatar
           image={members[0]?.user?.image}
-          name={members[0]?.name}
+          name={members[0]?.user?.name || members[0]?.user?.first_name}
           size={24}
         />
-        <p>{members[0]?.user?.name}</p>
-      </div>
+        <Typography sx={{ fontSize: "14px", color: "#fff" }}>
+          {members[0]?.user?.name || members[0]?.user?.email}
+        </Typography>
+      </Box>
     );
   };
 
   return (
-    <div
-      className={
-        channel?.id === activeChannel?.id
-          ? "channel-preview__wrapper__selected"
-          : "channel-preview__wrapper"
-      }
+    <Box
       onClick={() => {
         setIsCreating(false);
         setIsEditing(false);
@@ -48,9 +68,23 @@ const TeamChannelPreview = ({
           setToggleContainer((prevState) => !prevState);
         }
       }}
+      sx={{
+        ...(channel?.id === activeChannel?.id && {
+          backgroundColor: "#474F58",
+          cursor: "pointer",
+        }),
+
+        ...(channel?.id !== activeChannel?.id && {
+          "&:hover": {
+            backgroundColor: "#474F58",
+            cursor: "pointer",
+            transition: "0.5s",
+          },
+        }),
+      }}
     >
       {type === "team" ? <ChannelPreview /> : <DirectPreview />}
-    </div>
+    </Box>
   );
 };
 
