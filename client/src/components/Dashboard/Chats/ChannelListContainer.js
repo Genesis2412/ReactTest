@@ -5,7 +5,8 @@ import {
   TeamChannelList,
   TeamChannelPreview,
 } from "./exportsFiles";
-import Cookies from "universal-cookie";
+import { Logo } from "../../GlobalStyles";
+import { Box } from "@mui/material";
 
 const customChannelTeamFilter = (channels) => {
   return channels.filter((channel) => channel.type === "team");
@@ -17,9 +18,11 @@ const customChannelMessagingFilter = (channels) => {
 
 const CompanyHeader = () => {
   return (
-    <div className="channel-list__header">
-      <div className="channel-list__header__text">Maututorz</div>
-    </div>
+    <Box sx={{ textAlign: "left", pt: 2 }}>
+      <Logo to="/dashboard/classes" style={{ color: "#fff", fontSize: 25 }}>
+        MauTutorz
+      </Logo>
+    </Box>
   );
 };
 
