@@ -13,7 +13,7 @@ export const AddChannel = ({
       fontSize: 16,
       color: "#66fcf1",
       position: "relative",
-      bottom: "2px",
+      bottom: "1px",
       cursor: "pointer",
     }}
     onClick={() => {
