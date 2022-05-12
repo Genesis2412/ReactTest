@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useChatContext } from "stream-chat-react";
-import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import { ResultsDropdown } from "./exportsFiles";
+import { Box, TextField } from "@mui/material";
 
 const ChannelSearch = ({ setToggleContainer }) => {
   const { client, setActiveChannel } = useChatContext();
@@ -60,19 +60,32 @@ const ChannelSearch = ({ setToggleContainer }) => {
   };
 
   return (
-    <div className="channel-search__container">
-      <div className="channel-search__input__wrapper">
-        <div className="channel-search__input__icon">
-          <PersonSearchIcon />
-        </div>
-        <input
-          className="channel-search__input__text"
-          placeholder="Search"
+    <Box
+      sx={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        pt: "16px",
+      }}
+    >
+      <Box>
+        <TextField
+          label="Search"
           type="text"
           value={query}
           onChange={onSearch}
+          size="small"
+          sx={{
+            input: {
+              color: "#fff",
+              backgroundColor: "rgba(255, 255, 255, 0.66)",
+              borderRadius: 2,
+            },
+          }}
         />
-      </div>
+      </Box>
+
       {query && (
         <ResultsDropdown
           teamChannels={teamChannels}
@@ -83,7 +96,7 @@ const ChannelSearch = ({ setToggleContainer }) => {
           setToggleContainer={setToggleContainer}
         />
       )}
-    </div>
+    </Box>
   );
 };
 
