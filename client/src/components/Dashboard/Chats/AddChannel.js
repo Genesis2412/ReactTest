@@ -9,7 +9,13 @@ export const AddChannel = ({
   type,
 }) => (
   <AddCircleIcon
-    sx={{ fontSize: 16, color: "#66fcf1", position: "relative", bottom: "4px" }}
+    sx={{
+      fontSize: 16,
+      color: "#66fcf1",
+      position: "relative",
+      bottom: "2px",
+      cursor: "pointer",
+    }}
     onClick={() => {
       setCreateType(type);
       setIsCreating((prevState) => !prevState);
