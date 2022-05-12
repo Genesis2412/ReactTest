@@ -32,7 +32,7 @@ const TeamMessage = () => {
     <div className="message-wrapper">
       <Avatar
         image={message.user?.image}
-        name={message.user?.firstName + " " + message.user?.lastName}
+        name={message.user?.name || message.user?.email}
       />
       <div className="message-wrapper-content">
         <MessageOptions
@@ -41,7 +41,7 @@ const TeamMessage = () => {
         />
         <div className="message-header">
           <div className="message-header-name">
-            {message.user?.firstName + " " + message.user?.lastName}
+            {message.user?.name || message.user?.email}
           </div>
           <div className="message-header-timestamp">
             <MessageTimestamp />
