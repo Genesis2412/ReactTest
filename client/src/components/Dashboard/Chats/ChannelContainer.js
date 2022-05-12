@@ -6,6 +6,7 @@ import {
   EditChannel,
   TeamMessage,
 } from "./exportsFiles";
+import { Box, Typography } from "@mui/material";
 
 const ChannelContainer = ({
   isCreating,
@@ -14,44 +15,60 @@ const ChannelContainer = ({
   setIsEditing,
   createType,
 }) => {
-  const { channel } = useChatContext();
-
   if (isCreating) {
     return (
-      <div className="channel__container">
+      <Box sx={{ height: "100%", width: "100%" }}>
         <CreateChannel createType={createType} setIsCreating={setIsCreating} />
-      </div>
+      </Box>
     );
   }
 
   if (isEditing) {
     return (
-      <div className="channel__container">
+      <Box sx={{ height: "100%", width: "100%" }}>
         <EditChannel setIsEditing={setIsEditing} />
-      </div>
+      </Box>
     );
   }
 
   const EmptyState = () => (
-    <div className="channel-empty__container">
-      <p className="channel-empty__first">
-        This is the beginning of your chat history.
-      </p>
-      <p className="channel-empty__second">
+    <Box
+      sx={{
+        display: "flex",
+        height: "100%",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        ml: "20px",
+        mr: "20px",
+        pb: "20px",
+      }}
+    >
+      <Typography
+        sx={{
+          fontWeight: "bold",
+          fontSize: "18px",
+          lineHeight: "120%",
+          color: "#2c2c30",
+          mb: "10px",
+        }}
+      >
+        Begin your chat journey with MauTutorz
+      </Typography>
+      <Typography sx={{ fontSize: "14px", m: 0, color: "#858688" }}>
         Send messages, attachments, links, emojis, and more!
-      </p>
-    </div>
+      </Typography>
+    </Box>
   );
 
   return (
-    <div className="channel__container">
+    <Box sx={{ height: "100%", width: "100%" }}>
       <Channel
         EmptyStateIndicator={EmptyState}
         Message={(messageProps, i) => <TeamMessage key={i} {...messageProps} />}
       >
         <ChannelInner setIsEditing={setIsEditing} />
       </Channel>
-    </div>
+    </Box>
   );
 };
 
