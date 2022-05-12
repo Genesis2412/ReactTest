@@ -1,5 +1,7 @@
 import React from "react";
 import { AddChannel } from "./AddChannel";
+import { Box, Typography } from "@mui/material";
+
 const TeamChannelList = ({
   setToggleContainer,
   children,
@@ -13,29 +15,46 @@ const TeamChannelList = ({
 }) => {
   if (error) {
     return type === "team" ? (
-      <div className="team-channel-list">
-        <div className="team-channel-list__message">
+      <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
+        <Typography sx={{ color: "#fff", padding: "0 16px" }}>
           Connection error, please wait a moment and try again
-        </div>
-      </div>
+        </Typography>
+      </Box>
     ) : null;
   }
 
   if (loading) {
     return (
-      <div className="team-channel-list">
-        <div className="team-channel-list__message loading">
-          {type === "team" ? "Channels" : "Messages"} loading...
-        </div>
-      </div>
+      <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
+        <Box sx={{ height: "115px" }}>
+          <Typography sx={{ fontSize: "14px", color: "#fff" }}>
+            {type === "team" ? "Channels" : "Messages"} loading...
+          </Typography>
+        </Box>
+      </Box>
     );
   }
   return (
-    <div className="team-channel-list">
-      <div className="team-channel-list__header">
-        <p className="team-channel-list__header__title">
-          {type === "team" ? "Channels" : "Direct Messages"}
-        </p>
+    <Box sx={{ width: "100%", display: "flex", flexDirection: "column" }}>
+      <Box
+        sx={{
+          mt: 2,
+          padding: "0 16px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "13px",
+            height: "16px",
+            color: "rgba(255, 255, 255, 0.66)",
+            mb: "5px",
+          }}
+        >
+          {type === "team" ? "Groups" : "Direct Messages"}
+        </Typography>
         <AddChannel
           isCreating={isCreating}
           setIsCreating={setIsCreating}
@@ -44,9 +63,9 @@ const TeamChannelList = ({
           type={type === "team" ? "team" : "messaging"}
           setToggleContainer={setToggleContainer}
         />
-      </div>
+      </Box>
       {children}
-    </div>
+    </Box>
   );
 };
 
