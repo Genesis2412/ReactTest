@@ -74,6 +74,7 @@ const ChannelSearch = ({ setToggleContainer }) => {
         <TextField
           label="Search"
           type="text"
+          autoComplete="off"
           value={query}
           onChange={onSearch}
           size="small"
