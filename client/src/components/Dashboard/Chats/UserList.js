@@ -80,7 +80,11 @@ const UserItem = ({ user, setSelectedUsers }) => {
           textAlign: "left",
         }}
       >
-        <Avatar image={user?.image} name={user.email} size={32} />
+        <Avatar
+          image={user?.image}
+          name={user?.name || user?.email}
+          size={32}
+        />
         <Typography
           sx={{
             fontSize: "14px",
@@ -89,7 +93,7 @@ const UserItem = ({ user, setSelectedUsers }) => {
             wordBreak: "break-all",
           }}
         >
-          {user.email}
+          {user?.name || user?.first_name}
         </Typography>
       </Box>
 
