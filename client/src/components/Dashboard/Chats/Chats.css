@@ -1,3 +1,8 @@
+:root {
+  --primary-color: #1f2833;
+  --primary-color-alpha: #005fff1a;
+}
+
 .app__wrapper {
   display: flex;
   flex: 1;
