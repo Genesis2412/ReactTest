@@ -1,16 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { Avatar, useChatContext } from "stream-chat-react";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import { Box, Typography } from "@mui/material";
+import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 
 const ListContainer = ({ children }) => {
   return (
-    <div className="user-list__container">
-      <div className="user-list__header">
-        <p>User</p>
-        <p>Invite</p>
-      </div>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          m: "0px 20px",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "14px",
+            lineHeight: "17px",
+            color: "#858688",
+            mt: "16px",
+          }}
+        >
+          User
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: "14px",
+            lineHeight: "17px",
+            color: "#858688",
+            mt: "16px",
+          }}
+        >
+          Invite
+        </Typography>
+      </Box>
       {children}
-    </div>
+    </Box>
   );
 };
 
@@ -28,17 +55,50 @@ const UserItem = ({ user, setSelectedUsers }) => {
     setSelected((prevSelected) => !prevSelected);
   };
   return (
-    <div className="user-item__wrapper" onClick={handleSelect}>
-      <div className="user-item__name-wrapper">
+    <Box
+      sx={[
+        {
+          "&:hover": {
+            background: "#f7f6f8",
+            cursor: "pointer",
+            transition: "0.3s",
+          },
+          display: "flex",
+          alignItems: "center",
+          m: "0px 10px",
+          p: 1,
+          justifyContent: "space-between",
+        },
+      ]}
+      onClick={handleSelect}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flex: 2,
+          textAlign: "left",
+        }}
+      >
         <Avatar image={user?.image} name={user.email} size={32} />
-        <p className="user-item__name">{user.email}</p>
-      </div>
+        <Typography
+          sx={{
+            fontSize: "14px",
+            lineHeight: "17px",
+            color: "#2c2c30",
+            wordBreak: "break-all",
+          }}
+        >
+          {user.email}
+        </Typography>
+      </Box>
+
       {selected ? (
-        <CheckCircleIcon />
+        <RadioButtonCheckedIcon sx={{ color: "#45a29e", fontSize: 30 }} />
       ) : (
-        <div className="user-item__invite-empty" />
+        <RadioButtonUncheckedIcon sx={{ color: "#45a29e", fontSize: 30 }} />
       )}
-    </div>
+    </Box>
   );
 };
 
@@ -84,9 +144,11 @@ const UserList = ({ setSelectedUsers }) => {
   if (error) {
     return (
       <ListContainer>
-        <div className="user-list__message">
-          Error loading, please refresh and try again.
-        </div>
+        <Box sx={{ m: 20 }}>
+          <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
+            Error loading, please refresh and try again.
+          </Typography>
+        </Box>
       </ListContainer>
     );
   }
@@ -94,7 +156,11 @@ const UserList = ({ setSelectedUsers }) => {
   if (listEmpty) {
     return (
       <ListContainer>
-        <div className="user-list__message">No users found.</div>
+        <Box sx={{ m: 20 }}>
+          <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
+            No users found.
+          </Typography>
+        </Box>
       </ListContainer>
     );
   }
@@ -102,7 +168,11 @@ const UserList = ({ setSelectedUsers }) => {
   return (
     <ListContainer>
       {loading ? (
-        <div className="user-list__message">loading users...</div>
+        <Box sx={{ m: 20 }}>
+          <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
+            Loading users...
+          </Typography>
+        </Box>
       ) : (
         users?.map((user, i) => (
           <UserItem

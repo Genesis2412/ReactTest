@@ -466,13 +466,13 @@
   cursor: pointer;
 } */
 
-.user-list__container {
+/* .user-list__container {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
+} */
 
-.user-list__header {
+/* .user-list__header {
   display: flex;
   align-items: center;
   margin: 0px 20px;
@@ -485,9 +485,9 @@
   line-height: 17px;
   color: #858688;
   margin-top: 16px;
-}
+} */
 
-.user-list__header p:first-child {
+/* .user-list__header p:first-child {
   flex: 2;
 }
 
@@ -495,7 +495,7 @@
   flex: 0.5;
   text-align: right;
   margin: 0px 20px;
-}
+} */
 
 .user-list__message {
   font-family: Helvetica Neue, sans-serif;
@@ -504,19 +504,19 @@
   margin: 20px;
 }
 
-.user-item__wrapper {
+/* .user-item__wrapper {
   display: flex;
   align-items: center;
   margin: 0px 20px;
   justify-content: space-between;
-}
+} */
 
-.user-item__wrapper:hover {
+/* .user-item__wrapper:hover {
   background: #f7f6f8;
   cursor: pointer;
-}
+} */
 
-.user-item__name-wrapper {
+/* .user-item__name-wrapper {
   display: flex;
   align-items: center;
   flex: 2;
@@ -533,7 +533,7 @@
 
 .user-item__name {
   font-weight: 500;
-}
+} */
 
 .user-item__last-active {
   font-weight: 400;
@@ -544,7 +544,7 @@
   margin: 0px 20px;
 }
 
-.user-item__invite-empty {
+/* .user-item__invite-empty {
   height: 28px;
   width: 28px;
   background: #f7f6f8;
@@ -552,7 +552,7 @@
   border-radius: 14px;
   box-sizing: border-box;
   margin-left: 2px;
-}
+} */
 
 .edit-channel__container {
   display: flex;
