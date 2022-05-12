@@ -16,7 +16,14 @@ const Chats = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", flex: 1, height: "100%", boxShadow: 5 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flex: 1,
+          height: "100%",
+          boxShadow: 5,
+        }}
+      >
         <Chat client={client} theme="team light">
           <ChannelListContainer
             isCreating={isCreating}
