@@ -4,6 +4,7 @@ import { Chat } from "stream-chat-react";
 import { ChannelListContainer, ChannelContainer } from "./exportsFiles";
 import "stream-chat-react/dist/css/index.css";
 import "./Chats.css";
+import { Box } from "@mui/material";
 
 const apiKey = "k248hxcdpdqk";
 const client = StreamChat.getInstance(apiKey);
@@ -15,7 +16,7 @@ const Chats = () => {
 
   return (
     <>
-      <div className="app__wrapper">
+      <Box sx={{ display: "flex", flex: 1, height: "100%", boxShadow: 5 }}>
         <Chat client={client} theme="team light">
           <ChannelListContainer
             isCreating={isCreating}
@@ -31,7 +32,7 @@ const Chats = () => {
             createType={createType}
           />
         </Chat>
-      </div>
+      </Box>
     </>
   );
 };
