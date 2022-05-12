@@ -38,7 +38,10 @@ const ChannelListContent = ({
   const filters = { members: { $in: [client.userID] } };
   return (
     <>
-      <div className="channel-list__list__wrapper">
+      <div
+        className="channel-list__list__wrapper"
+        style={{ background: "#63666A" }}
+      >
         <CompanyHeader />
         <ChannelSearch setToggleContainer={setToggleContainer} />
         <ChannelList
@@ -116,12 +119,23 @@ const ChannelListContainer = ({
           backgroundColor: "#005ff",
         }}
       >
-        <div
-          className="channel-list__container-toggle"
+        <Box
+          sx={{
+            display: "block",
+            height: "50px",
+            width: "50px",
+            background: "#45a29e",
+            position: "absolute",
+            right: "-5%",
+            top: "50%",
+            borderRadius: "50%",
+            zIndex: 2,
+          }}
           onClick={() =>
             setToggleContainer((prevToggleContainer) => !prevToggleContainer)
           }
-        ></div>
+        ></Box>
+
         <ChannelListContent
           setIsCreating={setIsCreating}
           setCreateType={setCreateType}
