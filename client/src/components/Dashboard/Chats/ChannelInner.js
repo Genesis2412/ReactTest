@@ -10,6 +10,7 @@ import {
   useChatContext,
 } from "stream-chat-react";
 import InfoIcon from "@mui/icons-material/Info";
+import { Box, Typography } from "@mui/material";
 
 export const GiphyContext = React.createContext({});
 
@@ -38,14 +39,14 @@ const ChannelInner = ({ setIsEditing }) => {
 
   return (
     <GiphyContext.Provider value={{ giphyState, setGiphyState }}>
-      <div style={{ display: "flex", width: "100%" }}>
+      <Box sx={{ display: "flex", width: "100%" }}>
         <Window>
           <TeamChannelHeader setIsEditing={setIsEditing} />
           <MessageList />
           <MessageInput overrideSubmitHandler={overrideSubmitHandler} />
         </Window>
         <Thread />
-      </div>
+      </Box>
     </GiphyContext.Provider>
   );
 };
@@ -62,36 +63,49 @@ const TeamChannelHeader = ({ setIsEditing }) => {
 
     if (channel.type === "messaging") {
       return (
-        <div className="team-channel-header__name-wrapper">
+        <Box>
           {members.map(({ user }, i) => (
-            <div key={i} className="team-channel-header__name-multi">
+            <Box
+              key={i}
+              sx={{ display: "flex", alignItems: "center", mr: "8px" }}
+            >
               <Avatar
                 image={user.image}
-                name={user.firstName + " " + user.lastName || user.id}
+                name={user?.name || user?.email}
                 size={32}
               />
-              <p className="team-channel-header__name user">
-                {user.firstName + " " + user.lastName || user.id}
-              </p>
-            </div>
+              <Typography sx={{ color: "0b0c10", fontSize: 15 }}>
+                {user?.name || user?.email}
+              </Typography>
+            </Box>
           ))}
 
           {additionalMembers > 0 && (
-            <p className="team-channel-header__name user">
+            <Typography sx={{ color: "0b0c10", fontSize: 12 }}>
               and {additionalMembers} more
-            </p>
+            </Typography>
           )}
-        </div>
+        </Box>
       );
     }
 
     return (
-      <div className="team-channel-header__channel-wrapper">
-        <p className="team-channel-header__name"># {channel.data.name}</p>
-        <span style={{ display: "flex" }} onClick={() => setIsEditing(true)}>
-          <InfoIcon />
-        </span>
-      </div>
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Typography
+          sx={{
+            fontWeight: "bold",
+            fontSize: "15px",
+            color: "#2c2c30",
+            mr: "8px",
+          }}
+        >
+          # {channel.data.name}
+        </Typography>
+
+        <Box style={{ display: "flex" }} onClick={() => setIsEditing(true)}>
+          <InfoIcon sx={{ color: "#45a29e", cursor: "pointer" }} />
+        </Box>
+      </Box>
     );
   };
 
@@ -102,14 +116,26 @@ const TeamChannelHeader = ({ setIsEditing }) => {
   };
 
   return (
-    <div className="team-channel-header__container">
+    <Box
+      sx={{
+        p: 2,
+        boxShadow: 5,
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
       <MessagingHeader />
-      <div className="team-channel-header__right">
-        <p className="team-channel-header__right-text">
+      <Box
+        sx={{
+          textAlign: "right",
+        }}
+      >
+        <Typography sx={{ fontSize: "14px", color: "#858688" }}>
           {getWatcherText(watcher_count)}
-        </p>
-      </div>
-    </div>
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 
