@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useChatContext } from "stream-chat-react";
 import { UserList } from "./exportsFiles";
 import CloseIcon from "@mui/icons-material/Close";
+import { Box, TextField, Typography, Button } from "@mui/material";
 
 const ChannelNameInput = ({ channelName = "", setChannelName }) => {
   const handleChange = (event) => {
@@ -10,15 +11,16 @@ const ChannelNameInput = ({ channelName = "", setChannelName }) => {
   };
 
   return (
-    <div className="channel-name-input__wrapper">
-      <p>Name</p>
-      <input
+    <Box sx={{ p: 3, boxShadow: "0px 1px 0px rgba(0, 0, 0, 0.1)" }}>
+      <TextField
         value={channelName}
         onChange={handleChange}
-        placeholder="channel-name"
+        label=" Change channel name"
+        fullWidth
       />
-      <p>Add members</p>
-    </div>
+
+      <Typography sx={{ mt: 2 }}>Add members</Typography>
+    </Box>
   );
 };
 
@@ -49,20 +51,55 @@ const EditChannel = ({ setIsEditing }) => {
   };
 
   return (
-    <div className="edit-channel__container">
-      <div className="edit-channel__header">
-        <p>Edit Channel</p>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          height: "62px",
+          paddingRight: "20px",
+          boxShadow: 2,
+        }}
+      >
+        <Typography sx={{ pl: 2, color: "#0b0c10" }}>Edit Channel</Typography>
         <CloseIcon setIsEditing={setIsEditing} />
-      </div>
+      </Box>
       <ChannelNameInput
         channelName={channelName}
         setChannelName={setChannelName}
       />
       <UserList setSelectedUsers={setSelectedUsers} />
-      <div className="edit-channel__button-wrapper" onClick={updateChannel}>
-        <p>Save Changes</p>
-      </div>
-    </div>
+      <Button
+        onClick={updateChannel}
+        sx={[
+          {
+            "&:hover": {
+              backgroundColor: "#c5c6c7",
+              color: "#0b0c10",
+            },
+            backgroundColor: "#45a29e",
+            color: "#fff",
+          },
+        ]}
+      >
+        Save Changes
+      </Button>
+    </Box>
+    // <div className="edit-channel__container">
+    //   <div className="edit-channel__header">
+    //     <p>Edit Channel</p>
+    //     <CloseIcon setIsEditing={setIsEditing} />
+    //   </div>
+    //   <ChannelNameInput
+    //     channelName={channelName}
+    //     setChannelName={setChannelName}
+    //   />
+    //   <UserList setSelectedUsers={setSelectedUsers} />
+    //   <div className="edit-channel__button-wrapper" onClick={updateChannel}>
+    //     <p>Save Changes</p>
+    //   </div>
+    // </div>
   );
 };
 
