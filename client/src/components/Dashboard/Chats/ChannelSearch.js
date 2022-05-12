@@ -41,6 +41,7 @@ const ChannelSearch = ({ setToggleContainer }) => {
       if (users.length) {
         setDirectChannels(users);
       }
+      setLoading(false);
     } catch (error) {
       setQuery("");
     }
