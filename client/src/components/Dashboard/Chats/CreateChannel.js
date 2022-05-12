@@ -15,7 +15,7 @@ const ChannelNameInput = ({ channelName = "", setChannelName }) => {
       <TextField
         value={channelName}
         onChange={handleChange}
-        label="Enter Channel Name"
+        label="Enter Group Name"
         fullWidth
       />
     </Box>
@@ -60,7 +60,7 @@ const CreateChannel = ({ createType, setIsCreating }) => {
       >
         <Typography sx={{ pl: 2, color: "#0b0c10" }}>
           {createType === "team"
-            ? "Create a New Channel"
+            ? "Create a New Group"
             : "Send a Direct Message"}
         </Typography>
         <CancelIcon setIsCreating={setIsCreating} sx={{ float: "right" }} />
@@ -86,7 +86,7 @@ const CreateChannel = ({ createType, setIsCreating }) => {
           },
         ]}
       >
-        {createType === "team" ? "Create Channel" : "Create Message"}
+        {createType === "team" ? "Create Group" : "Create Message"}
       </Button>
     </Box>
   );

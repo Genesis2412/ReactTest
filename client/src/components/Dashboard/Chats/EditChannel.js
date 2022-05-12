@@ -15,7 +15,7 @@ const ChannelNameInput = ({ channelName = "", setChannelName }) => {
       <TextField
         value={channelName}
         onChange={handleChange}
-        label=" Change channel name"
+        label=" Change group name"
         fullWidth
       />
 
@@ -62,7 +62,7 @@ const EditChannel = ({ setIsEditing }) => {
           boxShadow: 2,
         }}
       >
-        <Typography sx={{ pl: 2, color: "#0b0c10" }}>Edit Channel</Typography>
+        <Typography sx={{ pl: 2, color: "#0b0c10" }}>Edit Group</Typography>
         <CloseIcon setIsEditing={setIsEditing} />
       </Box>
       <ChannelNameInput
