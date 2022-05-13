@@ -60,11 +60,18 @@ const TeamChannelHeader = ({ setIsEditing }) => {
   const { channel, watcher_count } = useChannelStateContext();
   const { client } = useChatContext();
 
+  console.log(channel.data.name);
+
   const leaveChat = async () => {
     try {
-      await channel.removeMembers([client.userID]).then(() => {
-        window.location.reload(false);
-      });
+      let confirmAction = window.confirm(
+        "Are you sure to leave " + channel.data.name + "?"
+      );
+      if (confirmAction) {
+        await channel.removeMembers([client.userID]).then(() => {
+          window.location.reload(false);
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -72,7 +79,12 @@ const TeamChannelHeader = ({ setIsEditing }) => {
 
   const deleteChat = async () => {
     try {
-      await channel.delete().then(() => {});
+      let confirmAction = window.confirm(
+        "Are you sure to delete " + channel.data.name + "?"
+      );
+      if (confirmAction) {
+        await channel.delete();
+      }
     } catch (error) {
       console.log(error);
     }
