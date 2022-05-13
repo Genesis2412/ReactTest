@@ -63,7 +63,10 @@ const EditChannel = ({ setIsEditing }) => {
         }}
       >
         <Typography sx={{ pl: 2, color: "#0b0c10" }}>Edit Group</Typography>
-        <CloseIcon setIsEditing={setIsEditing} />
+        <CloseIcon
+          onClick={() => setIsEditing(false)}
+          sx={{ cursor: "pointer" }}
+        />
       </Box>
       <ChannelNameInput
         channelName={channelName}
