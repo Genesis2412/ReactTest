@@ -9,8 +9,11 @@ import {
   useChannelStateContext,
   useChatContext,
 } from "stream-chat-react";
-import InfoIcon from "@mui/icons-material/Info";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, MenuItem, Menu } from "@mui/material";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PreviewIcon from "@mui/icons-material/Preview";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
 
@@ -122,10 +125,6 @@ const TeamChannelHeader = ({ setIsEditing }) => {
         >
           # {channel.data.name}
         </Typography>
-
-        <Box style={{ display: "flex" }} onClick={() => setIsEditing(true)}>
-          <InfoIcon sx={{ color: "#45a29e", cursor: "pointer" }} />
-        </Box>
       </Box>
     );
   };
@@ -152,79 +151,84 @@ const TeamChannelHeader = ({ setIsEditing }) => {
           textAlign: "right",
         }}
       >
-        {channel?.data?.created_by?.id !== client?.userID && (
-          <Button
-            onClick={() => {
-              leaveChat();
-            }}
-            sx={[
-              {
-                "&:hover": {
-                  backgroundColor: "#cd5c6c7",
-                  color: "#000",
-                },
-                backgroundColor: "red",
-                color: "#fff",
-                fontSize: 12,
-              },
-            ]}
-            size={"small"}
-          >
-            {channel?.type === "messaging" ? <DeleteIcon /> : <LogoutIcon />}
-            {channel?.type === "messaging" ? "Delete chat" : "Leave group"}
-          </Button>
+        {channel?.data?.created_by?.id === client.userID && (
+          <PopupState variant="popover" popupId="demo-popup-menu">
+            {(popupState) => (
+              <>
+                <MoreVertIcon
+                  {...bindTrigger(popupState)}
+                  sx={{ cursor: "pointer", color: "#1f2833" }}
+                />
+                {channel?.type === "team" && (
+                  <Menu {...bindMenu(popupState)}>
+                    <MenuItem sx={{ color: "#0b0c10" }}>
+                      <PreviewIcon sx={{ fontSize: 18, pr: 1 }} /> View Members
+                    </MenuItem>
+                    <MenuItem
+                      sx={{ color: "#1f2833" }}
+                      onClick={() => setIsEditing(true)}
+                    >
+                      <EditIcon sx={{ fontSize: 18, pr: 1 }} /> Edit Group
+                    </MenuItem>
+
+                    <MenuItem
+                      sx={{ color: "red" }}
+                      onClick={() => {
+                        deleteChat();
+                      }}
+                    >
+                      <DeleteIcon sx={{ fontSize: 18, pr: 1 }} /> Delete Group
+                    </MenuItem>
+                  </Menu>
+                )}
+
+                {/* Direct Message */}
+                {channel?.type === "messaging" && (
+                  <Menu {...bindMenu(popupState)}>
+                    <MenuItem
+                      sx={{ color: "red" }}
+                      onClick={() => {
+                        deleteChat();
+                      }}
+                    >
+                      <DeleteIcon sx={{ fontSize: 16, pr: 1 }} /> Delete Chat
+                    </MenuItem>
+                  </Menu>
+                )}
+              </>
+            )}
+          </PopupState>
         )}
 
-        {channel?.data?.created_by?.id === client.userID &&
-          channel?.type === "messaging" && (
-            <Button
-              onClick={() => {
-                leaveChat();
-              }}
-              sx={[
-                {
-                  "&:hover": {
-                    backgroundColor: "#cd5c6c7",
-                    color: "#000",
-                  },
-                  backgroundColor: "red",
-                  color: "#fff",
-                  fontSize: 12,
-                },
-              ]}
-              size={"small"}
-            >
-              <DeleteIcon /> Delete chat
-            </Button>
-          )}
-
-        {channel?.data?.created_by?.id === client.userID &&
+        {channel?.data?.created_by?.id !== client.userID &&
           channel?.type === "team" && (
-            <Button
-              onClick={() => {
-                deleteChat();
-              }}
-              sx={[
-                {
-                  "&:hover": {
-                    backgroundColor: "#cd5c6c7",
-                    color: "#000",
-                  },
-                  backgroundColor: "red",
-                  color: "#fff",
-                  fontSize: 12,
-                  wordBreak: "break-all",
-                },
-              ]}
-              size={"small"}
-            >
-              <DeleteIcon /> Delete Group
-            </Button>
+            <PopupState variant="popover" popupId="demo-popup-menu">
+              {(popupState) => (
+                <>
+                  <MoreVertIcon
+                    {...bindTrigger(popupState)}
+                    sx={{ cursor: "pointer", color: "#1f2833" }}
+                  />
+                  <Menu {...bindMenu(popupState)}>
+                    <MenuItem
+                      sx={{ color: "red" }}
+                      onClick={() => {
+                        leaveChat();
+                      }}
+                    >
+                      <LogoutIcon sx={{ fontSize: 16, pr: 1 }} /> Leave Group
+                    </MenuItem>
+                  </Menu>
+                </>
+              )}
+            </PopupState>
           )}
 
-        <Typography sx={{ fontSize: "14px", color: "#858688", mt: 1 }}>
-          {getWatcherText(watcher_count)}
-        </Typography>
+        {channel?.type === "team" && (
+          <Typography sx={{ fontSize: "14px", color: "#858688", mt: 1 }}>
+            {getWatcherText(watcher_count)}
+          </Typography>
+        )}
       </Box>
     </Box>
   );
