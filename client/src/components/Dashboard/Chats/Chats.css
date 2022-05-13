@@ -880,6 +880,10 @@ body {
   scrollbar-width: none;
 }
 
+.str-chat__message-attachment-card {
+  width: 360px;
+}
+
 @media screen and (min-width: 1070px) {
   .team-channel-header__name-wrapper {
     max-width: 700px;
@@ -1739,6 +1743,10 @@ div.rta__autocomplete.str-chat__emojisearch {
 @media screen and (max-width: 960px) {
   .channel-list__container {
     display: none;
+  }
+
+  .str-chat__message-attachment-card {
+    width: 170px;
   }
 
   .team-channerl-header_menu-icon {

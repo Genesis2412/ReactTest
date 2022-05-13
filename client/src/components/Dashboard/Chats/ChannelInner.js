@@ -60,8 +60,6 @@ const TeamChannelHeader = ({ setIsEditing }) => {
   const { channel, watcher_count } = useChannelStateContext();
   const { client } = useChatContext();
 
-  console.log(channel.data.name);
-
   const leaveChat = async () => {
     try {
       let confirmAction = window.confirm(
