@@ -48,6 +48,7 @@ const ChannelContainer = ({
           fontWeight: "bold",
           fontSize: "18px",
           lineHeight: "120%",
+          mt: 2,
           color: "#2c2c30",
           mb: "10px",
         }}

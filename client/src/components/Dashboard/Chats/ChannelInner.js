@@ -10,7 +10,9 @@ import {
   useChatContext,
 } from "stream-chat-react";
 import InfoIcon from "@mui/icons-material/Info";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 export const GiphyContext = React.createContext({});
 
@@ -55,10 +57,30 @@ const TeamChannelHeader = ({ setIsEditing }) => {
   const { channel, watcher_count } = useChannelStateContext();
   const { client } = useChatContext();
 
+  const leaveChat = async () => {
+    try {
+      await channel.removeMembers([client.userID]).then(() => {
+        window.location.reload(false);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteChat = async () => {
+    try {
+      await channel.delete().then(() => {});
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const MessagingHeader = () => {
     const members = Object.values(channel.state.members).filter(
       ({ user }) => user.id !== client.userID
     );
+
+    console.log(channel.data.created_by.id);
     const additionalMembers = members.length - 3;
 
     if (channel.type === "messaging") {
@@ -131,7 +153,77 @@ const TeamChannelHeader = ({ setIsEditing }) => {
           textAlign: "right",
         }}
       >
-        <Typography sx={{ fontSize: "14px", color: "#858688" }}>
+        {channel?.data?.created_by?.id !== client?.userID && (
+          <Button
+            onClick={() => {
+              leaveChat();
+            }}
+            sx={[
+              {
+                "&:hover": {
+                  backgroundColor: "#cd5c6c7",
+                  color: "#000",
+                },
+                backgroundColor: "red",
+                color: "#fff",
+                fontSize: 12,
+              },
+            ]}
+            size={"small"}
+          >
+            {channel?.type === "messaging" ? <DeleteIcon /> : <LogoutIcon />}
+            {channel?.type === "messaging" ? "Delete chat" : "Leave group"}
+          </Button>
+        )}
+
+        {channel?.data?.created_by?.id === client.userID &&
+          channel?.type === "messaging" && (
+            <Button
+              onClick={() => {
+                leaveChat();
+              }}
+              sx={[
+                {
+                  "&:hover": {
+                    backgroundColor: "#cd5c6c7",
+                    color: "#000",
+                  },
+                  backgroundColor: "red",
+                  color: "#fff",
+                  fontSize: 12,
+                },
+              ]}
+              size={"small"}
+            >
+              <DeleteIcon /> Delete chat
+            </Button>
+          )}
+
+        {channel?.data?.created_by?.id === client.userID &&
+          channel?.type === "team" && (
+            <Button
+              onClick={() => {
+                deleteChat();
+              }}
+              sx={[
+                {
+                  "&:hover": {
+                    backgroundColor: "#cd5c6c7",
+                    color: "#000",
+                  },
+                  backgroundColor: "red",
+                  color: "#fff",
+                  fontSize: 12,
+                  wordBreak: "break-all",
+                },
+              ]}
+              size={"small"}
+            >
+              <DeleteIcon /> Delete Group
+            </Button>
+          )}
+
+        <Typography sx={{ fontSize: "14px", color: "#858688", mt: 1 }}>
           {getWatcherText(watcher_count)}
         </Typography>
       </Box>
