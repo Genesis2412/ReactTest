@@ -1,10 +1,10 @@
 import React from "react";
-import { Channel, useChatContext } from "stream-chat-react";
+import { Channel, useChatContext, MessageTeam } from "stream-chat-react";
 import {
   ChannelInner,
   CreateChannel,
   EditChannel,
-  TeamMessage,
+  // TeamMessage,
 } from "./exportsFiles";
 import { Box, Typography } from "@mui/material";
 
@@ -64,7 +64,7 @@ const ChannelContainer = ({
     <Box sx={{ height: "100%", width: "100%" }}>
       <Channel
         EmptyStateIndicator={EmptyState}
-        Message={(messageProps, i) => <TeamMessage key={i} {...messageProps} />}
+        Message={(messageProps, i) => <MessageTeam key={i} {...messageProps} />}
       >
         <ChannelInner setIsEditing={setIsEditing} />
       </Channel>
