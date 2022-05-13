@@ -80,7 +80,6 @@ const TeamChannelHeader = ({ setIsEditing }) => {
       ({ user }) => user.id !== client.userID
     );
 
-    console.log(channel.data.created_by.id);
     const additionalMembers = members.length - 3;
 
     if (channel.type === "messaging") {
