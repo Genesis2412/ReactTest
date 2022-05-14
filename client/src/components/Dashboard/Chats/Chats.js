@@ -13,6 +13,7 @@ const Chats = () => {
   const [createType, setCreateType] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
 
   return (
     <>
@@ -37,6 +38,8 @@ const Chats = () => {
             isEditing={isEditing}
             setIsEditing={setIsEditing}
             createType={createType}
+            setIsViewing={setIsViewing}
+            isViewing={isViewing}
           />
         </Chat>
       </Box>

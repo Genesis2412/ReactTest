@@ -5,6 +5,7 @@ import {
   CreateChannel,
   EditChannel,
   // TeamMessage,
+  ViewMembers,
 } from "./exportsFiles";
 import { Box, Typography } from "@mui/material";
 
@@ -14,6 +15,8 @@ const ChannelContainer = ({
   isEditing,
   setIsEditing,
   createType,
+  setIsViewing,
+  isViewing,
 }) => {
   if (isCreating) {
     return (
@@ -27,6 +30,14 @@ const ChannelContainer = ({
     return (
       <Box sx={{ height: "100%", width: "100%" }}>
         <EditChannel setIsEditing={setIsEditing} />
+      </Box>
+    );
+  }
+
+  if (isViewing) {
+    return (
+      <Box sx={{ height: "100%", width: "100%" }}>
+        <ViewMembers setIsViewing={setIsViewing} />
       </Box>
     );
   }
@@ -67,7 +78,7 @@ const ChannelContainer = ({
         EmptyStateIndicator={EmptyState}
         Message={(messageProps, i) => <MessageTeam key={i} {...messageProps} />}
       >
-        <ChannelInner setIsEditing={setIsEditing} />
+        <ChannelInner setIsEditing={setIsEditing} setIsViewing={setIsViewing} />
       </Channel>
     </Box>
   );

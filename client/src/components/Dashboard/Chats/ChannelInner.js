@@ -19,7 +19,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 export const GiphyContext = React.createContext({});
 
-const ChannelInner = ({ setIsEditing }) => {
+const ChannelInner = ({ setIsEditing, setIsViewing }) => {
   const [giphyState, setGiphyState] = useState(false);
   const { sendMessage } = useChannelActionContext();
 
@@ -46,7 +46,10 @@ const ChannelInner = ({ setIsEditing }) => {
     <GiphyContext.Provider value={{ giphyState, setGiphyState }}>
       <Box sx={{ display: "flex", width: "100%" }}>
         <Window>
-          <TeamChannelHeader setIsEditing={setIsEditing} />
+          <TeamChannelHeader
+            setIsEditing={setIsEditing}
+            setIsViewing={setIsViewing}
+          />
           <MessageList />
           <MessageInput overrideSubmitHandler={overrideSubmitHandler} />
         </Window>
@@ -56,7 +59,7 @@ const ChannelInner = ({ setIsEditing }) => {
   );
 };
 
-const TeamChannelHeader = ({ setIsEditing }) => {
+const TeamChannelHeader = ({ setIsEditing, setIsViewing }) => {
   const { channel, watcher_count } = useChannelStateContext();
   const { client } = useChatContext();
 
@@ -171,7 +174,10 @@ const TeamChannelHeader = ({ setIsEditing }) => {
                 />
                 {channel?.type === "team" && (
                   <Menu {...bindMenu(popupState)}>
-                    <MenuItem sx={{ color: "#0b0c10" }}>
+                    <MenuItem
+                      sx={{ color: "#0b0c10" }}
+                      onClick={() => setIsViewing(true)}
+                    >
                       <PreviewIcon sx={{ fontSize: 18, pr: 1 }} /> View Members
                     </MenuItem>
                     <MenuItem
