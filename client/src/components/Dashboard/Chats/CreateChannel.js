@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useChatContext } from "stream-chat-react";
 import { UserList } from "./exportsFiles";
-import CancelIcon from "@mui/icons-material/Cancel";
+import CloseIcon from "@mui/icons-material/Close";
 import { Button, Typography, Box, TextField } from "@mui/material";
 
 const ChannelNameInput = ({ channelName = "", setChannelName }) => {
@@ -63,7 +63,10 @@ const CreateChannel = ({ createType, setIsCreating }) => {
             ? "Create a New Group"
             : "Send a Direct Message"}
         </Typography>
-        <CancelIcon setIsCreating={setIsCreating} sx={{ float: "right" }} />
+        <CloseIcon
+          onClick={() => setIsCreating(false)}
+          sx={{ float: "right", cursor: "pointer" }}
+        />
       </Box>
 
       {createType === "team" && (
