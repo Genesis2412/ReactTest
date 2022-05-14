@@ -3,6 +3,7 @@ import { Avatar, useChatContext } from "stream-chat-react";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { Box, Typography } from "@mui/material";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const ListContainer = ({ children }) => {
   return (
@@ -169,12 +170,13 @@ const UserList = ({ setSelectedUsers }) => {
 
   return (
     <ListContainer>
-      {loading ? (
-        <Box sx={{ m: 20 }}>
-          <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
-            Loading members...
-          </Typography>
-        </Box>
+      {loading === true ? (
+        // <Box sx={{ m: 20 }}>
+        //   <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
+        //     Loading members...
+        //   </Typography>
+        // </Box>
+        <LoadingSpinner stateLoader={loading} />
       ) : (
         users?.map((user, i) => (
           <UserItem
