@@ -3,6 +3,7 @@ import { Avatar, useChatContext } from "stream-chat-react";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import { Box, Typography } from "@mui/material";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const ListContainer = ({ children }) => {
   return (
@@ -115,6 +116,7 @@ const UserList = ({ setSelectedUsers }) => {
 
   useEffect(() => {
     const getUsers = async () => {
+      setLoading(true);
       if (loading) {
         setLoading(true);
         return;
@@ -160,7 +162,7 @@ const UserList = ({ setSelectedUsers }) => {
   if (listEmpty) {
     return (
       <ListContainer>
-        <Box sx={{ m: 20 }}>
+        <Box sx={{ mt: 3, ml: 2.5 }}>
           <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
             No users found.
           </Typography>
@@ -172,11 +174,12 @@ const UserList = ({ setSelectedUsers }) => {
   return (
     <ListContainer>
       {loading ? (
-        <Box sx={{ m: 20 }}>
-          <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
-            Loading users...
-          </Typography>
-        </Box>
+        // <Box sx={{ m: 20 }}>
+        //   <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
+        //     Loading users...
+        //   </Typography>
+        // </Box>
+        <LoadingSpinner stateLoader={loading} />
       ) : (
         users?.map((user, i) => (
           <UserItem

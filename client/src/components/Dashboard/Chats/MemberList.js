@@ -159,7 +159,7 @@ const UserList = ({ setSelectedUsers }) => {
   if (listEmpty) {
     return (
       <ListContainer>
-        <Box sx={{ m: 20 }}>
+        <Box sx={{ mt: 3, ml: 2.5 }}>
           <Typography sx={{ fontSize: "16px", color: "#2c2c30" }}>
             No members found.
           </Typography>
