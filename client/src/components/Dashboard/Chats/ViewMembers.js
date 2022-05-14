@@ -4,7 +4,7 @@ import { MemberList } from "./exportsFiles";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, Typography, Button } from "@mui/material";
 
-const ViewMembers = ({ setIsEditing, setIsViewing }) => {
+const ViewMembers = ({ setIsViewing }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const { channel } = useChatContext();
 
