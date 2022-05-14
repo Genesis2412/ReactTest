@@ -6,6 +6,7 @@ const TeamChannelPreview = ({
   setActiveChannel,
   setIsCreating,
   setIsEditing,
+  setIsViewing,
   setToggleContainer,
   channel,
   type,
@@ -62,6 +63,7 @@ const TeamChannelPreview = ({
       onClick={() => {
         setIsCreating(false);
         setIsEditing(false);
+        setIsViewing(false);
         setActiveChannel(channel);
 
         if (setToggleContainer) {

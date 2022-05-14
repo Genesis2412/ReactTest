@@ -6,6 +6,7 @@ export const AddChannel = ({
   setIsCreating,
   setIsEditing,
   setToggleContainer,
+  setIsViewing,
   type,
 }) => (
   <AddCircleIcon
@@ -20,6 +21,7 @@ export const AddChannel = ({
       setCreateType(type);
       setIsCreating((prevState) => !prevState);
       setIsEditing(false);
+      setIsViewing(false);
       if (setToggleContainer) {
         setToggleContainer((prevState) => !prevState);
       }

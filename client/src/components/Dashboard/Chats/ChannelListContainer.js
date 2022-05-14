@@ -31,6 +31,7 @@ const ChannelListContent = ({
   setIsCreating,
   setCreateType,
   setIsEditing,
+  setIsViewing,
   setToggleContainer,
 }) => {
   const { client } = useChatContext();
@@ -55,6 +56,7 @@ const ChannelListContent = ({
               setIsCreating={setIsCreating}
               setCreateType={setCreateType}
               setIsEditing={setIsEditing}
+              setIsViewing={setIsViewing}
               setToggleContainer={setToggleContainer}
             />
           )}
@@ -63,6 +65,7 @@ const ChannelListContent = ({
               {...previewProps}
               setIsCreating={setIsCreating}
               setIsEditing={setIsEditing}
+              setIsViewing={setIsViewing}
               setToggleContainer={setToggleContainer}
               type="team"
             />
@@ -79,6 +82,7 @@ const ChannelListContent = ({
               setIsCreating={setIsCreating}
               setCreateType={setCreateType}
               setIsEditing={setIsEditing}
+              setIsViewing={setIsViewing}
               setToggleContainer={setToggleContainer}
             />
           )}
@@ -87,6 +91,7 @@ const ChannelListContent = ({
               {...previewProps}
               setIsCreating={setIsCreating}
               setIsEditing={setIsEditing}
+              setIsViewing={setIsViewing}
               setToggleContainer={setToggleContainer}
               type="messaging"
             />
@@ -101,6 +106,7 @@ const ChannelListContainer = ({
   setCreateType,
   setIsCreating,
   setIsEditing,
+  setIsViewing,
 }) => {
   const [toggleContainer, setToggleContainer] = useState(false);
   return (
@@ -110,6 +116,7 @@ const ChannelListContainer = ({
           setIsCreating={setIsCreating}
           setCreateType={setCreateType}
           setIsEditing={setIsEditing}
+          setIsViewing={setIsViewing}
         />
       </div>
       <div
@@ -141,6 +148,7 @@ const ChannelListContainer = ({
           setCreateType={setCreateType}
           setIsEditing={setIsEditing}
           setToggleContainer={setToggleContainer}
+          setIsViewing={setIsViewing}
         />
       </div>
     </>

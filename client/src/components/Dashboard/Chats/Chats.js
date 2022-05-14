@@ -31,6 +31,7 @@ const Chats = () => {
             setIsCreating={setIsCreating}
             setCreateType={setCreateType}
             setIsEditing={setIsEditing}
+            setIsViewing={setIsViewing}
           />
           <ChannelContainer
             isCreating={isCreating}
