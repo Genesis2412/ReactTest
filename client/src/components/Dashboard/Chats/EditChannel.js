@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useChatContext } from "stream-chat-react";
 import { UserList } from "./exportsFiles";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, TextField, Typography, Button } from "@mui/material";
+import { Box, TextField, Typography, Button, Snackbar } from "@mui/material";
 
 const ChannelNameInput = ({ channelName = "", setChannelName }) => {
   const handleChange = (event) => {
@@ -28,6 +28,15 @@ const EditChannel = ({ setIsEditing }) => {
   const { channel } = useChatContext();
   const [channelName, setChannelName] = useState(channel?.data?.name);
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   const updateChannel = async (e) => {
     e.preventDefault();
@@ -41,7 +50,8 @@ const EditChannel = ({ setIsEditing }) => {
           { text: `Channel Name changed to ${channelName}` }
         );
       } catch (error) {
-        console.log(error);
+        setSnackbarOpen(true);
+        setSnackbarMessage("An error occurred, please try again");
       }
     }
 
@@ -55,44 +65,54 @@ const EditChannel = ({ setIsEditing }) => {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          height: "62px",
-          paddingRight: "20px",
-          boxShadow: 2,
-        }}
-      >
-        <Typography sx={{ pl: 2, color: "#0b0c10" }}>Edit Group</Typography>
-        <CloseIcon
-          onClick={() => setIsEditing(false)}
-          sx={{ cursor: "pointer" }}
+    <>
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: "62px",
+            paddingRight: "20px",
+            boxShadow: 2,
+          }}
+        >
+          <Typography sx={{ pl: 2, color: "#0b0c10" }}>Edit Group</Typography>
+          <CloseIcon
+            onClick={() => setIsEditing(false)}
+            sx={{ cursor: "pointer" }}
+          />
+        </Box>
+        <ChannelNameInput
+          channelName={channelName}
+          setChannelName={setChannelName}
         />
-      </Box>
-      <ChannelNameInput
-        channelName={channelName}
-        setChannelName={setChannelName}
-      />
-      <UserList setSelectedUsers={setSelectedUsers} />
-      <Button
-        onClick={updateChannel}
-        sx={[
-          {
-            "&:hover": {
-              backgroundColor: "#c5c6c7",
-              color: "#0b0c10",
+        <UserList setSelectedUsers={setSelectedUsers} />
+        <Button
+          onClick={updateChannel}
+          sx={[
+            {
+              "&:hover": {
+                backgroundColor: "#c5c6c7",
+                color: "#0b0c10",
+              },
+              backgroundColor: "#45a29e",
+              color: "#fff",
             },
-            backgroundColor: "#45a29e",
-            color: "#fff",
-          },
-        ]}
-      >
-        Save Changes
-      </Button>
-    </Box>
+          ]}
+        >
+          Save Changes
+        </Button>
+      </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+    </>
   );
 };
 
