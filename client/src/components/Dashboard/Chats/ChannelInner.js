@@ -9,7 +9,7 @@ import {
   useChannelStateContext,
   useChatContext,
 } from "stream-chat-react";
-import { Box, Typography, MenuItem, Menu } from "@mui/material";
+import { Box, Typography, MenuItem, Menu, Snackbar } from "@mui/material";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PreviewIcon from "@mui/icons-material/Preview";
@@ -62,6 +62,15 @@ const ChannelInner = ({ setIsEditing, setIsViewing }) => {
 const TeamChannelHeader = ({ setIsEditing, setIsViewing }) => {
   const { channel, watcher_count } = useChannelStateContext();
   const { client } = useChatContext();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   const leaveChat = async () => {
     try {
@@ -74,7 +83,8 @@ const TeamChannelHeader = ({ setIsEditing, setIsViewing }) => {
         });
       }
     } catch (error) {
-      console.log(error);
+      setSnackbarOpen(true);
+      setSnackbarMessage("An error occurred, please try again");
     }
   };
 
@@ -87,7 +97,8 @@ const TeamChannelHeader = ({ setIsEditing, setIsViewing }) => {
         await channel.delete();
       }
     } catch (error) {
-      console.log(error);
+      setSnackbarOpen(true);
+      setSnackbarMessage("An error occurred, please try again");
     }
   };
 
@@ -149,75 +160,23 @@ const TeamChannelHeader = ({ setIsEditing, setIsViewing }) => {
   };
 
   return (
-    <Box
-      sx={{
-        p: 2,
-        boxShadow: 5,
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <MessagingHeader />
+    <>
       <Box
         sx={{
-          textAlign: "right",
+          p: 2,
+          boxShadow: 5,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        {channel?.data?.created_by?.id === client.userID && (
-          <PopupState variant="popover" popupId="demo-popup-menu">
-            {(popupState) => (
-              <>
-                <MoreVertIcon
-                  {...bindTrigger(popupState)}
-                  sx={{ cursor: "pointer", color: "#1f2833" }}
-                />
-                {channel?.type === "team" && (
-                  <Menu {...bindMenu(popupState)}>
-                    <MenuItem
-                      sx={{ color: "#0b0c10" }}
-                      onClick={() => setIsViewing(true)}
-                    >
-                      <PreviewIcon sx={{ fontSize: 18, pr: 1 }} /> View Members
-                    </MenuItem>
-                    <MenuItem
-                      sx={{ color: "#1f2833" }}
-                      onClick={() => setIsEditing(true)}
-                    >
-                      <EditIcon sx={{ fontSize: 18, pr: 1 }} /> Edit Group
-                    </MenuItem>
-
-                    <MenuItem
-                      sx={{ color: "red" }}
-                      onClick={() => {
-                        deleteChat();
-                      }}
-                    >
-                      <DeleteIcon sx={{ fontSize: 18, pr: 1 }} /> Delete Group
-                    </MenuItem>
-                  </Menu>
-                )}
-
-                {/* Direct Message */}
-                {channel?.type === "messaging" && (
-                  <Menu {...bindMenu(popupState)}>
-                    <MenuItem
-                      sx={{ color: "red" }}
-                      onClick={() => {
-                        deleteChat();
-                      }}
-                    >
-                      <DeleteIcon sx={{ fontSize: 16, pr: 1 }} /> Delete Chat
-                    </MenuItem>
-                  </Menu>
-                )}
-              </>
-            )}
-          </PopupState>
-        )}
-
-        {channel?.data?.created_by?.id !== client.userID &&
-          channel?.type === "team" && (
+        <MessagingHeader />
+        <Box
+          sx={{
+            textAlign: "right",
+          }}
+        >
+          {channel?.data?.created_by?.id === client.userID && (
             <PopupState variant="popover" popupId="demo-popup-menu">
               {(popupState) => (
                 <>
@@ -225,28 +184,91 @@ const TeamChannelHeader = ({ setIsEditing, setIsViewing }) => {
                     {...bindTrigger(popupState)}
                     sx={{ cursor: "pointer", color: "#1f2833" }}
                   />
-                  <Menu {...bindMenu(popupState)}>
-                    <MenuItem
-                      sx={{ color: "red" }}
-                      onClick={() => {
-                        leaveChat();
-                      }}
-                    >
-                      <LogoutIcon sx={{ fontSize: 16, pr: 1 }} /> Leave Group
-                    </MenuItem>
-                  </Menu>
+                  {channel?.type === "team" && (
+                    <Menu {...bindMenu(popupState)}>
+                      <MenuItem
+                        sx={{ color: "#0b0c10" }}
+                        onClick={() => setIsViewing(true)}
+                      >
+                        <PreviewIcon sx={{ fontSize: 18, pr: 1 }} /> View
+                        Members
+                      </MenuItem>
+                      <MenuItem
+                        sx={{ color: "#1f2833" }}
+                        onClick={() => setIsEditing(true)}
+                      >
+                        <EditIcon sx={{ fontSize: 18, pr: 1 }} /> Edit Group
+                      </MenuItem>
+
+                      <MenuItem
+                        sx={{ color: "red" }}
+                        onClick={() => {
+                          deleteChat();
+                        }}
+                      >
+                        <DeleteIcon sx={{ fontSize: 18, pr: 1 }} /> Delete Group
+                      </MenuItem>
+                    </Menu>
+                  )}
+
+                  {/* Direct Message */}
+                  {channel?.type === "messaging" && (
+                    <Menu {...bindMenu(popupState)}>
+                      <MenuItem
+                        sx={{ color: "red" }}
+                        onClick={() => {
+                          deleteChat();
+                        }}
+                      >
+                        <DeleteIcon sx={{ fontSize: 16, pr: 1 }} /> Delete Chat
+                      </MenuItem>
+                    </Menu>
+                  )}
                 </>
               )}
             </PopupState>
           )}
 
-        {channel?.type === "team" && (
-          <Typography sx={{ fontSize: "14px", color: "#858688", mt: 1 }}>
-            {getWatcherText(watcher_count)}
-          </Typography>
-        )}
+          {channel?.data?.created_by?.id !== client.userID &&
+            channel?.type === "team" && (
+              <PopupState variant="popover" popupId="demo-popup-menu">
+                {(popupState) => (
+                  <>
+                    <MoreVertIcon
+                      {...bindTrigger(popupState)}
+                      sx={{ cursor: "pointer", color: "#1f2833" }}
+                    />
+                    <Menu {...bindMenu(popupState)}>
+                      <MenuItem
+                        sx={{ color: "red" }}
+                        onClick={() => {
+                          leaveChat();
+                        }}
+                      >
+                        <LogoutIcon sx={{ fontSize: 16, pr: 1 }} /> Leave Group
+                      </MenuItem>
+                    </Menu>
+                  </>
+                )}
+              </PopupState>
+            )}
+
+          {channel?.type === "team" && (
+            <Typography sx={{ fontSize: "14px", color: "#858688", mt: 1 }}>
+              {getWatcherText(watcher_count)}
+            </Typography>
+          )}
+        </Box>
       </Box>
-    </Box>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={snackbarMessage}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+    </>
   );
 };
 
