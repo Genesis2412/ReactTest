@@ -14,6 +14,7 @@ import {
 import { Snackbar, IconButton, Button, CircularProgress } from "@mui/material";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useUserAuth } from "../../../Context/UserAuthContext";
+import { StreamChat } from "stream-chat";
 
 const UploadButton = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -22,6 +23,8 @@ const UploadButton = () => {
   const [message, setMessage] = useState("");
   const { user, userDetails } = useUserAuth();
   const [viewUploadBtn, setViewUploadBtn] = useState(false);
+  const apiKey = "k248hxcdpdqk";
+  const client = StreamChat.getInstance(apiKey);
 
   const Input = styled("input")({
     display: "none",
@@ -60,6 +63,7 @@ const UploadButton = () => {
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
             try {
+              await updateUserStream(url);
               await updateStudentProfile(url);
               await updateBookings(url);
               await updateJoinedClasses(url);
@@ -134,8 +138,16 @@ const UploadButton = () => {
     });
   };
 
-  if (viewUploadBtn === true) {
-  }
+  // update chat profile
+  const updateUserStream = async (url) => {
+    client.partialUpdateUser({
+      id: client.userID,
+      set: {
+        image: url,
+      },
+    });
+  };
+
   return (
     <>
       <label htmlFor="icon-button-file">
