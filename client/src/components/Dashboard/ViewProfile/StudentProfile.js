@@ -22,6 +22,7 @@ import * as Yup from "yup";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress, Snackbar } from "@mui/material";
+import { StreamChat } from "stream-chat";
 
 const TutorProfile = (props) => {
   const { user } = useUserAuth();
@@ -30,6 +31,8 @@ const TutorProfile = (props) => {
   const [message, setMessage] = useState("");
   let userStorageDetails = localStorage.getItem("userStorageDetails");
   let student = JSON.parse(userStorageDetails);
+  const apiKey = "k248hxcdpdqk";
+  const client = StreamChat.getInstance(apiKey);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -186,6 +189,15 @@ const TutorProfile = (props) => {
     }
   };
 
+  const updateStreamProfile = async (values) => {
+    client.partialUpdateUser({
+      id: client.userID,
+      set: {
+        name: values?.firstName + " " + values?.lastName,
+      },
+    });
+  };
+
   const handleSubmit = (values, setSubmitting) => {
     updateStudentProfile(values)
       .then(() => {
@@ -194,6 +206,9 @@ const TutorProfile = (props) => {
             updateJoinedClasses(values)
               .then(() => {
                 updateSubmittedAssignments(values)
+                  .then(() => {
+                    updateStreamProfile(values);
+                  })
                   .then(() => {
                     setSubmitting(false);
                     setEditField(true);
