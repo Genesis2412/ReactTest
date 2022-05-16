@@ -27,11 +27,9 @@ import {
 import { Alert, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { StreamChat } from "stream-chat";
-import Cookies from "universal-cookie";
 
 const apiKey = "k248hxcdpdqk";
 const client = StreamChat.getInstance(apiKey);
-const cookies = new Cookies();
 
 // Yup field Validation
 const validationSchema = yup.object({
@@ -91,8 +89,8 @@ const Login = () => {
       })
       .then(({ data }) => {
         if (data.token) {
-          cookies.set("token", data?.token);
-          cookies.set("userId", data?.userId);
+          window.sessionStorage.setItem("tkxn", data?.token);
+          window.sessionStorage.setItem("zpxn", data?.userId);
         }
       })
       .catch((err) => {
@@ -122,7 +120,8 @@ const Login = () => {
         if (err.message.includes("wrong-pass")) {
           setError("Invalid password");
         }
-        console.log(err.message);
+        setError("An error occured, please try again");
+        // console.log(err.message);
       }
     },
   });

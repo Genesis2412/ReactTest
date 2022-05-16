@@ -33,7 +33,6 @@
     "stream-chat": "^6.5.1",
     "stream-chat-react": "^8.1.2",
     "styled-components": "^5.3.3",
-    "universal-cookie": "^4.0.4",
     "uuidv4": "^6.2.13",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"
