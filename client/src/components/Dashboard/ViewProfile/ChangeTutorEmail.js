@@ -25,6 +25,7 @@ import {
   reauthenticateWithCredential,
   updateEmail,
 } from "firebase/auth";
+import { StreamChat } from "stream-chat";
 
 const ChangeTutorEmail = () => {
   const { user, userDetails } = useUserAuth();
@@ -36,6 +37,8 @@ const ChangeTutorEmail = () => {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const apiKey = "k248hxcdpdqk";
+  const client = StreamChat.getInstance(apiKey);
 
   const style = {
     position: "absolute",
@@ -78,6 +81,7 @@ const ChangeTutorEmail = () => {
               await updateJoinedClasses(email);
               await updateCreatedClasses(email);
               await updateProfile(email);
+              await updateStreamEmail(email);
               await updateEmail(user, email)
                 .then(() => {
                   setSnackBarOpen(true);
@@ -187,6 +191,15 @@ const ChangeTutorEmail = () => {
     const profileRef = doc(db, "tutors", user?.uid);
     await updateDoc(profileRef, {
       email: newEmail,
+    });
+  };
+
+  const updateStreamEmail = async (email) => {
+    client.partialUpdateUser({
+      id: client.userID,
+      set: {
+        email: email,
+      },
     });
   };
 
