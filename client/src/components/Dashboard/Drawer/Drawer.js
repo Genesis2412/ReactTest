@@ -20,6 +20,7 @@ import {
   AvatarMaterial,
 } from "./DrawerElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const Sidebar = () => {
   const { logOut, userDetails, setUserDetails, setUser, setClasses } =
@@ -34,9 +35,9 @@ const Sidebar = () => {
     try {
       setIsSubmitting(true);
       await logOut();
-      setIsSubmitting(false);
       window.sessionStorage.removeItem("tkxn");
       window.sessionStorage.removeItem("zpxn");
+      setIsSubmitting(false);
       //emptying maps
       setUserDetails({});
       setUser({});
@@ -47,69 +48,72 @@ const Sidebar = () => {
   };
 
   return (
-    <Container>
-      <Button clicked={click} onClick={() => handleClick()}>
-        Click
-      </Button>
-      <SidebarContainer>
-        <SlickBar clicked={click}>
-          <Item onClick={() => setClick(false)} to="/dashboard/classes">
-            <ClassMaterialIcon />
-            <Text clicked={click}>Classes</Text>
-          </Item>
-          <Item onClick={() => setClick(false)} to="/dashboard/chats">
-            <ChatMaterialIcon />
-            <Text clicked={click}>Chats</Text>
-          </Item>
-
-          {userDetails?.accountType === "Tutor" && (
-            <Item onClick={() => setClick(false)} to="/dashboard/videocall">
-              <VideoMaterialIcon />
-              <Text clicked={click}>Videocall</Text>
+    <>
+      <LoadingSpinner stateLoader={isSubmitting} />
+      <Container>
+        <Button clicked={click} onClick={() => handleClick()}>
+          Click
+        </Button>
+        <SidebarContainer>
+          <SlickBar clicked={click}>
+            <Item onClick={() => setClick(false)} to="/dashboard/classes">
+              <ClassMaterialIcon />
+              <Text clicked={click}>Classes</Text>
             </Item>
-          )}
-
-          {userDetails?.accountType === "Student" && (
-            <Item onClick={() => setClick(false)} to="/dashboard/tutors">
-              <PeopleMaterialIcon />
-              <Text clicked={click}>Tutor Profiles</Text>
+            <Item onClick={() => setClick(false)} to="/dashboard/chats">
+              <ChatMaterialIcon />
+              <Text clicked={click}>Chats</Text>
             </Item>
-          )}
 
-          <Item onClick={() => setClick(false)} to="/dashboard/bookings">
-            <ContactMaterialCalendarIcon />
-            <Text clicked={click}>Bookings</Text>
-          </Item>
-        </SlickBar>
+            {userDetails?.accountType === "Tutor" && (
+              <Item onClick={() => setClick(false)} to="/dashboard/videocall">
+                <VideoMaterialIcon />
+                <Text clicked={click}>Videocall</Text>
+              </Item>
+            )}
 
-        <Profile clicked={profileClick}>
-          <AvatarMaterial
-            onClick={() => handleProfileClick()}
-            src={userDetails?.profilePic}
-            alt={userDetails?.name?.firstName}
-          />
-          <Details clicked={profileClick}>
-            <Name>
-              <h4>
-                {userDetails?.name?.firstName +
-                  " " +
-                  userDetails?.name?.lastName}
-              </h4>
-              <ViewProfileLink
-                onClick={() => setprofileClick(false)}
-                to="/dashboard/viewprofile"
-              >
-                view profile
-              </ViewProfileLink>
-            </Name>
+            {userDetails?.accountType === "Student" && (
+              <Item onClick={() => setClick(false)} to="/dashboard/tutors">
+                <PeopleMaterialIcon />
+                <Text clicked={click}>Tutor Profiles</Text>
+              </Item>
+            )}
 
-            <Logout onClick={handleLogout} disabled={isSubmitting}>
-              <PowerMaterialIcon fontSize="large" />
-            </Logout>
-          </Details>
-        </Profile>
-      </SidebarContainer>
-    </Container>
+            <Item onClick={() => setClick(false)} to="/dashboard/bookings">
+              <ContactMaterialCalendarIcon />
+              <Text clicked={click}>Bookings</Text>
+            </Item>
+          </SlickBar>
+
+          <Profile clicked={profileClick}>
+            <AvatarMaterial
+              onClick={() => handleProfileClick()}
+              src={userDetails?.profilePic}
+              alt={userDetails?.name?.firstName}
+            />
+            <Details clicked={profileClick}>
+              <Name>
+                <h4>
+                  {userDetails?.name?.firstName +
+                    " " +
+                    userDetails?.name?.lastName}
+                </h4>
+                <ViewProfileLink
+                  onClick={() => setprofileClick(false)}
+                  to="/dashboard/viewprofile"
+                >
+                  view profile
+                </ViewProfileLink>
+              </Name>
+
+              <Logout onClick={handleLogout} disabled={isSubmitting}>
+                <PowerMaterialIcon fontSize="large" />
+              </Logout>
+            </Details>
+          </Profile>
+        </SidebarContainer>
+      </Container>
+    </>
   );
 };
 
