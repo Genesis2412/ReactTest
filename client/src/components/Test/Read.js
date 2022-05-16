@@ -61,20 +61,33 @@
 // export default Read;
 
 import React from "react";
+import { StreamChat } from "stream-chat";
+const apiKey = "k248hxcdpdqk";
+const client = StreamChat.getInstance(apiKey);
 
 const Read = () => {
-  window.sessionStorage.setItem("animals", "cat");
+  console.log(client);
 
-  const deleteSession = () => {
-    window.sessionStorage.removeItem("animals");
+  const updateUser = async () => {
+    client.partialUpdateUser({
+      id: "71b71a412764988b2580b17560f11f34",
+      set: {
+        image:
+          "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+        testssd: "Hello",
+      },
+    });
+    client.on("user.updated", () => {
+      // console.log(client.user.description); // 'New description'
+    });
   };
   return (
     <button
       onClick={() => {
-        deleteSession();
+        updateUser();
       }}
     >
-      Delete
+      Read
     </button>
   );
 };
