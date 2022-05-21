@@ -20,6 +20,7 @@ import {
   AvatarMaterial,
 } from "./DrawerElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
+import { StreamChat } from "stream-chat";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const Sidebar = () => {
@@ -30,11 +31,14 @@ const Sidebar = () => {
   const [profileClick, setprofileClick] = useState(false);
   const handleProfileClick = () => setprofileClick(!profileClick);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const apiKey = "k248hxcdpdqk";
+  const client = StreamChat.getInstance(apiKey);
 
   const handleLogout = async () => {
     try {
       setIsSubmitting(true);
       await logOut();
+      await client.disconnectUser();
       window.sessionStorage.removeItem("tkxn");
       window.sessionStorage.removeItem("zpxn");
       setIsSubmitting(false);
