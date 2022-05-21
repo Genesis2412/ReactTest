@@ -8,6 +8,18 @@ import { Box } from "@mui/material";
 
 const apiKey = "k248hxcdpdqk";
 const client = StreamChat.getInstance(apiKey);
+var authToken = window.sessionStorage.getItem("tkxn");
+var userId = window.sessionStorage.getItem("zpxn");
+
+if (authToken?.length !== 0) {
+  client.connectUser(
+    {
+      token: authToken,
+      id: userId,
+    },
+    authToken
+  );
+}
 
 const Chats = () => {
   const [createType, setCreateType] = useState("");

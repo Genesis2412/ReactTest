@@ -54,4 +54,20 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const deleteUser = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const client = StreamChat.getInstance(api_key, api_secret);
+    await client.deleteUser(userId, {
+      delete_conversation_channels: true,
+      mark_messages_deleted: true,
+      hard_delete: true,
+    });
+    res.status(200);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error });
+  }
+};
+
+module.exports = { register, login, deleteUser };
