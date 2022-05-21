@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   MenuItem,
   Box,
@@ -18,7 +18,6 @@ import {
   query,
   collection,
   where,
-  onSnapshot,
   getDocs,
 } from "firebase/firestore";
 import {
@@ -27,6 +26,8 @@ import {
   deleteUser,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { StreamChat } from "stream-chat";
 
 const DeleteTutorProfile = () => {
   const { userDetails, user } = useUserAuth();
@@ -41,6 +42,8 @@ const DeleteTutorProfile = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const apiKey = "k248hxcdpdqk";
+  const client = StreamChat.getInstance(apiKey);
 
   const style = {
     position: "absolute",
@@ -71,35 +74,24 @@ const DeleteTutorProfile = () => {
       const credential = EmailAuthProvider.credential(user.email, password);
       await reauthenticateWithCredential(user, credential)
         .then(async () => {
-          await deleteSubmittedAssignments()
-            .then(async () => {
-              await deleteAssignments();
-            })
-            .then(async () => {
-              await deleteAnnouncements();
-            })
-            .then(async () => {
-              await deleteBookings();
-            })
-            .then(async () => {
-              await deleteJoinedClasses();
-            })
-            .then(async () => {
-              await deleteCreatedClasses();
-            })
-            .then(async () => {
-              await deleteDoc(doc(db, "tutors", user?.uid))
-                .then(async () => {
-                  await deleteUser(user).then(() => {
-                    navigate("/");
-                  });
-                })
-                .catch((err) => {
-                  setSnackBarOpen(true);
-                  setMessage("An error occurred, please try again");
-                  setLoading(false);
-                });
-            });
+          try {
+            await deleteSubmittedAssignments();
+            await deleteAssignments();
+            await deleteAnnouncements();
+            await deleteBookings();
+            await deleteJoinedClasses();
+            await deleteCreatedClasses();
+            await deleteDoc(doc(db, "tutors", user?.uid));
+            await deleteUser(user);
+            await deleteUserChat();
+
+            navigate("/");
+            setLoading(false);
+          } catch (error) {
+            setSnackBarOpen(true);
+            setMessage("An error occurred, please try again");
+            setLoading(false);
+          }
         })
         .catch((err) => {
           if (err.message.includes("auth/wrong-password")) {
@@ -251,6 +243,21 @@ const DeleteTutorProfile = () => {
     dataArray.map((values) => {
       return deleteDoc(doc(db, "createdClasses", values));
     });
+  };
+
+  const deleteUserChat = async () => {
+    const URL = "http://localhost:5000/auth/deleteUser";
+    var userId = client.userID;
+
+    await axios
+      .post(URL, {
+        userId,
+      })
+      .then(async () => {
+        await client.disconnectUser();
+        window.sessionStorage.removeItem("tkxn");
+        window.sessionStorage.removeItem("zpxn");
+      });
   };
 
   return (

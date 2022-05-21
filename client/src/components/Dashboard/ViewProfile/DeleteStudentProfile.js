@@ -28,7 +28,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { StreamChat } from "stream-chat";
-import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const DeleteStudentProfile = () => {
   const { userDetails, user } = useUserAuth();
@@ -173,8 +172,6 @@ const DeleteStudentProfile = () => {
 
   return (
     <>
-      <LoadingSpinner stateLoader={loading} />
-
       <MenuItem onClick={handleOpen}>
         <PersonRemoveIcon sx={{ mr: 1, fontSize: 20, color: "#45a29e" }} />{" "}
         Delete Account
