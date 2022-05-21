@@ -54,6 +54,46 @@ const login = async (req, res) => {
   }
 };
 
+const passwordHash = async (req, res) => {
+  try {
+    const { email, oldPassword, newPassword } = req.body;
+    const serverClient = connect(api_key, api_secret, app_id);
+    const client = StreamChat.getInstance(api_key, api_secret);
+    const { users } = await client.queryUsers({ email: email });
+
+    if (users.length === 0) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    const success = await bcrypt.compare(oldPassword, users[0].hashedPassword);
+    const token = serverClient.createUserToken(users[0].id);
+
+    if (success) {
+      const userId = users[0].id;
+      const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+      try {
+        client.partialUpdateUser({
+          id: userId,
+          set: {
+            hashedPassword: newHashedPassword,
+          },
+        });
+        res.status(200).json({
+          token,
+          userId: users[0].id,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      return res.status(400).json({ message: "Old password not valid" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err });
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -70,4 +110,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { register, login, deleteUser };
+module.exports = { register, login, passwordHash, deleteUser };
