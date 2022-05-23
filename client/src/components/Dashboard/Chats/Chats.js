@@ -6,7 +6,15 @@ import { Chat } from "stream-chat-react";
 import { ChannelListContainer, ChannelContainer } from "./exportsFiles";
 import "stream-chat-react/dist/css/index.css";
 import "./Chats.css";
-import { Box, Button, TextField, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Grid,
+  Button,
+  TextField,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 
 const apiKey = "k248hxcdpdqk";
@@ -111,58 +119,109 @@ const Chats = () => {
 
       {!authToken && !userId && (
         <Box>
-          <form onSubmit={formik.handleSubmit}>
-            <TextField
-              fullWidth
-              id="email"
-              name="email"
-              label="Email"
-              size="small"
-              type={"email"}
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-            />
-            <TextField
-              fullWidth
-              id="oldPassword"
-              name="oldPassword"
-              label="Old Password"
-              size="small"
-              type={"password"}
-              value={formik.values.oldPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.oldPassword && Boolean(formik.errors.oldPassword)
-              }
-              helperText={
-                formik.touched.oldPassword && formik.errors.oldPassword
-              }
-            />
-            <TextField
-              id="newPassword"
-              name="newPassword"
-              label="New Password"
-              size="small"
-              type={"password"}
-              value={formik.values.newPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.newPassword && Boolean(formik.errors.newPassword)
-              }
-              helperText={
-                formik.touched.newPassword && formik.errors.newPassword
-              }
-            />
-            <Button type="submit" disabled={formik.isSubmitting} value="Verify">
-              {formik.isSubmitting ? (
-                <CircularProgress color="secondary" />
-              ) : (
-                "Verify"
-              )}
-            </Button>
-          </form>
+          <Box>
+            <Paper
+              sx={{
+                p: 1,
+                boxShadow: 3,
+                textAlign: "center",
+                backgroundColor: "#1f2833",
+                color: "#66fcf1",
+              }}
+            >
+              <Typography>
+                Your password was changed, please verify your account to access
+                chats.
+              </Typography>
+            </Paper>
+          </Box>
+          <Paper sx={{ p: 1, boxShadow: 5, mt: 2 }}>
+            <Grid
+              spacing={0}
+              direction="column"
+              alignItems="center"
+              justify="center"
+            >
+              <form onSubmit={formik.handleSubmit}>
+                <Grid item xs={12} sx={{ p: 1 }}>
+                  <TextField
+                    fullWidth
+                    id="email"
+                    name="email"
+                    label="Email"
+                    size="small"
+                    type={"email"}
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    error={formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
+                  />
+                </Grid>
+                <Grid item xs={12} sx={{ p: 1 }}>
+                  <TextField
+                    fullWidth
+                    id="oldPassword"
+                    name="oldPassword"
+                    label="Old Password"
+                    size="small"
+                    type={"password"}
+                    value={formik.values.oldPassword}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.oldPassword &&
+                      Boolean(formik.errors.oldPassword)
+                    }
+                    helperText={
+                      formik.touched.oldPassword && formik.errors.oldPassword
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} sx={{ p: 1 }}>
+                  <TextField
+                    fullWidth
+                    id="newPassword"
+                    name="newPassword"
+                    label="New Password"
+                    size="small"
+                    type={"password"}
+                    value={formik.values.newPassword}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.newPassword &&
+                      Boolean(formik.errors.newPassword)
+                    }
+                    helperText={
+                      formik.touched.newPassword && formik.errors.newPassword
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} sx={{ p: 1 }}>
+                  <Button
+                    fullWidth
+                    type="submit"
+                    disabled={formik.isSubmitting}
+                    value="Verify"
+                    sx={[
+                      {
+                        "&:hover": {
+                          backgroundColor: "#c5c6c7",
+                          color: "#0b0c10",
+                        },
+                        backgroundColor: "#45a29e",
+                        color: "#fff",
+                      },
+                    ]}
+                  >
+                    {formik.isSubmitting ? (
+                      <CircularProgress color="secondary" />
+                    ) : (
+                      "Verify"
+                    )}
+                  </Button>
+                </Grid>
+              </form>
+            </Grid>
+          </Paper>
         </Box>
       )}
     </>
