@@ -39,8 +39,9 @@ const Sidebar = () => {
       setIsSubmitting(true);
       await logOut();
       await client.disconnectUser();
-      window.sessionStorage.removeItem("tkxn");
-      window.sessionStorage.removeItem("zpxn");
+      window.localStorage.removeItem("tkxn");
+      window.localStorage.removeItem("zpxn");
+      window.localStorage.removeItem("userStorageDetails");
       setIsSubmitting(false);
       //emptying maps
       setUserDetails({});

@@ -11,8 +11,8 @@ import axios from "axios";
 
 const apiKey = "k248hxcdpdqk";
 const client = StreamChat.getInstance(apiKey);
-var authToken = window.sessionStorage.getItem("tkxn");
-var userId = window.sessionStorage.getItem("zpxn");
+var authToken = window.localStorage.getItem("tkxn");
+var userId = window.localStorage.getItem("zpxn");
 
 const Chats = () => {
   const [createType, setCreateType] = useState("");
@@ -43,8 +43,8 @@ const Chats = () => {
       })
       .then(({ data }) => {
         if (data.token) {
-          window.sessionStorage.setItem("tkxn", data?.token);
-          window.sessionStorage.setItem("zpxn", data?.userId);
+          window.localStorage.setItem("tkxn", data?.token);
+          window.localStorage.setItem("zpxn", data?.userId);
         }
         window.location.reload(false);
       });
