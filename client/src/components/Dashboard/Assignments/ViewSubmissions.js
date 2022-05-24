@@ -5,14 +5,11 @@ import {
   Paper,
   Button,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Snackbar,
   Grid,
+  Modal,
+  CircularProgress,
+  TextField,
 } from "@mui/material";
 import { db } from "../../../firebase-config";
 import {
@@ -26,6 +23,7 @@ import {
 import { ViewSubmissionsImg } from "../../GlobalStyles";
 import ViewSubmissionIcon from "../../../images/ViewSubmissionIcon.svg";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ViewSubmissions = () => {
   const location = useLocation();
@@ -35,6 +33,30 @@ const ViewSubmissions = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [showLoader, setShowLoader] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [marks, setMarks] = useState("");
+  const [remarks, setRemarks] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const handleModalOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
+  const handleCancel = () => {
+    setOpenModal(false);
+    setMarks("");
+    setRemarks("");
+  };
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "50%",
+    bgcolor: "rgba(255, 255, 255, 0.8)",
+    p: 4,
+    borderRadius: 2,
+    textAlign: "center",
+  };
 
   const HeaderStyle = {
     color: "#5B5EA6",
@@ -60,22 +82,31 @@ const ViewSubmissions = () => {
     setSnackBarOpen(false);
   };
 
-  const addMarks = async (submittedId, firstName, lastName) => {
-    let marks = prompt("Please enter marks for " + firstName + " " + lastName);
-    let updatedMarks = marks.toString();
+  const addMarks = async (submittedId, marks) => {
+    try {
+      const marksRef = doc(db, "submittedAssignments", submittedId);
+      await updateDoc(marksRef, {
+        marks: marks,
+      });
+      setSnackBarOpen(true);
+      setMessage("Marks added successfully");
+    } catch (error) {
+      setSnackBarOpen(true);
+      setMessage("An error occurred, please try again");
+    }
+  };
 
-    if (updatedMarks != null) {
-      try {
-        const marksRef = doc(db, "submittedAssignments", submittedId);
-        await updateDoc(marksRef, {
-          marks: updatedMarks,
-        });
-        setSnackBarOpen(true);
-        setMessage("Marks added successfully");
-      } catch (error) {
-        setSnackBarOpen(true);
-        setMessage("An error occurred, please try again");
-      }
+  const addRemarks = async (submittedId, remarks) => {
+    try {
+      const marksRef = doc(db, "submittedAssignments", submittedId);
+      await updateDoc(marksRef, {
+        remarks: remarks,
+      });
+      setSnackBarOpen(true);
+      setMessage("Remarks added successfully");
+    } catch (error) {
+      setSnackBarOpen(true);
+      setMessage("An error occurred, please try again");
     }
   };
 
@@ -97,6 +128,38 @@ const ViewSubmissions = () => {
         setMessage("An error occurred, please try again");
       }
     }
+  };
+
+  const deleteRemarks = async (submittedId, firstName, lastName) => {
+    let confirmAction = window.confirm(
+      "Are you sure to delete remarks of " + firstName + " " + lastName + "?"
+    );
+
+    if (confirmAction) {
+      try {
+        const marksRef = doc(db, "submittedAssignments", submittedId);
+        await updateDoc(marksRef, {
+          remarks: "",
+        });
+        setSnackBarOpen(true);
+        setMessage("Remarks removed successfully");
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      }
+    }
+  };
+
+  const updateSubmittedDetails = async () => {
+    if (marks.length !== 0) {
+      await addMarks(studentId, marks);
+    }
+
+    if (remarks.length !== 0) {
+      await addRemarks(studentId, remarks);
+    }
+
+    handleModalClose();
   };
 
   // reading all submitted assignments
@@ -188,28 +251,54 @@ const ViewSubmissions = () => {
 
                   <Grid item md={1} xs={6}>
                     <Typography style={HeaderStyle}>Marks</Typography>
-                    <Typography>
-                      {submittedAssignment.marks
-                        ? submittedAssignment.marks
-                        : "Not yet posted"}
-                    </Typography>
+                    {submittedAssignment.marks.length !== 0 && (
+                      <Box sx={{ display: "inline-flex" }}>
+                        <Typography>{submittedAssignment.marks}</Typography>
+                        <CloseIcon
+                          sx={{ pl: 2, color: "red", cursor: "pointer" }}
+                          onClick={() => {
+                            deleteMarks(
+                              submittedAssignment.id,
+                              submittedAssignment.studentFirstName,
+                              submittedAssignment.studentLastName
+                            );
+                          }}
+                        />
+                      </Box>
+                    )}
+                    {submittedAssignment.marks.length === 0 && (
+                      <Typography>Not yet posted</Typography>
+                    )}
                   </Grid>
 
                   <Grid item md={2} xs={6}>
                     <Typography style={HeaderStyle}>Remarks</Typography>
-                    <Typography>
-                      {submittedAssignment.remarks
-                        ? submittedAssignment.remarks
-                        : "Not yet posted"}
-                    </Typography>
+                    {submittedAssignment.remarks.length !== 0 && (
+                      <Box sx={{ display: "inline-flex" }}>
+                        <Typography>{submittedAssignment.remarks}</Typography>
+                        <CloseIcon
+                          sx={{ pl: 2, color: "red", cursor: "pointer" }}
+                          onClick={() => {
+                            deleteRemarks(
+                              submittedAssignment.id,
+                              submittedAssignment.studentFirstName,
+                              submittedAssignment.studentLastName
+                            );
+                          }}
+                        />
+                      </Box>
+                    )}
+                    {submittedAssignment.remarks.length === 0 && (
+                      <Typography>Not yet posted</Typography>
+                    )}
                   </Grid>
 
                   <Grid item md={2} xs={12}>
                     <Typography style={HeaderStyle}>Correction</Typography>
 
                     <Typography>
-                      {submittedAssignment.remarks
-                        ? submittedAssignment.remarks
+                      {submittedAssignment.correctionFiles
+                        ? submittedAssignment.correctionFiles
                         : "No files posted"}
                     </Typography>
                   </Grid>
@@ -227,6 +316,10 @@ const ViewSubmissions = () => {
                           color: "#fff",
                         },
                       ]}
+                      onClick={() => {
+                        handleModalOpen();
+                        setStudentId(submittedAssignment.id);
+                      }}
                     >
                       Add marks/ remarks/ corrected files
                     </Button>
@@ -262,6 +355,87 @@ const ViewSubmissions = () => {
           </Typography>
         </Box>
       )}
+
+      <Modal
+        open={openModal}
+        onClose={handleModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <>
+          <Box sx={style}>
+            <Typography
+              sx={{
+                textAlign: "center",
+                fontSize: 16,
+              }}
+            >
+              Please enter your Password and your new Email
+            </Typography>
+            <TextField
+              label="Enter marks"
+              type="text"
+              fullWidth
+              sx={{ mt: 1 }}
+              value={marks}
+              onChange={(e) => setMarks(e.target.value)}
+            />
+
+            <TextField
+              label="Enter remarks"
+              type="text"
+              fullWidth
+              sx={{ mt: 1 }}
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+            />
+
+            <Button
+              fullWidth
+              sx={[
+                {
+                  "&:hover": {
+                    backgroundColor: "#c5c6c7",
+                    color: "#0b0c10",
+                  },
+                  backgroundColor: "#45a29e",
+                  color: "#fff",
+                  mt: 1,
+                },
+              ]}
+              onClick={() => {
+                updateSubmittedDetails();
+              }}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress color="secondary" /> : "Submit"}
+            </Button>
+
+            {!loading && (
+              <Button
+                fullWidth
+                sx={[
+                  {
+                    "&:hover": {
+                      backgroundColor: "#c5c6c7",
+                      color: "#0b0c10",
+                    },
+
+                    border: "2px solid #45a29e",
+                    color: "#0b0c10",
+                    mt: 1,
+                  },
+                ]}
+                onClick={() => {
+                  handleCancel();
+                }}
+              >
+                Cancel
+              </Button>
+            )}
+          </Box>
+        </>
+      </Modal>
 
       <Snackbar
         open={snackBarOpen}
