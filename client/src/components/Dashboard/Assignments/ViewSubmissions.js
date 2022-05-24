@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import {
   Box,
@@ -19,7 +19,16 @@ import {
   query,
   onSnapshot,
   updateDoc,
+  arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
+import { storage } from "../../../firebase-config";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+  deleteObject,
+} from "firebase/storage";
 import { ViewSubmissionsImg } from "../../GlobalStyles";
 import ViewSubmissionIcon from "../../../images/ViewSubmissionIcon.svg";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
@@ -36,7 +45,10 @@ const ViewSubmissions = () => {
   const [loading, setLoading] = useState(false);
   const [marks, setMarks] = useState("");
   const [remarks, setRemarks] = useState("");
-  const [studentId, setStudentId] = useState("");
+  const [images, setImages] = useState([]);
+  const fileInputRef = useRef();
+  const [submissionDetails, setSubmissionDetails] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
@@ -44,6 +56,9 @@ const ViewSubmissions = () => {
     setOpenModal(false);
     setMarks("");
     setRemarks("");
+    setSubmissionDetails([]);
+    setImages((prevState) => []);
+    fileInputRef.current.value = "";
   };
 
   const style = {
@@ -68,11 +83,6 @@ const ViewSubmissions = () => {
     color: "#45a29e",
     textDecoration: "none",
     fontWeight: "bold",
-
-    "&:hover": {
-      color: "#0b0c10",
-      backgroundColor: "#c5c6c7",
-    },
   };
 
   const handleClose = (event, reason) => {
@@ -150,15 +160,122 @@ const ViewSubmissions = () => {
     }
   };
 
+  const handleDeleteFile = async (
+    classCode,
+    submissionCode,
+    fileName,
+    fileUrl
+  ) => {
+    let confirmAction = window.confirm(
+      "Are you sure to delete " + fileName + "?"
+    );
+    if (confirmAction)
+      try {
+        const imagePathRef = ref(
+          storage,
+          "CreatedClasses/" +
+            classCode +
+            "/correctionFiles/" +
+            submissionCode +
+            "/" +
+            fileName
+        );
+        await deleteObject(imagePathRef);
+
+        await updateDoc(doc(db, "submittedAssignments", submissionCode), {
+          correctedFileName: arrayRemove(fileName),
+          correctedFileUrl: arrayRemove(fileUrl),
+        });
+
+        setSnackBarOpen(true);
+        setMessage(fileName + " removed successfully");
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+      }
+  };
+
+  const handleChange = (e) => {
+    for (let i = 0; i < e.target.files.length; i++) {
+      const newImage = e.target.files[i];
+      newImage["id"] = Math.random();
+      setImages((prevState) => [...prevState, newImage]);
+    }
+  };
+
+  const handleUpload = async (submissionCode, classCode) => {
+    await Promise.all(
+      images.map((image) => {
+        const storageRef = ref(
+          storage,
+          "CreatedClasses/" +
+            classCode +
+            "/correctionFiles/" +
+            submissionCode +
+            "/" +
+            image.name
+        );
+
+        const uploadTask = uploadBytesResumable(storageRef, image);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const prog = Math.round(
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            );
+          },
+          (err) => alert(err),
+
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+              try {
+                await updateDoc(
+                  doc(db, "submittedAssignments", submissionCode),
+                  {
+                    correctedFileName: arrayUnion(image.name),
+                    correctedFileUrl: arrayUnion(url),
+                  }
+                );
+              } catch (error) {
+                setSnackBarOpen(true);
+                setMessage("An error occurred, please try again");
+                return;
+              }
+            });
+          }
+        );
+      })
+    );
+    setSnackBarOpen(true);
+    setMessage("Files imported successfully");
+  };
+
   const updateSubmittedDetails = async () => {
+    setLoading(true);
     if (marks.length !== 0) {
-      await addMarks(studentId, marks);
+      await addMarks(submissionDetails[0], marks);
     }
 
     if (remarks.length !== 0) {
-      await addRemarks(studentId, remarks);
+      await addRemarks(submissionDetails[0], remarks);
     }
 
+    if (images.length !== 0) {
+      await handleUpload(submissionDetails[0], submissionDetails[1]);
+    }
+
+    if (marks.length === 0 || remarks.length === 0 || images.length === 0) {
+      setSnackBarOpen(true);
+      setMessage("Please, fill your required fields");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(false);
+    setSubmissionDetails([]);
+    setImages((prevState) => []);
+    fileInputRef.current.value = "";
     handleModalClose();
   };
 
@@ -185,150 +302,315 @@ const ViewSubmissions = () => {
       <LoadingSpinner stateLoader={showLoader} />
 
       {!showLoader && submittedAssignments.length !== 0 && (
-        <Box>
-          <Paper sx={{ mt: 1, p: 1, boxShadow: 2 }}>
-            {submittedAssignments.map((submittedAssignment, index) => {
-              return (
-                <Grid
-                  container
-                  spacing={2}
-                  key={index}
-                  sx={{ textAlign: "center" }}
-                >
-                  <Grid item md={1} xs={12}>
-                    <Typography sx={{ fontStyle: "italic" }}>
-                      {submittedAssignment.studentFirstName +
-                        " " +
-                        submittedAssignment.studentLastName}
-                    </Typography>
-                  </Grid>
+        <>
+          <Box
+            sx={{
+              mt: 2,
+              display: "flex",
+              justifyContent: "right",
+              alignItems: "right",
+            }}
+          >
+            <TextField
+              size={"small"}
+              label={"Search submissions"}
+              onChange={(event) => {
+                setSearchTerm(event.target.value);
+              }}
+              sx={{ mb: 2 }}
+            />
+          </Box>
 
-                  <Grid item md={2} xs={6}>
-                    <Typography style={HeaderStyle}>Submitted Files</Typography>
-                    {submittedAssignment.submittedFileName.map(
-                      (fileName, key) => {
-                        if (fileName) {
-                          return (
-                            <Box key={key}>
-                              <Typography>
-                                <a
-                                  href={
-                                    submittedAssignment.submittedFileUrl[index]
-                                  }
-                                  target={"blank"}
-                                >
-                                  {fileName}
-                                </a>
-                              </Typography>
-                            </Box>
-                          );
-                        }
-                      }
-                    )}
-                  </Grid>
+          <Box>
+            {submittedAssignments
+              ?.filter((submittedAssignment) => {
+                if (searchTerm === "") {
+                  return submittedAssignment;
+                }
+                if (
+                  submittedAssignment?.studentFirstName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return submittedAssignment;
+                }
 
-                  <Grid item md={2} xs={6}>
-                    <Typography style={HeaderStyle}>
-                      Submission Status
-                    </Typography>
-                    {submittedAssignment.status === "Not Submitted" && (
-                      <Typography sx={{ color: "#8C0800" }}>
-                        {submittedAssignment.status}
-                      </Typography>
-                    )}
+                if (
+                  submittedAssignment?.studentLastName
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return submittedAssignment;
+                }
 
-                    {submittedAssignment.status === "Late" && (
-                      <Typography sx={{ color: "#E98600" }}>
-                        {submittedAssignment.status}
-                      </Typography>
-                    )}
-                    {submittedAssignment.status === "On time" && (
-                      <Typography sx={{ color: "#0DB000" }}>
-                        {submittedAssignment.status}
-                      </Typography>
-                    )}
-                  </Grid>
+                if (
+                  (
+                    submittedAssignment?.studentFirstName.toLowerCase() +
+                    " " +
+                    submittedAssignment?.studentLastName.toLowerCase()
+                  ).includes(searchTerm.toLowerCase())
+                ) {
+                  return submittedAssignment;
+                }
 
-                  <Grid item md={1} xs={6}>
-                    <Typography style={HeaderStyle}>Marks</Typography>
-                    {submittedAssignment.marks.length !== 0 && (
-                      <Box sx={{ display: "inline-flex" }}>
-                        <Typography>{submittedAssignment.marks}</Typography>
-                        <CloseIcon
-                          sx={{ pl: 2, color: "red", cursor: "pointer" }}
-                          onClick={() => {
-                            deleteMarks(
-                              submittedAssignment.id,
-                              submittedAssignment.studentFirstName,
-                              submittedAssignment.studentLastName
-                            );
-                          }}
-                        />
-                      </Box>
-                    )}
-                    {submittedAssignment.marks.length === 0 && (
-                      <Typography>Not yet posted</Typography>
-                    )}
-                  </Grid>
+                if (
+                  (
+                    submittedAssignment?.studentLastName.toLowerCase() +
+                    " " +
+                    submittedAssignment?.studentFirstName.toLowerCase()
+                  ).includes(searchTerm.toLowerCase())
+                ) {
+                  return submittedAssignment;
+                }
 
-                  <Grid item md={2} xs={6}>
-                    <Typography style={HeaderStyle}>Remarks</Typography>
-                    {submittedAssignment.remarks.length !== 0 && (
-                      <Box sx={{ display: "inline-flex" }}>
-                        <Typography>{submittedAssignment.remarks}</Typography>
-                        <CloseIcon
-                          sx={{ pl: 2, color: "red", cursor: "pointer" }}
-                          onClick={() => {
-                            deleteRemarks(
-                              submittedAssignment.id,
-                              submittedAssignment.studentFirstName,
-                              submittedAssignment.studentLastName
-                            );
-                          }}
-                        />
-                      </Box>
-                    )}
-                    {submittedAssignment.remarks.length === 0 && (
-                      <Typography>Not yet posted</Typography>
-                    )}
-                  </Grid>
+                if (submittedAssignment.submittedFileName.length !== 0) {
+                  for (
+                    let i = 0;
+                    i < submittedAssignment.submittedFileName.length;
+                    i++
+                  ) {
+                    if (
+                      submittedAssignment.submittedFileName[i]
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                    ) {
+                      return submittedAssignment;
+                    }
+                  }
+                }
 
-                  <Grid item md={2} xs={12}>
-                    <Typography style={HeaderStyle}>Correction</Typography>
+                if (
+                  submittedAssignment?.status
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return submittedAssignment;
+                }
 
-                    <Typography>
-                      {submittedAssignment.correctionFiles
-                        ? submittedAssignment.correctionFiles
-                        : "No files posted"}
-                    </Typography>
-                  </Grid>
+                if (
+                  submittedAssignment?.remarks
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ) {
+                  return submittedAssignment;
+                }
 
-                  <Grid item md={2} xs={12}>
-                    <Button
-                      size={"small"}
-                      sx={[
-                        {
-                          "&:hover": {
-                            backgroundColor: "#c5c6c7",
-                            color: "#0b0c10",
-                          },
-                          backgroundColor: "#45a29e",
-                          color: "#fff",
-                        },
-                      ]}
-                      onClick={() => {
-                        handleModalOpen();
-                        setStudentId(submittedAssignment.id);
-                      }}
+                if (submittedAssignment.correctedFileName.length !== 0) {
+                  for (
+                    let i = 0;
+                    i < submittedAssignment.correctedFileName.length;
+                    i++
+                  ) {
+                    if (
+                      submittedAssignment.correctedFileName[i]
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase())
+                    ) {
+                      return submittedAssignment;
+                    }
+                  }
+                }
+              })
+              ?.map((submittedAssignment, index) => {
+                return (
+                  <Paper sx={{ mt: 1, p: 1, boxShadow: 2 }}>
+                    <Grid
+                      container
+                      spacing={2}
+                      key={index}
+                      sx={{ textAlign: "center" }}
                     >
-                      Add marks/ remarks/ corrected files
-                    </Button>
-                  </Grid>
-                </Grid>
-              );
-            })}
-          </Paper>
-        </Box>
+                      <Grid item md={1} xs={12}>
+                        <Typography sx={{ fontStyle: "italic" }}>
+                          {submittedAssignment?.studentFirstName +
+                            " " +
+                            submittedAssignment?.studentLastName}
+                        </Typography>
+                      </Grid>
+
+                      <Grid item md={2} xs={6}>
+                        <Typography style={HeaderStyle}>
+                          Submitted Files
+                        </Typography>
+                        {submittedAssignment?.submittedFileName?.map(
+                          (fileName, key) => {
+                            if (fileName) {
+                              return (
+                                <Box key={key}>
+                                  <Typography>
+                                    <a
+                                      style={LinkStyles}
+                                      href={
+                                        submittedAssignment?.submittedFileUrl[
+                                          index
+                                        ]
+                                      }
+                                      target={"blank"}
+                                    >
+                                      {fileName}
+                                    </a>
+                                  </Typography>
+                                </Box>
+                              );
+                            }
+                          }
+                        )}
+                      </Grid>
+
+                      <Grid item md={2} xs={6}>
+                        <Typography style={HeaderStyle}>
+                          Submission Status
+                        </Typography>
+                        {submittedAssignment.status === "Not Submitted" && (
+                          <Typography sx={{ color: "#8C0800" }}>
+                            {submittedAssignment?.status}
+                          </Typography>
+                        )}
+
+                        {submittedAssignment.status === "Late" && (
+                          <Typography sx={{ color: "#E98600" }}>
+                            {submittedAssignment?.status}
+                          </Typography>
+                        )}
+                        {submittedAssignment.status === "On time" && (
+                          <Typography sx={{ color: "#0DB000" }}>
+                            {submittedAssignment?.status}
+                          </Typography>
+                        )}
+                      </Grid>
+
+                      <Grid item md={1} xs={6}>
+                        <Typography style={HeaderStyle}>Marks</Typography>
+                        {submittedAssignment?.marks.length !== 0 && (
+                          <Box sx={{ display: "inline-flex" }}>
+                            <Typography>
+                              {submittedAssignment?.marks}
+                            </Typography>
+                            <CloseIcon
+                              sx={{ pl: 2, color: "red", cursor: "pointer" }}
+                              onClick={() => {
+                                deleteMarks(
+                                  submittedAssignment?.id,
+                                  submittedAssignment?.studentFirstName,
+                                  submittedAssignment?.studentLastName
+                                );
+                              }}
+                            />
+                          </Box>
+                        )}
+                        {submittedAssignment?.marks.length === 0 && (
+                          <Typography>Not yet posted</Typography>
+                        )}
+                      </Grid>
+
+                      <Grid item md={2} xs={6}>
+                        <Typography style={HeaderStyle}>Remarks</Typography>
+                        {submittedAssignment?.remarks.length !== 0 && (
+                          <Box sx={{ display: "inline-flex" }}>
+                            <Typography>
+                              {submittedAssignment?.remarks}
+                            </Typography>
+                            <CloseIcon
+                              sx={{ pl: 2, color: "red", cursor: "pointer" }}
+                              onClick={() => {
+                                deleteRemarks(
+                                  submittedAssignment?.id,
+                                  submittedAssignment?.studentFirstName,
+                                  submittedAssignment?.studentLastName
+                                );
+                              }}
+                            />
+                          </Box>
+                        )}
+                        {submittedAssignment?.remarks.length === 0 && (
+                          <Typography>Not yet posted</Typography>
+                        )}
+                      </Grid>
+
+                      <Grid item md={2} xs={12}>
+                        <Typography style={HeaderStyle}>Correction</Typography>
+
+                        <Typography>
+                          {submittedAssignment?.correctedFileName?.map(
+                            (fileName, key) => {
+                              return (
+                                <Box key={key}>
+                                  {submittedAssignment?.correctedFileName
+                                    .length !== 0 && (
+                                    <Box sx={{ display: "inline-flex" }}>
+                                      <Typography>
+                                        <a
+                                          style={LinkStyles}
+                                          href={
+                                            submittedAssignment
+                                              ?.correctedFileUrl[key]
+                                          }
+                                          target={"blank"}
+                                        >
+                                          {fileName}
+                                        </a>
+                                      </Typography>
+
+                                      <CloseIcon
+                                        sx={{
+                                          pl: 2,
+                                          color: "red",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() => {
+                                          handleDeleteFile(
+                                            submittedAssignment?.classCode,
+                                            submittedAssignment?.id,
+                                            fileName,
+                                            submittedAssignment
+                                              ?.correctedFileUrl[key]
+                                          );
+                                        }}
+                                      />
+                                    </Box>
+                                  )}
+
+                                  {submittedAssignment?.correctedFileName
+                                    .length === 0 && (
+                                    <Typography>No files posted yet</Typography>
+                                  )}
+                                </Box>
+                              );
+                            }
+                          )}
+                        </Typography>
+                      </Grid>
+
+                      <Grid item md={2} xs={12}>
+                        <Button
+                          size={"small"}
+                          sx={[
+                            {
+                              "&:hover": {
+                                backgroundColor: "#c5c6c7",
+                                color: "#0b0c10",
+                              },
+                              backgroundColor: "#45a29e",
+                              color: "#fff",
+                            },
+                          ]}
+                          onClick={() => {
+                            handleModalOpen();
+                            setSubmissionDetails([
+                              submittedAssignment.id,
+                              submittedAssignment.classCode,
+                            ]);
+                          }}
+                        >
+                          Add marks/ remarks/ corrected files
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                );
+              })}
+          </Box>
+        </>
       )}
 
       {!showLoader && submittedAssignments.length === 0 && (
@@ -364,17 +646,10 @@ const ViewSubmissions = () => {
       >
         <>
           <Box sx={style}>
-            <Typography
-              sx={{
-                textAlign: "center",
-                fontSize: 16,
-              }}
-            >
-              Please enter your Password and your new Email
-            </Typography>
             <TextField
               label="Enter marks"
               type="text"
+              autoComplete="off"
               fullWidth
               sx={{ mt: 1 }}
               value={marks}
@@ -385,10 +660,19 @@ const ViewSubmissions = () => {
               label="Enter remarks"
               type="text"
               fullWidth
+              multiline
               sx={{ mt: 1 }}
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
             />
+            <Box sx={{ mt: 1, float: "left" }}>
+              <input
+                type={"file"}
+                multiple
+                ref={fileInputRef}
+                onChange={handleChange}
+              />
+            </Box>
 
             <Button
               fullWidth
