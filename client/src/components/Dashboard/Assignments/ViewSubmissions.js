@@ -12,6 +12,7 @@ import {
   TableHead,
   TableRow,
   Snackbar,
+  Grid,
 } from "@mui/material";
 import { db } from "../../../firebase-config";
 import {
@@ -36,8 +37,9 @@ const ViewSubmissions = () => {
   const [showLoader, setShowLoader] = useState(true);
 
   const HeaderStyle = {
-    color: "#66fcf1",
+    color: "#5B5EA6",
     fontSize: 16,
+    fontWeight: "bold",
   };
 
   const LinkStyles = {
@@ -121,142 +123,118 @@ const ViewSubmissions = () => {
 
       {!showLoader && submittedAssignments.length !== 0 && (
         <Box>
-          <TableContainer
-            component={Paper}
-            sx={{ borderRadius: 2, boxShadow: 5, mt: 2 }}
-          >
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead
-                sx={{
-                  backgroundColor: "#1f2833",
-                  fontWeight: "bold",
-                }}
-              >
-                <TableRow>
-                  <TableCell style={HeaderStyle}></TableCell>
-                  <TableCell style={HeaderStyle}>Student Name</TableCell>
-                  <TableCell style={HeaderStyle}>Student Email</TableCell>
-                  <TableCell style={HeaderStyle}>
-                    View Submitted Files
-                  </TableCell>
-                  <TableCell style={HeaderStyle}>Submission Status</TableCell>
-                  <TableCell style={HeaderStyle}>Marks</TableCell>
-                  <TableCell style={HeaderStyle}>Add marks</TableCell>
-                  <TableCell style={HeaderStyle}>Delete marks</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {submittedAssignments.map((submittedAssignment, index) => {
-                  return (
-                    <TableRow sx={{ backgroundColor: "#c5c6c7" }} key={index}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>
-                        {submittedAssignment.studentFirstName +
-                          " " +
-                          submittedAssignment.studentLastName}
-                      </TableCell>
-                      <TableCell>
-                        <a
-                          href={"mailto:" + submittedAssignment.studentEmail}
-                          style={LinkStyles}
-                        >
-                          {submittedAssignment.studentEmail}
-                        </a>
-                      </TableCell>
-                      <TableCell>
-                        {submittedAssignment.submittedFileName.map(
-                          (fileName, index) => {
-                            return (
-                              <Box key={index}>
+          <Paper sx={{ mt: 1, p: 1, boxShadow: 2 }}>
+            {submittedAssignments.map((submittedAssignment, index) => {
+              return (
+                <Grid
+                  container
+                  spacing={2}
+                  key={index}
+                  sx={{ textAlign: "center" }}
+                >
+                  <Grid item md={1} xs={12}>
+                    <Typography sx={{ fontStyle: "italic" }}>
+                      {submittedAssignment.studentFirstName +
+                        " " +
+                        submittedAssignment.studentLastName}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item md={2} xs={6}>
+                    <Typography style={HeaderStyle}>Submitted Files</Typography>
+                    {submittedAssignment.submittedFileName.map(
+                      (fileName, key) => {
+                        if (fileName) {
+                          return (
+                            <Box key={key}>
+                              <Typography>
                                 <a
                                   href={
                                     submittedAssignment.submittedFileUrl[index]
                                   }
                                   target={"blank"}
-                                  style={LinkStyles}
                                 >
                                   {fileName}
                                 </a>
-                              </Box>
-                            );
-                          }
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {submittedAssignment.status === "Not Submitted" && (
-                          <Typography sx={{ color: "#8C0800" }}>
-                            {submittedAssignment.status}
-                          </Typography>
-                        )}
+                              </Typography>
+                            </Box>
+                          );
+                        }
+                      }
+                    )}
+                  </Grid>
 
-                        {submittedAssignment.status === "Late" && (
-                          <Typography sx={{ color: "#E98600" }}>
-                            {submittedAssignment.status}
-                          </Typography>
-                        )}
-                        {submittedAssignment.status === "On time" && (
-                          <Typography sx={{ color: "#0DB000" }}>
-                            {submittedAssignment.status}
-                          </Typography>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {submittedAssignment.marks
-                          ? submittedAssignment.marks
-                          : "Null"}
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          sx={[
-                            {
-                              "&:hover": {
-                                backgroundColor: "#c5c6c7",
-                                color: "#000",
-                              },
-                              backgroundColor: "#45a29e",
-                              color: "#fff",
-                            },
-                          ]}
-                          onClick={() => {
-                            addMarks(
-                              submittedAssignment.id,
-                              submittedAssignment.studentFirstName,
-                              submittedAssignment.studentLastName
-                            );
-                          }}
-                        >
-                          Add/ Update
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          sx={[
-                            {
-                              "&:hover": {
-                                backgroundColor: "#c5c6c7",
-                                color: "#000",
-                              },
-                              backgroundColor: "red",
-                              color: "#fff",
-                            },
-                          ]}
-                          onClick={() => {
-                            deleteMarks(
-                              submittedAssignment.id,
-                              submittedAssignment.studentFirstName,
-                              submittedAssignment.studentLastName
-                            );
-                          }}
-                        >
-                          Delete
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                  <Grid item md={2} xs={6}>
+                    <Typography style={HeaderStyle}>
+                      Submission Status
+                    </Typography>
+                    {submittedAssignment.status === "Not Submitted" && (
+                      <Typography sx={{ color: "#8C0800" }}>
+                        {submittedAssignment.status}
+                      </Typography>
+                    )}
+
+                    {submittedAssignment.status === "Late" && (
+                      <Typography sx={{ color: "#E98600" }}>
+                        {submittedAssignment.status}
+                      </Typography>
+                    )}
+                    {submittedAssignment.status === "On time" && (
+                      <Typography sx={{ color: "#0DB000" }}>
+                        {submittedAssignment.status}
+                      </Typography>
+                    )}
+                  </Grid>
+
+                  <Grid item md={1} xs={6}>
+                    <Typography style={HeaderStyle}>Marks</Typography>
+                    <Typography>
+                      {submittedAssignment.marks
+                        ? submittedAssignment.marks
+                        : "Not yet posted"}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item md={2} xs={6}>
+                    <Typography style={HeaderStyle}>Remarks</Typography>
+                    <Typography>
+                      {submittedAssignment.remarks
+                        ? submittedAssignment.remarks
+                        : "Not yet posted"}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item md={2} xs={12}>
+                    <Typography style={HeaderStyle}>Correction</Typography>
+
+                    <Typography>
+                      {submittedAssignment.remarks
+                        ? submittedAssignment.remarks
+                        : "No files posted"}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item md={2} xs={12}>
+                    <Button
+                      size={"small"}
+                      sx={[
+                        {
+                          "&:hover": {
+                            backgroundColor: "#c5c6c7",
+                            color: "#0b0c10",
+                          },
+                          backgroundColor: "#45a29e",
+                          color: "#fff",
+                        },
+                      ]}
+                    >
+                      Add marks/ remarks/ corrected files
+                    </Button>
+                  </Grid>
+                </Grid>
+              );
+            })}
+          </Paper>
         </Box>
       )}
 
