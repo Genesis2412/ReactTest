@@ -576,6 +576,89 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                         </Paper>
                       </Box>
                     </Grid>
+                    <Grid item xs={12}>
+                      {submittedAssignments
+                        ?.filter((submittedAssignment) => {
+                          if (
+                            assignment?.id ===
+                            submittedAssignment.assignmentCode
+                          ) {
+                            return submittedAssignment;
+                          }
+                        })
+                        ?.map((submittedAssignment, index) => {
+                          return (
+                            <Box
+                              sx={{
+                                boxShadow: 1,
+                                backgroundColor: "#c5c6c7",
+                                borderRadius: 1,
+                              }}
+                              key={index}
+                            >
+                              <Box sx={{ p: 1 }}>
+                                <Typography
+                                  sx={{ color: "#0b0c10", fontWeight: "bold" }}
+                                >
+                                  Tutor's Feedback
+                                </Typography>
+
+                                {submittedAssignment?.remarks.length !== 0 && (
+                                  <Typography
+                                    sx={{ mt: 1, pl: 1, color: "#1f2833" }}
+                                  >
+                                    Your remarks:{" "}
+                                    <span style={{ color: "#006DFF" }}>
+                                      {submittedAssignment?.remarks}
+                                    </span>
+                                  </Typography>
+                                )}
+
+                                {submittedAssignment?.marks.length !== 0 && (
+                                  <Typography
+                                    sx={{
+                                      mt: 1,
+                                      pl: 1,
+                                      color: "#1f2833",
+                                    }}
+                                  >
+                                    Your marks:{" "}
+                                    <span style={{ color: "#0051BD" }}>
+                                      {submittedAssignment.marks}
+                                    </span>
+                                  </Typography>
+                                )}
+
+                                <Typography
+                                  sx={{ mt: 1, pl: 1, color: "#1f2833" }}
+                                >
+                                  Corrections:{" "}
+                                  {submittedAssignment?.correctedFileName?.map(
+                                    (fileName, valIndex) => {
+                                      return (
+                                        <a
+                                          style={{
+                                            textDecoration: "none",
+                                            color: "#45a29e",
+                                            fontWeight: "bold",
+                                          }}
+                                          href={
+                                            submittedAssignment
+                                              ?.correctedFileUrl[valIndex]
+                                          }
+                                          target={"_blank"}
+                                        >
+                                          {fileName}
+                                        </a>
+                                      );
+                                    }
+                                  )}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          );
+                        })}
+                    </Grid>
                   </Grid>
                 </Paper>
               </Box>
