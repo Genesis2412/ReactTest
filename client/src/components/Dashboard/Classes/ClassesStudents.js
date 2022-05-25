@@ -241,28 +241,7 @@ const ClassesStudents = () => {
                                   <span style={{ color: "#0b0c10" }}>Chat</span>
                                 </Link>
                               </MenuItem>
-                              <MenuItem>
-                                <Link
-                                  size="small"
-                                  style={{
-                                    textDecoration: "none",
-                                  }}
-                                  to="/dashboard/videocall"
-                                >
-                                  <VideoCallIcon
-                                    sx={{
-                                      color: "#45a29e",
-                                      fontSize: "20px",
-                                      mr: 1,
-                                      position: "relative",
-                                      top: 5,
-                                    }}
-                                  />
-                                  <span style={{ color: "#0b0c10" }}>
-                                    Videocall
-                                  </span>
-                                </Link>
-                              </MenuItem>
+
                               <MenuItem
                                 onClick={() => {
                                   handleDelete(
