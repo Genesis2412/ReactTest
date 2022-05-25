@@ -48,39 +48,52 @@ const UploadButton = () => {
   const uploadProfilePic = () => {
     if (file.length !== 0) {
       setLoading(true);
-      const storageRef = ref(
-        storage,
-        "/ProfilePictures/" + user.uid + "/" + file.name
-      );
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {},
-        (err) => {
-          setSnackBarOpen(true);
-          setMessage("Failed to upload Profile Picture");
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            try {
-              await updateUserStream(url);
-              await updateStudentProfile(url);
-              await updateBookings(url);
-              await updateJoinedClasses(url);
 
-              setSnackBarOpen(true);
-              setMessage("Profile Picture Uploaded Successfully");
-              setFile([]);
-              setViewUploadBtn(false);
-              setLoading(false);
-            } catch (error) {
-              setSnackBarOpen(true);
-              setMessage("Failed to upload Profile Picture");
-              setLoading(false);
-            }
-          });
-        }
-      );
+      if (
+        file.type.includes("jpeg") ||
+        file.type.includes("png") ||
+        file.type.includes("jpg")
+      ) {
+        const storageRef = ref(
+          storage,
+          "/ProfilePictures/" + user.uid + "/" + file.name
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {},
+          (err) => {
+            setSnackBarOpen(true);
+            setMessage("Failed to upload Profile Picture");
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+              try {
+                await updateUserStream(url);
+                await updateStudentProfile(url);
+                await updateBookings(url);
+                await updateJoinedClasses(url);
+
+                setSnackBarOpen(true);
+                setMessage("Profile Picture Uploaded Successfully");
+                setFile([]);
+                setViewUploadBtn(false);
+                setLoading(false);
+              } catch (error) {
+                setSnackBarOpen(true);
+                setMessage("Failed to upload Profile Picture");
+                setLoading(false);
+              }
+            });
+          }
+        );
+      } else {
+        setFile([]);
+        setLoading(false);
+        setSnackBarOpen(true);
+        setMessage(".jpg, .jpeg and .png are accepted only");
+        return;
+      }
     } else {
       setSnackBarOpen(true);
       setMessage("Please import your image");
