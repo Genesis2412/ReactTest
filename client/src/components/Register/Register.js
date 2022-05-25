@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BannerContainer,
   BannerItems,
@@ -56,7 +56,7 @@ const Register = () => {
     employedInfo: "",
   });
 
-  const { signUp } = useUserAuth();
+  const { signUp, user } = useUserAuth();
 
   const createUserChat = async (
     accountType,
@@ -259,6 +259,12 @@ const Register = () => {
     '"Teachers open the door, but you must enter by yourself" - Chinese Proverb',
     '"The beautiful thing about learning is that no one can take it away from you" - B. B. King',
   ];
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   return (
     <>
