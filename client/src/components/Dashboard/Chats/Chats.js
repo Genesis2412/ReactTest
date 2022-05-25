@@ -17,8 +17,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const apiKey = "k248hxcdpdqk";
-const client = StreamChat.getInstance(apiKey);
+const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 var authToken = window.localStorage.getItem("tkxn");
 var userId = window.localStorage.getItem("zpxn");
 

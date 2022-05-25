@@ -42,8 +42,7 @@ const DeleteTutorProfile = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const apiKey = "k248hxcdpdqk";
-  const client = StreamChat.getInstance(apiKey);
+  const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
   const style = {
     position: "absolute",

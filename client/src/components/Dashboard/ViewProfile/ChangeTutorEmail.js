@@ -37,8 +37,7 @@ const ChangeTutorEmail = () => {
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const apiKey = "k248hxcdpdqk";
-  const client = StreamChat.getInstance(apiKey);
+  const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
   const style = {
     position: "absolute",

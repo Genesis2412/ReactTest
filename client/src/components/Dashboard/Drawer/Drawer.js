@@ -31,8 +31,7 @@ const Sidebar = () => {
   const [profileClick, setprofileClick] = useState(false);
   const handleProfileClick = () => setprofileClick(!profileClick);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const apiKey = "k248hxcdpdqk";
-  const client = StreamChat.getInstance(apiKey);
+  const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
   const handleLogout = async () => {
     try {

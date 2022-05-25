@@ -23,8 +23,7 @@ const UploadButton = () => {
   const [message, setMessage] = useState("");
   const { user, userDetails } = useUserAuth();
   const [viewUploadBtn, setViewUploadBtn] = useState(false);
-  const apiKey = "k248hxcdpdqk";
-  const client = StreamChat.getInstance(apiKey);
+  const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
   const Input = styled("input")({
     display: "none",

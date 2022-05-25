@@ -1,8 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { StreamChat } from "stream-chat";
-const apiKey = "k248hxcdpdqk";
-const client = StreamChat.getInstance(apiKey);
+const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
 const Read = () => {
   const userId = "Hire2p@hotmail.com";
@@ -51,8 +50,7 @@ export default Read;
 
 // import React from "react";
 // import { StreamChat } from "stream-chat";
-// const apiKey = "k248hxcdpdqk";
-// const client = StreamChat.getInstance(apiKey);
+// const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
 // const Read = () => {
 //   console.log(client);

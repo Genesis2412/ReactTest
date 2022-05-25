@@ -19,8 +19,7 @@ import { useUserAuth } from "../../Context/UserAuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { StreamChat } from "stream-chat";
-const apiKey = "k248hxcdpdqk";
-const client = StreamChat.getInstance(apiKey);
+const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
 const Register = () => {
   const [data, setData] = useState({

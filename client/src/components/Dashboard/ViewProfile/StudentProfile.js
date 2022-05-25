@@ -31,8 +31,7 @@ const TutorProfile = (props) => {
   const [message, setMessage] = useState("");
   let userStorageDetails = localStorage.getItem("userStorageDetails");
   let student = JSON.parse(userStorageDetails);
-  const apiKey = "k248hxcdpdqk";
-  const client = StreamChat.getInstance(apiKey);
+  const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
