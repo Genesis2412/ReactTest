@@ -48,36 +48,49 @@ const UploadButtonTutor = () => {
   const uploadProfilePic = () => {
     if (file.length !== 0) {
       setLoading(true);
-      const storageRef = ref(
-        storage,
-        "/ProfilePictures/" + userDetails?.email + "/" + file.name
-      );
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {},
-        (err) => {
-          setSnackBarOpen(true);
-          setMessage("Failed to upload Profile Picture");
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-            try {
-              await updateUserStream(url);
-              await updateTutorProfile(url);
-              await updateJoinedClasses(url);
-              setSnackBarOpen(true);
-              setMessage("Profile Picture updated successfully");
-              setLoading(false);
-            } catch (error) {
-              setSnackBarOpen(true);
-              setMessage("Failed to upload Profile Picture");
-              setLoading(false);
-              return;
-            }
-          });
-        }
-      );
+
+      if (
+        file.type.includes("jpeg") ||
+        file.type.includes("png") ||
+        file.type.includes("jpg")
+      ) {
+        const storageRef = ref(
+          storage,
+          "/ProfilePictures/" + userDetails?.email + "/" + file.name
+        );
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {},
+          (err) => {
+            setSnackBarOpen(true);
+            setMessage("Failed to upload Profile Picture");
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+              try {
+                await updateUserStream(url);
+                await updateTutorProfile(url);
+                await updateJoinedClasses(url);
+                setSnackBarOpen(true);
+                setMessage("Profile Picture updated successfully");
+                setLoading(false);
+              } catch (error) {
+                setSnackBarOpen(true);
+                setMessage("Failed to upload Profile Picture");
+                setLoading(false);
+                return;
+              }
+            });
+          }
+        );
+      } else {
+        setFile([]);
+        setLoading(false);
+        setSnackBarOpen(true);
+        setMessage(".jpg, .jpeg and .png are accepted only");
+        return;
+      }
     } else {
       setSnackBarOpen(true);
       setMessage("Please import your image");
