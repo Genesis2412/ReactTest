@@ -255,10 +255,9 @@ const ViewProfile = () => {
             }}
           >
             <Typography>
-              Please verify your email. Failure to do so will{" "}
-              <span style={{ color: "red" }}>deactivate</span> your account in
-              <span style={{ color: "red" }}> 7 days!</span>
+              Please verify your email.
               <Button
+                size="small"
                 sx={[
                   {
                     "&:hover": {
@@ -274,7 +273,7 @@ const ViewProfile = () => {
                   verifyUserEmail();
                 }}
               >
-                Verify Here!
+                Verify Here
               </Button>
             </Typography>
           </Paper>
@@ -291,10 +290,7 @@ const ViewProfile = () => {
             }}
           >
             <Typography>
-              It is compulsory to upload your face as your profile picture,
-              failure to do so will{" "}
-              <span style={{ color: "red" }}>deactivate</span> your account in
-              <span style={{ color: "red" }}> 7 days!</span>
+              Please upload your face as your profile picture
             </Typography>
           </Paper>
         </Box>
