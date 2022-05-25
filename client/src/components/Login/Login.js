@@ -27,15 +27,6 @@ import {
 import { Alert, CircularProgress } from "@mui/material";
 import axios from "axios";
 
-// Yup field Validation
-const validationSchema = yup.object({
-  email: yup
-    .string("Enter your email")
-    .email("Enter a valid email")
-    .required("Email is required"),
-  password: yup.string("Enter your password").required("Password is required"),
-});
-
 const Login = () => {
   //Modal
   const [open, setOpen] = useState(false);
@@ -50,6 +41,23 @@ const Login = () => {
   const { logIn, user } = useUserAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, []);
+
+  // Yup field Validation
+  const validationSchema = yup.object({
+    email: yup
+      .string("Enter your email")
+      .email("Enter a valid email")
+      .required("Email is required"),
+    password: yup
+      .string("Enter your password")
+      .required("Password is required"),
+  });
 
   //Firebase reset password
   const handleReset = async () => {
@@ -121,12 +129,6 @@ const Login = () => {
       }
     },
   });
-
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, []);
 
   return (
     <>
