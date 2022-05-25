@@ -80,6 +80,9 @@ const DeleteStudentProfile = () => {
             await deleteDoc(doc(db, "students", user?.uid));
             await deleteUser(user);
             await deleteUserChat();
+            window.localStorage.removeItem("tkxn");
+            window.localStorage.removeItem("zpxn");
+            window.localStorage.removeItem("userStorageDetails");
 
             navigate("/");
             setLoading(false);

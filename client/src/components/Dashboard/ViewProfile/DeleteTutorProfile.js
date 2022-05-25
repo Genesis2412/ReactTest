@@ -83,6 +83,9 @@ const DeleteTutorProfile = () => {
             await deleteDoc(doc(db, "tutors", user?.uid));
             await deleteUser(user);
             await deleteUserChat();
+            window.localStorage.removeItem("tkxn");
+            window.localStorage.removeItem("zpxn");
+            window.localStorage.removeItem("userStorageDetails");
 
             navigate("/");
             setLoading(false);
