@@ -77,26 +77,58 @@ const Register = () => {
       .then(({ data }) => {
         if (data.token) {
           if (accountType === "Tutor") {
-            client.connectUser(
-              {
-                id: data?.userId,
-                name: `${title} ${data?.firstName} ${data?.lastName}`,
-                email: data?.email,
-                hashedPassword: data?.hashedPassword,
-              },
-              data.token
-            );
+            client
+              .connectUser(
+                {
+                  id: data?.userId,
+                  name: `${title} ${data?.firstName} ${data?.lastName}`,
+                  email: data?.email,
+                  hashedPassword: data?.hashedPassword,
+                },
+                data.token
+              )
+              .then(async () => {
+                const URL = "http://localhost:5000/auth/login";
+                await axios
+                  .post(URL, {
+                    email,
+                    password,
+                  })
+                  .then(({ data }) => {
+                    if (data.token) {
+                      window.localStorage.setItem("tkxn", data?.token);
+                      window.localStorage.setItem("zpxn", data?.userId);
+                    }
+                  })
+                  .catch((err) => {});
+              });
           }
           if (accountType === "Student") {
-            client.connectUser(
-              {
-                id: data?.userId,
-                name: `${data?.firstName} ${data?.lastName}`,
-                email: data?.email,
-                hashedPassword: data?.hashedPassword,
-              },
-              data.token
-            );
+            client
+              .connectUser(
+                {
+                  id: data?.userId,
+                  name: `${data?.firstName} ${data?.lastName}`,
+                  email: data?.email,
+                  hashedPassword: data?.hashedPassword,
+                },
+                data.token
+              )
+              .then(async () => {
+                const URL = "http://localhost:5000/auth/login";
+                await axios
+                  .post(URL, {
+                    email,
+                    password,
+                  })
+                  .then(({ data }) => {
+                    if (data.token) {
+                      window.localStorage.setItem("tkxn", data?.token);
+                      window.localStorage.setItem("zpxn", data?.userId);
+                    }
+                  })
+                  .catch((err) => {});
+              });
           }
         }
       })
