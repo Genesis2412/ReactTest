@@ -74,15 +74,15 @@ const Chats = () => {
     },
   });
 
-  if (authToken && userId) {
-    client.connectUser(
-      {
-        token: authToken,
-        id: userId,
-      },
-      authToken
-    );
-  }
+  // if (authToken && userId) {
+  //   client.connectUser(
+  //     {
+  //       token: authToken,
+  //       id: userId,
+  //     },
+  //     authToken
+  //   );
+  // }
 
   return (
     <>

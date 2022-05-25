@@ -15,9 +15,13 @@ import { useUserAuth } from "../../Context/UserAuthContext";
 import ViewProfile from "./ViewProfile/ViewProfile";
 import { db } from "../../firebase-config";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { StreamChat } from "stream-chat";
 
 const Dashboard = () => {
   const { user, setUserDetails, userDetails } = useUserAuth();
+  const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
+  var authToken = window.localStorage.getItem("tkxn");
+  var userId = window.localStorage.getItem("zpxn");
 
   //getting all user details
   useEffect(() => {
@@ -50,6 +54,16 @@ const Dashboard = () => {
     };
     getUserDetails();
   }, []);
+
+  if (authToken && userId) {
+    client.connectUser(
+      {
+        token: authToken,
+        id: userId,
+      },
+      authToken
+    );
+  }
 
   return (
     <>
