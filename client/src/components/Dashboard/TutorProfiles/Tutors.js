@@ -9,12 +9,22 @@ import TutorProfileBanner from "../../../images/TutorProfileBanner.png";
 import WavesTutorProfile from "../../../images/WavesTutorProfile.svg";
 import { TutorBannerContainer } from "../../GlobalStyles";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 const Tutors = () => {
   const [profiles, setProfiles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showLoader, setShowLoader] = useState(true);
   const { userDetails } = useUserAuth();
+  const navigate = useNavigate();
+  let userStorageDetails = localStorage.getItem("userStorageDetails");
+  let user = JSON.parse(userStorageDetails);
+
+  useEffect(() => {
+    if (user.accountType === "Tutor") {
+      navigate("/dashboard");
+    }
+  }, []);
 
   //reading all tutors details
   useEffect(() => {

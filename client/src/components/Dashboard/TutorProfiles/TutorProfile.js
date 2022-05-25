@@ -25,16 +25,27 @@ import { Logo } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import { useNavigate } from "react-router-dom";
 
 const TutorProfile = () => {
   const location = useLocation();
   const { email } = location.state;
   const [profiles, setProfiles] = useState([]);
   const [classes, setClasses] = useState([]);
-  const { user, userDetails } = useUserAuth();
+  const { userDetails } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [showLoader, setShowLoader] = useState(true);
+
+  const navigate = useNavigate();
+  let userStorageDetails = localStorage.getItem("userStorageDetails");
+  let user = JSON.parse(userStorageDetails);
+
+  useEffect(() => {
+    if (user.accountType === "Tutor") {
+      navigate("/dashboard");
+    }
+  }, []);
 
   //Styling
   const LinkStyles = {
