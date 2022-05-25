@@ -603,7 +603,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                   Tutor's Feedback
                                 </Typography>
 
-                                {submittedAssignment?.remarks.length !== 0 && (
+                                {submittedAssignment?.remarks?.length !== 0 && (
                                   <Typography
                                     sx={{ mt: 1, pl: 1, color: "#1f2833" }}
                                   >
@@ -614,7 +614,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                   </Typography>
                                 )}
 
-                                {submittedAssignment?.marks.length !== 0 && (
+                                {submittedAssignment?.marks?.length !== 0 && (
                                   <Typography
                                     sx={{
                                       mt: 1,
@@ -624,7 +624,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                   >
                                     Your marks:{" "}
                                     <span style={{ color: "#0051BD" }}>
-                                      {submittedAssignment.marks}
+                                      {submittedAssignment?.marks}
                                     </span>
                                   </Typography>
                                 )}

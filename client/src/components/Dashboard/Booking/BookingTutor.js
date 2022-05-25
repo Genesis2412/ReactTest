@@ -33,22 +33,7 @@ const BookingTutor = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [showLoader, setShowLoader] = useState(true);
-
-  const HeaderStyle = {
-    color: "#66fcf1",
-    fontSize: 16,
-  };
-
-  const LinkStyles = {
-    color: "#45a29e",
-    textDecoration: "none",
-    fontWeight: "bold",
-
-    "&:hover": {
-      color: "#0b0c10",
-      backgroundColor: "#c5c6c7",
-    },
-  };
+  const [assignmentCodes, setAssignmentCodes] = useState([]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -88,6 +73,22 @@ const BookingTutor = () => {
     return classCode;
   };
 
+  const getAssignmentCode = async (subject, grade) => {
+    const assignmentCode = [];
+
+    getClassCode(subject, grade).then(async (classCode) => {
+      const q = query(
+        collection(db, "assignments"),
+        where("classCode", "==", classCode)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        assignmentCode.push(doc.id);
+      });
+    });
+    setAssignmentCodes(assignmentCode);
+  };
+
   const addToClass = async (
     bookingId,
     subject,
@@ -102,9 +103,9 @@ const BookingTutor = () => {
     let confirmAction = window.confirm("Are you sure to add this student?");
     if (confirmAction) {
       try {
-        getClassCode(subject, grade).then((classCode) => {
+        getClassCode(subject, grade).then(async (classCode) => {
           const joinedRef = collection(db, "joinedClasses");
-          setDoc(doc(joinedRef), {
+          await setDoc(doc(joinedRef), {
             classCode: classCode,
             subject: subject,
             grade: grade,
@@ -122,8 +123,28 @@ const BookingTutor = () => {
             studentEmail: studentEmail,
             studentProfilePic: studentProfilePic,
           });
+
+          await getAssignmentCode(subject, grade).then(async () => {
+            if (assignmentCodes.length !== 0) {
+              assignmentCodes?.map(async (assignmentCode) => {
+                await setDoc(doc(collection(db, "submittedAssignments")), {
+                  classCode: classCode,
+                  studentFirstName: studentFirstName,
+                  studentLastName: studentLastName,
+                  studentEmail: studentEmail,
+                  assignmentCode: assignmentCode,
+                  submittedFileName: [],
+                  submittedFileUrl: [],
+                  submittedTimestamp: "",
+                  status: "Not Submitted",
+                  marks: "Not yet posted",
+                });
+              });
+            }
+          });
+
           const bookingsRef = doc(db, "bookings", bookingId);
-          updateDoc(bookingsRef, {
+          await updateDoc(bookingsRef, {
             status: "Joined",
           });
           setSnackBarOpen(true);
