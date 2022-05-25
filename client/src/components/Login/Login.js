@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
@@ -47,7 +47,7 @@ const Login = () => {
   const [modalError, setModalError] = useState("");
   const [modalEmail, setModalEmail] = useState("");
 
-  const { logIn } = useUserAuth();
+  const { logIn, user } = useUserAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -121,6 +121,12 @@ const Login = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   return (
     <>
