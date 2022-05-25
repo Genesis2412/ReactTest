@@ -26,10 +26,6 @@ import {
 } from "../GlobalStyles";
 import { Alert, CircularProgress } from "@mui/material";
 import axios from "axios";
-import { StreamChat } from "stream-chat";
-
-const apiKey = "k248hxcdpdqk";
-const client = StreamChat.getInstance(apiKey);
 
 // Yup field Validation
 const validationSchema = yup.object({
@@ -93,9 +89,7 @@ const Login = () => {
           window.localStorage.setItem("zpxn", data?.userId);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   //Formik Form Submission and Validation
@@ -116,12 +110,14 @@ const Login = () => {
       } catch (err) {
         if (err.message.includes("user-not-found")) {
           setError("User does not exist");
+          return;
         }
         if (err.message.includes("wrong-pass")) {
           setError("Invalid password");
+          return;
         }
         setError("An error occured, please try again");
-        // console.log(err.message);
+        return;
       }
     },
   });
