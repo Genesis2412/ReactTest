@@ -158,7 +158,7 @@ const DeleteStudentProfile = () => {
   };
 
   const deleteUserChat = async () => {
-    const URL = "http://localhost:5000/auth/deleteUser";
+    const URL = "https://maututorz.herokuapp.com/auth/deleteUser";
     var userId = client.userID;
 
     await axios

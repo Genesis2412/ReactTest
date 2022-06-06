@@ -7,7 +7,7 @@ const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 var authToken = window.localStorage.getItem("tkxn");
 var userId = window.localStorage.getItem("zpxn");
 
-if (authToken.length !== 0 && userId !== 0) {
+if (authToken && userId) {
   client.connectUser(
     {
       token: authToken,

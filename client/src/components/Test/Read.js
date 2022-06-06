@@ -8,7 +8,7 @@ const Read = () => {
   const password = "Hiresh@20,";
 
   const loginUserChat = async () => {
-    const URL = "http://localhost:5000/auth/deleteUser";
+    const URL = "https://maututorz.herokuapp.com/auth/deleteUser";
     await axios
       .post(URL, {
         userId,

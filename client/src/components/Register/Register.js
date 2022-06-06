@@ -66,7 +66,7 @@ const Register = () => {
     email,
     password
   ) => {
-    const URL = "http://localhost:5000/auth/register";
+    const URL = "https://maututorz.herokuapp.com/auth/register";
     await axios
       .post(URL, {
         firstName,
@@ -88,7 +88,7 @@ const Register = () => {
                 data.token
               )
               .then(async () => {
-                const URL = "http://localhost:5000/auth/login";
+                const URL = "https://maututorz.herokuapp.com/auth/login";
                 await axios
                   .post(URL, {
                     email,
@@ -115,7 +115,7 @@ const Register = () => {
                 data.token
               )
               .then(async () => {
-                const URL = "http://localhost:5000/auth/login";
+                const URL = "https://maututorz.herokuapp.com/auth/login";
                 await axios
                   .post(URL, {
                     email,

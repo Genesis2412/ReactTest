@@ -41,7 +41,7 @@ const Chats = () => {
   });
 
   const verifyUser = async (email, oldPassword, newPassword) => {
-    const URL = "http://localhost:5000/auth/reauthenticate";
+    const URL = "https://maututorz.herokuapp.com/auth/reauthenticate";
     await axios
       .post(URL, {
         email,

@@ -88,7 +88,7 @@ const Login = () => {
   };
 
   const loginUserChat = async (email, password) => {
-    const URL = "http://localhost:5000/auth/login";
+    const URL = "https://maututorz.herokuapp.com/auth/login";
     await axios
       .post(URL, {
         email,
