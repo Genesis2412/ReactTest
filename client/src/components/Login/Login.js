@@ -26,6 +26,7 @@ import {
 } from "../GlobalStyles";
 import { Alert, CircularProgress } from "@mui/material";
 import axios from "axios";
+import { StreamChat } from "stream-chat";
 
 const Login = () => {
   //Modal
@@ -41,6 +42,8 @@ const Login = () => {
   const { logIn, user } = useUserAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
   useEffect(() => {
     if (user) {
@@ -95,6 +98,14 @@ const Login = () => {
         if (data.token) {
           window.localStorage.setItem("tkxn", data?.token);
           window.localStorage.setItem("zpxn", data?.userId);
+
+          client.connectUser(
+            {
+              token: data?.token,
+              id: data?.userId,
+            },
+            data.token
+          );
         }
       })
       .catch((err) => {});
