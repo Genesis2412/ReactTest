@@ -8,7 +8,6 @@ var authToken = window.localStorage.getItem("tkxn");
 var userId = window.localStorage.getItem("zpxn");
 
 if (authToken.length !== 0 && userId !== 0) {
-  console.log("no");
   client.connectUser(
     {
       token: authToken,
