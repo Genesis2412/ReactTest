@@ -27,9 +27,7 @@ const Sidebar = () => {
   const { logOut, userDetails, setUserDetails, setUser, setClasses } =
     useUserAuth();
   const [click, setClick] = useState(false);
-  const handleClick = () => setClick(!click);
-  const [profileClick, setprofileClick] = useState(false);
-  const handleProfileClick = () => setprofileClick(!profileClick);
+  const [profileClick, setProfileClick] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);
 
@@ -54,36 +52,71 @@ const Sidebar = () => {
   return (
     <>
       <LoadingSpinner stateLoader={isSubmitting} />
+
       <Container>
-        <Button clicked={click} onClick={() => handleClick()}>
+        <Button clicked={click} onClick={() => setClick(!click)}>
           Click
         </Button>
         <SidebarContainer>
-          <SlickBar clicked={click}>
-            <Item onClick={() => setClick(false)} to="/dashboard/classes">
+          <SlickBar
+            clicked={click}
+            onMouseEnter={() => setClick(true)}
+            onMouseLeave={() => setClick(false)}
+          >
+            <Item
+              onClick={() => {
+                setClick(false);
+                setProfileClick(false);
+              }}
+              to="/dashboard/classes"
+            >
               <ClassMaterialIcon />
               <Text clicked={click}>Classes</Text>
             </Item>
-            <Item onClick={() => setClick(false)} to="/dashboard/chats">
+            <Item
+              onClick={() => {
+                setClick(false);
+                setProfileClick(false);
+              }}
+              to="/dashboard/chats"
+            >
               <ChatMaterialIcon />
               <Text clicked={click}>Chats</Text>
             </Item>
 
             {userDetails?.accountType === "Tutor" && (
-              <Item onClick={() => setClick(false)} to="/dashboard/videocall">
+              <Item
+                onClick={() => {
+                  setClick(false);
+                  setProfileClick(false);
+                }}
+                to="/dashboard/videocall"
+              >
                 <VideoMaterialIcon />
                 <Text clicked={click}>Videocall</Text>
               </Item>
             )}
 
             {userDetails?.accountType === "Student" && (
-              <Item onClick={() => setClick(false)} to="/dashboard/tutors">
+              <Item
+                onClick={() => {
+                  setClick(false);
+                  setProfileClick(false);
+                }}
+                to="/dashboard/tutors"
+              >
                 <PeopleMaterialIcon />
                 <Text clicked={click}>Tutor Profiles</Text>
               </Item>
             )}
 
-            <Item onClick={() => setClick(false)} to="/dashboard/bookings">
+            <Item
+              onClick={() => {
+                setClick(false);
+                setProfileClick(false);
+              }}
+              to="/dashboard/bookings"
+            >
               <ContactMaterialCalendarIcon />
               <Text clicked={click}>Bookings</Text>
             </Item>
@@ -91,7 +124,7 @@ const Sidebar = () => {
 
           <Profile clicked={profileClick}>
             <AvatarMaterial
-              onClick={() => handleProfileClick()}
+              onClick={() => setProfileClick(!profileClick)}
               src={userDetails?.profilePic}
               alt={userDetails?.name?.firstName}
             />
@@ -103,7 +136,7 @@ const Sidebar = () => {
                     userDetails?.name?.lastName}
                 </h4>
                 <ViewProfileLink
-                  onClick={() => setprofileClick(false)}
+                  onClick={() => setProfileClick(false)}
                   to="/dashboard/viewprofile"
                 >
                   view profile
