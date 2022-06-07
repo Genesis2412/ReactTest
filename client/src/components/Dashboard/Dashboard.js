@@ -14,11 +14,18 @@ import ViewSubmissions from "./Assignments/ViewSubmissions";
 import { useUserAuth } from "../../Context/UserAuthContext";
 import ViewProfile from "./ViewProfile/ViewProfile";
 import { db } from "../../firebase-config";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  onSnapshot,
+  collection,
+  query,
+  where,
+} from "firebase/firestore";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const Dashboard = () => {
-  const { user, setUserDetails, userDetails } = useUserAuth();
+  const { user, setUserDetails, setBookingCount, bookingCount } = useUserAuth();
   const [showLoader, setShowLoader] = useState(true);
 
   //getting all user details
@@ -40,13 +47,14 @@ const Dashboard = () => {
             setShowLoader(false);
           });
         } else {
-          const unsub = onSnapshot(doc(db, "tutors", user.uid), (doc) => {
+          const unsub = onSnapshot(doc(db, "tutors", user.uid), async (doc) => {
             if (doc) {
               setUserDetails(doc.data());
               localStorage.setItem(
                 "userStorageDetails",
                 JSON.stringify(doc.data())
               );
+              getTutorBookings(doc.data().email);
             }
             setShowLoader(false);
           });
@@ -55,6 +63,20 @@ const Dashboard = () => {
     };
     getUserDetails();
   }, []);
+
+  // get all bookings
+  const getTutorBookings = async (tutorEmail) => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "bookings"),
+        where("tutorEmail", "==", tutorEmail),
+        where("status", "==", "Pending")
+      ),
+      (querySnapshot) => {
+        setBookingCount(querySnapshot.docs.length);
+      }
+    );
+  };
 
   return (
     <>

@@ -19,13 +19,20 @@ import {
   ViewProfileLink,
   AvatarMaterial,
 } from "./DrawerElements";
+import { Badge } from "@mui/material";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { StreamChat } from "stream-chat";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const Sidebar = () => {
-  const { logOut, userDetails, setUserDetails, setUser, setClasses } =
-    useUserAuth();
+  const {
+    logOut,
+    userDetails,
+    setUserDetails,
+    setUser,
+    setClasses,
+    bookingCount,
+  } = useUserAuth();
   const [click, setClick] = useState(false);
   const [profileClick, setProfileClick] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -117,7 +124,9 @@ const Sidebar = () => {
               }}
               to="/dashboard/bookings"
             >
-              <ContactMaterialCalendarIcon />
+              <Badge badgeContent={bookingCount} color="primary">
+                <ContactMaterialCalendarIcon />
+              </Badge>
               <Text clicked={click}>Bookings</Text>
             </Item>
           </SlickBar>
@@ -128,6 +137,7 @@ const Sidebar = () => {
               src={userDetails?.profilePic}
               alt={userDetails?.name?.firstName}
             />
+
             <Details clicked={profileClick}>
               <Name>
                 <h4>
