@@ -160,6 +160,7 @@ const TutorProfile = () => {
               studentEmail: userDetails?.email,
               studentProfilePic: userDetails?.profilePic,
               tutorEmail: tutorEmail,
+              tutorUpdated: "No",
             });
             setSnackBarOpen(true);
             setMessage("Booked Successfully");

@@ -49,6 +49,7 @@ const BookingTutor = () => {
       try {
         await updateDoc(bookingsRef, {
           status: "Rejected",
+          tutorUpdated: "Yes",
         });
         setSnackBarOpen(true);
         setMessage("Rejected Successfully");
@@ -111,6 +112,7 @@ const BookingTutor = () => {
             grade: grade,
             day: day,
             time: time,
+            tutorUpdated: "Yes",
 
             tutorTitle: userDetails?.title,
             tutorFirstName: userDetails?.name.firstName,

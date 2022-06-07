@@ -43,6 +43,7 @@ const Dashboard = () => {
                 "userStorageDetails",
                 JSON.stringify(doc.data())
               );
+              getStudentBookings(doc.data().email);
             }
             setShowLoader(false);
           });
@@ -74,6 +75,29 @@ const Dashboard = () => {
       ),
       (querySnapshot) => {
         setBookingCount(querySnapshot.docs.length);
+      }
+    );
+  };
+
+  const getStudentBookings = async (studentEmail) => {
+    const unsubscribe = onSnapshot(
+      query(
+        collection(db, "bookings"),
+        where("studentEmail", "==", studentEmail)
+      ),
+
+      (querySnapshot) => {
+        var count = 0;
+
+        querySnapshot.docs.map((doc) => {
+          if (
+            doc.data()?.tutorUpdated === "Yes" &&
+            doc.data()?.status === "Rejected"
+          ) {
+            count++;
+          }
+        });
+        setBookingCount(count);
       }
     );
   };
