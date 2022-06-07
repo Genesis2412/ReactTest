@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Drawer from "./Drawer/Drawer";
@@ -15,13 +15,16 @@ import { useUserAuth } from "../../Context/UserAuthContext";
 import ViewProfile from "./ViewProfile/ViewProfile";
 import { db } from "../../firebase-config";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const Dashboard = () => {
   const { user, setUserDetails, userDetails } = useUserAuth();
+  const [showLoader, setShowLoader] = useState(true);
 
   //getting all user details
   useEffect(() => {
     const getUserDetails = async () => {
+      setShowLoader(true);
       if (user.uid) {
         const studentRef = doc(db, "students", user.uid);
         const studentSnap = await getDoc(studentRef);
@@ -34,6 +37,7 @@ const Dashboard = () => {
                 JSON.stringify(doc.data())
               );
             }
+            setShowLoader(false);
           });
         } else {
           const unsub = onSnapshot(doc(db, "tutors", user.uid), (doc) => {
@@ -44,6 +48,7 @@ const Dashboard = () => {
                 JSON.stringify(doc.data())
               );
             }
+            setShowLoader(false);
           });
         }
       }
@@ -53,29 +58,33 @@ const Dashboard = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
-        <Drawer />
-        <Box
-          component="main"
-          sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
-        >
-          <Routes>
-            <Route path="viewprofile" element={<ViewProfile />} />
-            <Route path="classes" element={<Classes />} />
-            <Route path="classesdetails/*" element={<ClassDetails />} />
-            <Route path="chats" element={<Chats />} />
-            <Route path="videocall" element={<Videocall />} />
-            <Route path="notifications" element={<Notifications />} />
-            <Route path="tutors/*" element={<Tutors />} />
-            <Route path="tutors/tutor" element={<TutorProfile />} />
-            <Route path="bookings" element={<Bookings />} />
-            <Route
-              path="classesdetails/assignments/viewsubmissions"
-              element={<ViewSubmissions />}
-            />
-          </Routes>
+      <LoadingSpinner stateLoader={showLoader} />
+
+      {!showLoader && (
+        <Box sx={{ display: "flex" }}>
+          <Drawer />
+          <Box
+            component="main"
+            sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
+          >
+            <Routes>
+              <Route path="viewprofile" element={<ViewProfile />} />
+              <Route path="classes" element={<Classes />} />
+              <Route path="classesdetails/*" element={<ClassDetails />} />
+              <Route path="chats" element={<Chats />} />
+              <Route path="videocall" element={<Videocall />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="tutors/*" element={<Tutors />} />
+              <Route path="tutors/tutor" element={<TutorProfile />} />
+              <Route path="bookings" element={<Bookings />} />
+              <Route
+                path="classesdetails/assignments/viewsubmissions"
+                element={<ViewSubmissions />}
+              />
+            </Routes>
+          </Box>
         </Box>
-      </Box>
+      )}
     </>
   );
 };
