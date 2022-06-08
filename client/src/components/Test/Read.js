@@ -21,9 +21,9 @@ const Read = () => {
       });
   };
 
-  // const logout = async () => {
-  //   await client.disconnectUser();
-  // };
+  const logout = async () => {
+    await client.disconnectUser();
+  };
 
   return (
     <>
@@ -35,13 +35,13 @@ const Read = () => {
         Click
       </button>
 
-      {/* <button
+      <button
         onClick={() => {
           logout();
         }}
       >
         Logout
-      </button> */}
+      </button>
     </>
   );
 };

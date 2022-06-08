@@ -28,6 +28,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { StreamChat } from "stream-chat";
+import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const DeleteStudentProfile = () => {
   const { userDetails, user } = useUserAuth();
@@ -68,9 +69,9 @@ const DeleteStudentProfile = () => {
   };
 
   const handleDelete = async () => {
-    setLoading(true);
     if (password !== "") {
       const credential = EmailAuthProvider.credential(user.email, password);
+      setLoading(true);
       await reauthenticateWithCredential(user, credential)
         .then(async () => {
           try {
@@ -78,12 +79,10 @@ const DeleteStudentProfile = () => {
             await deleteBookings();
             await deleteJoinedClasses();
             await deleteDoc(doc(db, "students", user?.uid));
-            await deleteUser(user);
             await deleteUserChat();
-            window.localStorage.removeItem("tkxn");
-            window.localStorage.removeItem("zpxn");
-            window.localStorage.removeItem("userStorageDetails");
+            await deleteUser(user);
 
+            window.localStorage.removeItem("userStorageDetails");
             navigate("/");
             setLoading(false);
           } catch (error) {
@@ -167,8 +166,8 @@ const DeleteStudentProfile = () => {
       })
       .then(async () => {
         await client.disconnectUser();
-        window.sessionStorage.removeItem("tkxn");
-        window.sessionStorage.removeItem("zpxn");
+        window.localStorage.removeItem("tkxn");
+        window.localStorage.removeItem("zpxn");
       });
   };
 
@@ -186,6 +185,8 @@ const DeleteStudentProfile = () => {
         aria-describedby="modal-modal-description"
       >
         <>
+          <LoadingSpinner stateLoader={loading} />
+
           <Box sx={style}>
             <Typography
               sx={{
@@ -222,11 +223,7 @@ const DeleteStudentProfile = () => {
               }}
               disabled={loading}
             >
-              {loading ? (
-                <CircularProgress color="secondary" />
-              ) : (
-                "Yes, i confirm"
-              )}
+              Yes, i confirm
             </Button>
 
             {!loading && (
