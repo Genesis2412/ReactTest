@@ -6,6 +6,7 @@ import {
   Steps,
   StepLabels,
 } from "./RegisterElements";
+import { Snackbar } from "@mui/material";
 import { Logo, BannerQuotes, LoginLink } from "../GlobalStyles";
 import PersonalDetails from "./PersonalDetails";
 import ContactDetails from "./ContactDetails";
@@ -141,6 +142,14 @@ const Register = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+
+  const handleSnackClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
 
   //insert data in firestore
   const createData = async () => {
@@ -342,6 +351,14 @@ const Register = () => {
         )}
         {steps[currentStep]}
       </div>
+
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackClose}
+        message={error}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </>
   );
 };
