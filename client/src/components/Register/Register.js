@@ -222,6 +222,7 @@ const Register = () => {
               employedInfo: data.employedInfo ? data.employedInfo : false,
             },
             profilePic: "",
+            classes: [],
           }).then(() => {
             navigate("/dashboard");
             setIsSubmitting(false);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Grid, Box, Paper, Avatar, Typography, TextField } from "@mui/material";
-import { collection, query, onSnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { Link } from "react-router-dom";
 import { Logo } from "../../GlobalStyles";
@@ -29,13 +29,21 @@ const Tutors = () => {
   //reading all tutors details
   useEffect(() => {
     setShowLoader(true);
-    const q = query(collection(db, "tutors"));
+    const q = query(collection(db, "tutors"), where("classes", "!=", "0"));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const newProfiles = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
-      setProfiles(newProfiles);
+
+      const profileArray = [];
+
+      newProfiles.map((newProfile) => {
+        if (newProfile?.classes?.length !== 0) {
+          profileArray.push(newProfile);
+        }
+      });
+      setProfiles(profileArray);
       setShowLoader(false);
     });
   }, []);
@@ -142,145 +150,151 @@ const Tutors = () => {
             />
           </Box>
 
-          <Grid container spacing={2} sx={{ mt: 3 }}>
-            {profiles
-              ?.filter((profile) => {
-                if (profile?.classes?.length !== 0) {
-                  for (let i = 0; i < profile?.classes?.length; i++) {
-                    if (
-                      profile?.classes[i].subject
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase())
-                    ) {
-                      return profile;
-                    }
-                    if (
-                      (
-                        "grade " +
-                        profile?.classes[i]?.grade.toString().toLowerCase()
-                      ).includes(searchTerm.toLowerCase())
-                    ) {
-                      return profile;
+          {!showLoader && profiles?.length !== 0 && (
+            <Grid container spacing={2} sx={{ mt: 3 }}>
+              {profiles
+                ?.filter((profile) => {
+                  if (profile?.classes?.length !== 0) {
+                    for (let i = 0; i < profile?.classes?.length; i++) {
+                      if (
+                        profile?.classes[i].subject
+                          .toLowerCase()
+                          .includes(searchTerm.toLowerCase())
+                      ) {
+                        return profile;
+                      }
+                      if (
+                        (
+                          "grade " +
+                          profile?.classes[i]?.grade.toString().toLowerCase()
+                        ).includes(searchTerm.toLowerCase())
+                      ) {
+                        return profile;
+                      }
                     }
                   }
-                }
 
-                if (searchTerm === "") {
-                  return profile;
-                } else if (
-                  profile?.name?.firstName
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ) {
-                  return profile;
-                } else if (
-                  profile?.name?.lastName
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ) {
-                  return profile;
-                } else if (
-                  (
-                    profile?.name?.firstName.toLowerCase() +
-                    " " +
-                    profile?.name?.lastName.toLowerCase()
-                  ).includes(searchTerm.toLowerCase())
-                ) {
-                  return profile;
-                } else if (
-                  (
-                    profile?.name?.lastName.toLowerCase() +
-                    " " +
-                    profile?.name?.firstName.toLowerCase()
-                  ).includes(searchTerm.toLowerCase())
-                ) {
-                  return profile;
-                } else if (
-                  profile?.email
-                    .toLowerCase()
-                    .includes(searchTerm.toLowerCase())
-                ) {
-                  return profile;
-                }
-              })
-              ?.map((profile, key) => {
-                return (
-                  <Grid item xs={12} md={4} key={key}>
-                    <Link
-                      to="tutor"
-                      style={{ textDecoration: "none" }}
-                      state={{
-                        email: profile.email,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
+                  if (searchTerm === "") {
+                    return profile;
+                  } else if (
+                    profile?.name?.firstName
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  ) {
+                    return profile;
+                  } else if (
+                    profile?.name?.lastName
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  ) {
+                    return profile;
+                  } else if (
+                    (
+                      profile?.name?.firstName.toLowerCase() +
+                      " " +
+                      profile?.name?.lastName.toLowerCase()
+                    ).includes(searchTerm.toLowerCase())
+                  ) {
+                    return profile;
+                  } else if (
+                    (
+                      profile?.name?.lastName.toLowerCase() +
+                      " " +
+                      profile?.name?.firstName.toLowerCase()
+                    ).includes(searchTerm.toLowerCase())
+                  ) {
+                    return profile;
+                  } else if (
+                    profile?.email
+                      .toLowerCase()
+                      .includes(searchTerm.toLowerCase())
+                  ) {
+                    return profile;
+                  }
+                })
+                ?.map((profile, key) => {
+                  return (
+                    <Grid item xs={12} md={4} key={key}>
+                      <Link
+                        to="tutor"
+                        style={{ textDecoration: "none" }}
+                        state={{
+                          email: profile.email,
                         }}
                       >
-                        <Avatar
-                          alt={profile?.name?.firstName}
-                          src={profile?.profilePic}
+                        <Box
                           sx={{
-                            width: 200,
-                            height: 200,
-                          }}
-                        />
-                      </Box>
-
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          mt: 1,
-                        }}
-                      >
-                        <Paper
-                          sx={{
-                            height: "100%",
-                            p: 2,
-                            boxShadow: 15,
-                            textAlign: "center",
-                            backgroundColor: "#1f2833",
-                            borderRadius: 3,
-                            width: "70%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
                           }}
                         >
-                          <Typography
-                            variant={"h3"}
-                            sx={{ fontSize: 18, color: "#c5c6c7" }}
-                          >
-                            {profile?.title +
-                              " " +
-                              profile?.name?.firstName +
-                              " " +
-                              profile?.name?.lastName}
-                          </Typography>
+                          <Avatar
+                            alt={profile?.name?.firstName}
+                            src={profile?.profilePic}
+                            sx={{
+                              width: 200,
+                              height: 200,
+                            }}
+                          />
+                        </Box>
 
-                          <Typography sx={{ fontSize: 16, color: "#c5c6c7" }}>
-                            Teaches:
-                          </Typography>
-                          {profile.classes?.map((classx, key) => {
-                            return (
-                              <Box key={key}>
-                                <Typography
-                                  sx={{ fontSize: 15, color: "#66fcf1" }}
-                                >
-                                  {classx?.subject + " Grade " + classx?.grade}
-                                </Typography>
-                              </Box>
-                            );
-                          })}
-                        </Paper>
-                      </Box>
-                    </Link>
-                  </Grid>
-                );
-              })}
-          </Grid>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            mt: 1,
+                          }}
+                        >
+                          <Paper
+                            sx={{
+                              height: "100%",
+                              p: 2,
+                              boxShadow: 15,
+                              textAlign: "center",
+                              backgroundColor: "#1f2833",
+                              borderRadius: 3,
+                              width: "70%",
+                            }}
+                          >
+                            <Typography
+                              variant={"h3"}
+                              sx={{ fontSize: 18, color: "#c5c6c7" }}
+                            >
+                              {profile?.title +
+                                " " +
+                                profile?.name?.firstName +
+                                " " +
+                                profile?.name?.lastName}
+                            </Typography>
+
+                            <Typography sx={{ fontSize: 16, color: "#c5c6c7" }}>
+                              Teaches:
+                            </Typography>
+                            {profile.classes?.map((classx, key) => {
+                              return (
+                                <Box key={key}>
+                                  <Typography
+                                    sx={{ fontSize: 15, color: "#66fcf1" }}
+                                  >
+                                    {classx?.subject +
+                                      " Grade " +
+                                      classx?.grade}
+                                  </Typography>
+                                </Box>
+                              );
+                            })}
+                          </Paper>
+                        </Box>
+                      </Link>
+                    </Grid>
+                  );
+                })}
+            </Grid>
+          )}
+
+          {!showLoader && profiles?.length === 0 && <h1>No tutors</h1>}
         </>
       )}
     </>
