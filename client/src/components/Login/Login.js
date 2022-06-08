@@ -123,8 +123,8 @@ const Login = () => {
       //Firebase Login
       try {
         await logIn(values.email, values.password);
+        await loginUserChat(values.email.toLowerCase, values.password);
         navigate("/dashboard");
-        await loginUserChat(values.email, values.password);
         onSubmitProps.setSubmitting(false);
       } catch (err) {
         if (err.message.includes("user-not-found")) {
