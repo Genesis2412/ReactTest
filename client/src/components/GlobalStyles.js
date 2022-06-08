@@ -137,6 +137,14 @@ export const AssignmentEmpty = styled.img`
   }
 `;
 
+export const TutorEmpty = styled.img`
+  width: 30%;
+  @media screen and (max-width: 768px) {
+    margin-top: 5vh;
+    width: 95%;
+  }
+`;
+
 export const ClassesIcon = styled.img`
   width: 40%;
   height: auto;

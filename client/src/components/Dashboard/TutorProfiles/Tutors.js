@@ -10,6 +10,8 @@ import WavesTutorProfile from "../../../images/WavesTutorProfile.svg";
 import { TutorBannerContainer } from "../../GlobalStyles";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
+import { TutorEmpty } from "../../GlobalStyles";
+import TutorProfileBoard from "../../../images/NoExistBanner/TutorProfileBoard.svg";
 
 const Tutors = () => {
   const [profiles, setProfiles] = useState([]);
@@ -294,7 +296,24 @@ const Tutors = () => {
             </Grid>
           )}
 
-          {!showLoader && profiles?.length === 0 && <h1>No tutors</h1>}
+          {!showLoader && profiles?.length === 0 && (
+            <Box mt={5}>
+              <Box display="flex" justifyContent="center" alignItems="center">
+                <TutorEmpty src={TutorProfileBoard} alt={"image"} />
+              </Box>
+
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  mt: 2,
+                  fontFamily: "Montserrat",
+                  fontSize: 19,
+                }}
+              >
+                Tutorz coming soon!
+              </Typography>
+            </Box>
+          )}
         </>
       )}
     </>
