@@ -147,6 +147,7 @@ const TutorProfile = () => {
     if (confirmAction) {
       checkBooking(tutorEmail, classSubject, classGrade).then(async (value) => {
         if (value === true) {
+          setShowLoader(true);
           try {
             await addDoc(collection(db, "bookings"), {
               subject: classSubject,
@@ -162,13 +163,16 @@ const TutorProfile = () => {
               tutorEmail: tutorEmail,
               tutorUpdated: "No",
             });
+            setShowLoader(false);
             setSnackBarOpen(true);
             setMessage("Booked Successfully");
           } catch (err) {
+            setShowLoader(false);
             setSnackBarOpen(true);
             setMessage("An error occurred, please try again");
           }
         } else {
+          setShowLoader(false);
           setSnackBarOpen(true);
           setMessage(
             "You have already booked this tutor, check bookings to check status"
