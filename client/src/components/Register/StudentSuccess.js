@@ -15,7 +15,6 @@ import { Alert, CircularProgress } from "@mui/material";
 const StudentSuccess = (props) => {
   const handleSubmit = (values) => {
     props.next(values, true);
-    console.log(props.data);
   };
 
   return (
