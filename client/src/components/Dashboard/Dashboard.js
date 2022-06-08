@@ -25,7 +25,7 @@ import {
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const Dashboard = () => {
-  const { user, setUserDetails, setBookingCount, bookingCount } = useUserAuth();
+  const { user, setUserDetails, setBookingCount } = useUserAuth();
   const [showLoader, setShowLoader] = useState(true);
 
   //getting all user details

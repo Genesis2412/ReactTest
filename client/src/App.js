@@ -1,5 +1,4 @@
 import "./App.css";
-import { useEffect } from "react";
 import Redirect from "./Redirect/Redirect";
 import { StreamChat } from "stream-chat";
 
