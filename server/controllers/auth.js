@@ -49,7 +49,6 @@ const login = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: "An error occurred" });
   }
 };
@@ -104,7 +103,7 @@ const deleteUser = async (req, res) => {
       mark_messages_deleted: true,
       hard_delete: true,
     });
-    res.status(200);
+    res.status(200).json({ message: "An error occurred, please try again" });
   } catch (error) {
     res.status(500).json({ message: "An error occurred, please try again" });
   }
