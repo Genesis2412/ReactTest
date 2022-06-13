@@ -184,7 +184,7 @@ const HeroStudent = () => {
       <Box sx={{ mt: 5, textAlign: "center" }}>
         <StudentBanner src={StudentJoinBanner} alt={"banner"} />
         <Typography sx={{ mt: 2 }}>
-          Student, if you want enjoy the luxury of e-tutoring, be part of the
+          Student, if you want enjoy the comfort of e-tutoring, be part of the
           MauTutorz family, Let's
         </Typography>
         <Link to="/register" style={{ textDecoration: "none" }}>
