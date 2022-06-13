@@ -11,10 +11,13 @@ import StudentBookingDiagram from "../../images/Hero/StudentBookingDiagram.jpg";
 import StudentLMSDiagram from "../../images/Hero/StudentLMSDiagram.jpg";
 import StudentChatDiagram from "../../images/Hero/StudentChatDiagram.jpg";
 import StudentJoinBanner from "../../images/Hero/StudentJoinBanner.jpg";
-import { StudentBanner } from "../GlobalStyles";
-import { StudentBookingImg } from "../GlobalStyles";
-import { StudentLMSImg } from "../GlobalStyles";
-import { StudentChatImg } from "../GlobalStyles";
+import {
+  StudentBanner,
+  StudentBookingImg,
+  StudentLMSImg,
+  StudentChatImg,
+} from "../GlobalStyles";
+
 import { Link } from "react-router-dom";
 
 const HeroStudent = () => {
