@@ -19,9 +19,6 @@ const Mobilebar = ({ isOpen, toggle }) => {
         </Icon>
         <MobilebarWrapper>
           <MobilebarMenu>
-            <MobilebarLink to="aboutus" onClick={toggle}>
-              About Us
-            </MobilebarLink>
             <MobilebarLink to="/forstudent" onClick={toggle}>
               For Students
             </MobilebarLink>
@@ -31,6 +28,9 @@ const Mobilebar = ({ isOpen, toggle }) => {
           </MobilebarMenu>
           <MobilebtnWrapper>
             <MobilebarRoute to="/login">Sign in</MobilebarRoute>
+          </MobilebtnWrapper>
+          <MobilebtnWrapper style={{ marginTop: 10 }}>
+            <MobilebarRoute to="/register">Sign Up</MobilebarRoute>
           </MobilebtnWrapper>
         </MobilebarWrapper>
       </MobilebarContainer>

@@ -171,7 +171,7 @@ export const MobilebarMenu = styled.ul`
   } ;
 `;
 
-export const MobilebarLink = styled(LinkScroll)`
+export const MobilebarLink = styled(LinkRouter)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -181,6 +181,7 @@ export const MobilebarLink = styled(LinkScroll)`
   transition: 0.2s ease-in-out;
   text-decoration: none;
   cursor: pointer;
+  color: #66fcf1;
 `;
 
 export const MobilebtnWrapper = styled.div`
