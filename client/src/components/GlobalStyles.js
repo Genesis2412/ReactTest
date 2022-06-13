@@ -17,6 +17,36 @@ export const Logo = styled(Link)`
   }
 `;
 
+// Student Hero
+export const StudentBookingImg = styled.img`
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
+
+export const StudentLMSImg = styled.img`
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
+
+export const StudentChatImg = styled.img`
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
+
+export const StudentBanner = styled.img`
+  width: 30%;
+
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
+
 // Login and registration
 export const BannerHeading = styled.h1`
   color: "#c5c6c7";
