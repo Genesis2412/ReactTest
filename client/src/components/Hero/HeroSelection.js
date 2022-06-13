@@ -8,8 +8,6 @@ import {
   HeroHeading,
   HeroBtnWrapper,
   HeroButton,
-  ArrowForward,
-  ArrowRight,
 } from "./HeroElements";
 import Navbar from "./Navbar";
 import Mobilebar from "./Mobilebar";

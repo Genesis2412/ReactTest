@@ -9,7 +9,6 @@ import {
   MobilebtnWrapper,
   MobilebarRoute,
 } from "./NavbarElements";
-import { FaBars } from "react-icons/fa";
 import { useUserAuth } from "../../Context/UserAuthContext";
 
 const Mobilebar = ({ isOpen, toggle }) => {
