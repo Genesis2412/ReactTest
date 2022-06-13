@@ -39,6 +39,23 @@ const HeroStudent = () => {
           interface allows you to focus only on learning rather than learning
           the system.
         </Typography>
+        <Link to="/register" style={{ textDecoration: "none" }}>
+          <Button
+            sx={[
+              {
+                "&:hover": {
+                  backgroundColor: "#c5c6c7",
+                  color: "#0b0c10",
+                },
+                backgroundColor: "#45a29e",
+                color: "#fff",
+                mt: 2,
+              },
+            ]}
+          >
+            Get Started
+          </Button>
+        </Link>
       </Box>
 
       <Box sx={{ textAlign: "center", p: 5, mt: 5 }}>
@@ -152,8 +169,10 @@ const HeroStudent = () => {
           system.
         </Typography>
         <Typography sx={{ mt: 0.5 }}>
-          Create groups, create direct messages, send emojies, gif, files and
-          many more.
+          Create groups, create direct messages.
+        </Typography>
+        <Typography sx={{ mt: 0.5 }}>
+          Send emojies, gifs, files and many more.
         </Typography>
       </Box>
 
