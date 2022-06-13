@@ -19,9 +19,6 @@ import {
   collection,
   updateDoc,
   arrayUnion,
-  getDocs,
-  where,
-  query,
 } from "firebase/firestore";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 
