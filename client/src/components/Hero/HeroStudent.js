@@ -82,7 +82,9 @@ const HeroStudent = () => {
           <Grid item md={3} xs={12}>
             <Paper sx={{ p: 2, boxShadow: 3 }}>
               <SchoolIcon sx={{ fontSize: 35, color: "#F47D2E" }} />
-              <Typography>Learning management system</Typography>
+              <Typography sx={{ fontWeight: "bold" }}>
+                Learning management system
+              </Typography>
               <Typography>
                 Manage all of your joined classes in one place.
               </Typography>
@@ -106,7 +108,7 @@ const HeroStudent = () => {
             <Paper sx={{ p: 2, boxShadow: 3 }}>
               <LockIcon sx={{ fontSize: 35, color: "#F1A81A" }} />
               <Typography sx={{ fontWeight: "bold" }}>
-                Secured by design
+                Secure by design
               </Typography>
               <Typography>
                 Do not worry, MauTutorz is secured keeping all your details
