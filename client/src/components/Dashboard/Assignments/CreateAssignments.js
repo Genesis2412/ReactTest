@@ -11,7 +11,6 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import PageviewIcon from "@mui/icons-material/Pageview";
 import CloseIcon from "@mui/icons-material/Close";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
@@ -96,7 +95,7 @@ const CreateAssignments = () => {
 
     if (
       assignmentValue &&
-      images.length != 0 &&
+      images.length !== 0 &&
       startDate &&
       startTime &&
       endDate &&
@@ -306,11 +305,9 @@ const CreateAssignments = () => {
       docIds.push(doc.id);
     });
 
-    {
-      docIds.map((dId) => {
-        deleteDoc(doc(db, "submittedAssignments", dId));
-      });
-    }
+    docIds.map((dId) => {
+      deleteDoc(doc(db, "submittedAssignments", dId));
+    });
   };
 
   const handleDeleteObject = async (docId, fileNames) => {
