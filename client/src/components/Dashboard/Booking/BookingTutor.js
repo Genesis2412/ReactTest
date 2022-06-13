@@ -28,7 +28,7 @@ import { TutorBookingEmpty } from "../../GlobalStyles";
 import TutorBookingBoard from "../../../images/NoExistBanner/TutorBookingBoard.svg";
 
 const BookingTutor = () => {
-  const { user, userDetails } = useUserAuth();
+  const { userDetails } = useUserAuth();
   const [userBookings, setUserBookings] = useState([]);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
