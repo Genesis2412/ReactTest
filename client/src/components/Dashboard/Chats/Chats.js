@@ -69,20 +69,20 @@ const Chats = () => {
         await verifyUser(values.email, values.oldPassword, values.newPassword);
         onSubmitProps.setSubmitting(false);
       } catch (err) {
-        console.log(err);
+        alert("An error occurred, please try again");
       }
     },
   });
 
-  // if (authToken && userId) {
-  //   client.connectUser(
-  //     {
-  //       token: authToken,
-  //       id: userId,
-  //     },
-  //     authToken
-  //   );
-  // }
+  if (authToken && userId) {
+    client.connectUser(
+      {
+        token: authToken,
+        id: userId,
+      },
+      authToken
+    );
+  }
 
   return (
     <>

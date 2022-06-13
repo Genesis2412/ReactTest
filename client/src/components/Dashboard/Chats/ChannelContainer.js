@@ -1,5 +1,5 @@
 import React from "react";
-import { Channel, useChatContext, MessageTeam } from "stream-chat-react";
+import { Channel, MessageTeam } from "stream-chat-react";
 import {
   ChannelInner,
   CreateChannel,
