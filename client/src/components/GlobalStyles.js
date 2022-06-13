@@ -47,6 +47,35 @@ export const StudentBanner = styled.img`
   }
 `;
 
+// Tutor Hero
+export const TutorBookingImg = styled.img`
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
+
+export const TutorLMSImg = styled.img`
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
+
+export const TutorAssignmentImg = styled.img`
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
+
+export const TutorVideocallImg = styled.img`
+  margin-top: 10px;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
+`;
+
 // Login and registration
 export const BannerHeading = styled.h1`
   color: "#c5c6c7";
