@@ -5,7 +5,6 @@ import {
   Paper,
   Typography,
   Button,
-  LinearProgress,
   Snackbar,
   TextField,
 } from "@mui/material";
@@ -44,7 +43,6 @@ const ViewAssignmentsStudent = ({ classCode }) => {
   const { userDetails } = useUserAuth();
   const [images, setImages] = useState([]);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState("");
   const fileInputRef = useRef();
   const [searchTerm, setSearchTerm] = useState("");

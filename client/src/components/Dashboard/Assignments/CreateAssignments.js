@@ -70,22 +70,6 @@ const CreateAssignments = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showLoader, setShowLoader] = useState(true);
 
-  const HeaderStyle = {
-    color: "#66fcf1",
-    fontSize: 16,
-  };
-
-  const LinkStyles = {
-    color: "#45a29e",
-    textDecoration: "none",
-    fontWeight: "bold",
-
-    "&:hover": {
-      color: "#0b0c10",
-      backgroundColor: "#c5c6c7",
-    },
-  };
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -592,7 +576,6 @@ const CreateAssignments = () => {
               }
             })
             ?.map((assignment, index) => {
-              console.log();
               return (
                 <Box sx={{ boxShadow: 3, mt: 2 }} key={index}>
                   <Paper sx={{ p: 2 }}>
