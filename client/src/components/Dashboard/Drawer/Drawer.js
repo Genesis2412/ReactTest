@@ -46,13 +46,14 @@ const Sidebar = () => {
       window.localStorage.removeItem("tkxn");
       window.localStorage.removeItem("zpxn");
       window.localStorage.removeItem("userStorageDetails");
-      setIsSubmitting(false);
       //emptying maps
       setUserDetails({});
       setUser({});
       setClasses([]);
+      setIsSubmitting(false);
+      window.location.reload(false);
     } catch (err) {
-      alert(err.message); //To check for error codes
+      alert("An error occurred, please try again"); //To check for error codes
     }
   };
 
