@@ -86,7 +86,7 @@ const HeroStudent = () => {
             <Paper sx={{ p: 2, boxShadow: 3 }}>
               <SchoolIcon sx={{ fontSize: 35, color: "#F47D2E" }} />
               <Typography sx={{ fontWeight: "bold" }}>
-                Learning management system
+                Learning Management System
               </Typography>
               <Typography>
                 Manage all of your joined classes in one place.
