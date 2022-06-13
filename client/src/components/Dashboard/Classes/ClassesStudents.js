@@ -14,7 +14,6 @@ import {
 import { AvatarContainer } from "./ClassesElements";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import VideoCallIcon from "@mui/icons-material/VideoCall";
 import ChatIcon from "@mui/icons-material/Chat";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useUserAuth } from "../../../Context/UserAuthContext";
@@ -34,7 +33,7 @@ import { ClassesEmpty } from "../../GlobalStyles";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 
 const ClassesStudents = () => {
-  const { user, userDetails, classes, setClasses } = useUserAuth();
+  const { userDetails, classes, setClasses } = useUserAuth();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [showLoader, setShowLoader] = useState(true);
