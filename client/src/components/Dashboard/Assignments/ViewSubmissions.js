@@ -481,31 +481,34 @@ const ViewSubmissions = () => {
 
                       <Grid item md={1} xs={6}>
                         <Typography style={HeaderStyle}>Marks</Typography>
-                        {submittedAssignment?.marks.length !== 0 && (
+                        {submittedAssignment?.marks?.length !== 0 && (
                           <Box sx={{ display: "inline-flex" }}>
                             <Typography>
                               {submittedAssignment?.marks}
                             </Typography>
-                            <CloseIcon
-                              sx={{ pl: 2, color: "red", cursor: "pointer" }}
-                              onClick={() => {
-                                deleteMarks(
-                                  submittedAssignment?.id,
-                                  submittedAssignment?.studentFirstName,
-                                  submittedAssignment?.studentLastName
-                                );
-                              }}
-                            />
+                            {submittedAssignment?.marks !==
+                              "Not yet posted" && (
+                              <CloseIcon
+                                sx={{ pl: 2, color: "red", cursor: "pointer" }}
+                                onClick={() => {
+                                  deleteMarks(
+                                    submittedAssignment?.id,
+                                    submittedAssignment?.studentFirstName,
+                                    submittedAssignment?.studentLastName
+                                  );
+                                }}
+                              />
+                            )}
                           </Box>
                         )}
-                        {submittedAssignment?.marks.length === 0 && (
+                        {submittedAssignment?.marks?.length === 0 && (
                           <Typography>Not yet posted</Typography>
                         )}
                       </Grid>
 
                       <Grid item md={2} xs={6}>
                         <Typography style={HeaderStyle}>Remarks</Typography>
-                        {submittedAssignment?.remarks.length !== 0 && (
+                        {submittedAssignment?.remarks && (
                           <Box sx={{ display: "inline-flex" }}>
                             <Typography>
                               {submittedAssignment?.remarks}
@@ -522,7 +525,7 @@ const ViewSubmissions = () => {
                             />
                           </Box>
                         )}
-                        {submittedAssignment?.remarks.length === 0 && (
+                        {!submittedAssignment?.remarks && (
                           <Typography>Not yet posted</Typography>
                         )}
                       </Grid>
@@ -569,14 +572,12 @@ const ViewSubmissions = () => {
                                       />
                                     </Box>
                                   )}
-
-                                  {submittedAssignment?.correctedFileName
-                                    .length === 0 && (
-                                    <Typography>No files posted yet</Typography>
-                                  )}
                                 </Box>
                               );
                             }
+                          )}
+                          {!submittedAssignment?.correctedFileName && (
+                            <Typography>No files posted yet</Typography>
                           )}
                         </Typography>
                       </Grid>
