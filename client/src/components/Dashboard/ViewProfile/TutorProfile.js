@@ -1,13 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Avatar,
-  TextField,
-  Box,
-  MenuItem,
-  Button,
-  Paper,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Grid, TextField, Box, MenuItem, Button } from "@mui/material";
 import {
   collection,
   query,
@@ -25,7 +17,7 @@ import { CircularProgress, Snackbar } from "@mui/material";
 import { StreamChat } from "stream-chat";
 
 const TutorProfile = (props) => {
-  const { userDetails, user } = useUserAuth();
+  const { user } = useUserAuth();
   const [editField, setEditField] = useState(true);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");

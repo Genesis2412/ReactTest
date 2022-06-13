@@ -7,7 +7,6 @@ import {
   TextField,
   Button,
   Snackbar,
-  CircularProgress,
 } from "@mui/material";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import { useUserAuth } from "../../../Context/UserAuthContext";
