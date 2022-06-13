@@ -360,9 +360,9 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                           <Typography variant={"h4"} sx={{ fontSize: 16 }}>
                             Assigned on:{" "}
                             <span>
-                              {assignment.startDate +
+                              {assignment?.startDate +
                                 ", " +
-                                assignment.startTime}
+                                assignment?.startTime}
                             </span>
                           </Typography>
                           <Typography
@@ -379,12 +379,12 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                         </Paper>
 
                         <Typography sx={{ fontSize: 15, mt: 2, ml: 1 }}>
-                          {ReactHtmlParser(assignment.title)}
+                          {ReactHtmlParser(assignment?.title)}
                         </Typography>
 
                         <Box>
                           <Grid container item spacing={2} mt={1}>
-                            {assignment.fileName.map((assignmentFile, key) => {
+                            {assignment?.fileName.map((assignmentFile, key) => {
                               return (
                                 <Grid item xs={12} md={2}>
                                   <Paper key={key} sx={{ mt: 1, pl: 1 }}>
@@ -426,7 +426,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                       <Box sx={{ boxShadow: 3 }}>
                         <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
                           {submittedAssignments
-                            .filter((submittedAssignment) => {
+                            ?.filter((submittedAssignment) => {
                               if (
                                 assignment?.id ===
                                 submittedAssignment.assignmentCode
@@ -434,7 +434,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                 return submittedAssignment;
                               }
                             })
-                            .map((submittedAssignment, index) => {
+                            ?.map((submittedAssignment, index) => {
                               return (
                                 <Typography>
                                   Your Marks:{" "}
@@ -454,22 +454,22 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                           </Typography>
 
                           {submittedAssignments
-                            .filter((submittedAssignment) => {
+                            ?.filter((submittedAssignment) => {
                               if (
                                 assignment?.id ===
-                                submittedAssignment.assignmentCode
+                                submittedAssignment?.assignmentCode
                               ) {
                                 return submittedAssignment;
                               }
                             })
-                            .map((submittedAssignment, index) => {
+                            ?.map((submittedAssignment, index) => {
                               return (
                                 <Box key={index}>
                                   <Typography sx={{ fontSize: 15 }}>
                                     Submitted:{" "}
-                                    <span>{submittedAssignment.status}</span>
+                                    <span>{submittedAssignment?.status}</span>
                                   </Typography>
-                                  {submittedAssignment.submittedFileName.map(
+                                  {submittedAssignment?.submittedFileName?.map(
                                     (fileName, index) => {
                                       return (
                                         <Paper
@@ -489,7 +489,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                             <a
                                               href={
                                                 submittedAssignment
-                                                  .submittedFileUrl[index]
+                                                  ?.submittedFileUrl[index]
                                               }
                                               target="blank"
                                               style={LinkStyles}
@@ -516,12 +516,12 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                           <Box mt={1}>
                             {submittedAssignments
                               .filter((value) => {
-                                if (assignment?.id === value.assignmentCode) {
+                                if (assignment?.id === value?.assignmentCode) {
                                   return value;
                                 }
                               })
                               .map((value, index) => {
-                                if (value.status !== "Not Submitted") {
+                                if (value?.status !== "Not Submitted") {
                                   return (
                                     <Button
                                       key={index}
@@ -562,9 +562,9 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                       ]}
                                       onClick={() => {
                                         handleSubmit(
-                                          assignment.id,
-                                          assignment.endDate,
-                                          assignment.endTime
+                                          assignment?.id,
+                                          assignment?.endDate,
+                                          assignment?.endTime
                                         );
                                       }}
                                     >
@@ -666,7 +666,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
           }
         })}
 
-      {!showLoader && assignments.length === 0 && (
+      {!showLoader && assignments?.length === 0 && (
         <Box mt={5}>
           <Box display="flex" justifyContent="center" alignItems="center">
             <AssignmentEmpty src={AssignmentBoard} alt={"image"} />
