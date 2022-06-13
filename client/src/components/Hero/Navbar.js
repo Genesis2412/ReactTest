@@ -11,8 +11,10 @@ import {
   NavBtnLink,
 } from "./NavbarElements";
 import { FaBars } from "react-icons/fa";
+import { useUserAuth } from "../../Context/UserAuthContext";
 
 const Navbar = ({ toggle }) => {
+  const { userDetails } = useUserAuth();
   return (
     <>
       <Nav>
@@ -29,12 +31,23 @@ const Navbar = ({ toggle }) => {
               <NavLinks to="/fortutor">For Tutors</NavLinks>
             </NavItems>
           </NavMenu>
-          <NavBtn>
-            <NavBtnLink to="/login">Sign In</NavBtnLink>
-          </NavBtn>
-          <NavBtn>
-            <NavBtnLink to="/register">Sign Up</NavBtnLink>
-          </NavBtn>
+
+          {!userDetails?.email && (
+            <>
+              <NavBtn>
+                <NavBtnLink to="/login">Sign In</NavBtnLink>
+              </NavBtn>
+              <NavBtn>
+                <NavBtnLink to="/register">Sign Up</NavBtnLink>
+              </NavBtn>
+            </>
+          )}
+
+          {userDetails?.email && (
+            <NavBtn>
+              <NavBtnLink to="/dashboard">My Dashboard</NavBtnLink>
+            </NavBtn>
+          )}
         </NavbarContainer>
       </Nav>
     </>
