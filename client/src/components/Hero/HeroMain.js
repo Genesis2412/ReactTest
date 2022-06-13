@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { FaArrowRight } from "react-icons/fa";
 import Video from "../../videos/video.mp4";
 import {
   HeroContainer,
@@ -16,7 +15,6 @@ import {
 import Typical from "react-typical";
 import Navbar from "./Navbar";
 import Mobilebar from "./Mobilebar";
-import HeroMain from "./HeroMain";
 
 const HeroSection = () => {
   const [hover, setHover] = useState();
