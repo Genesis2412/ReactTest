@@ -23,18 +23,22 @@ const HeroMain = () => {
   };
 
   return (
-    <HeroContainer
-      as={motion.div}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.7 }}
-    >
+    <HeroContainer>
       <HeroBg>
         <VideoBg autoPlay loop muted src={Video} type="video/mp4" />
       </HeroBg>
       <HeroContent>
-        <HeroHeading>Tutoring Made Easy for Grade 7 to 13</HeroHeading>
+        <HeroHeading
+          as={motion.div}
+          initial={{ y: 50, opacity: 0 }}
+          animate={{
+            y: 0,
+            opacity: 1,
+            transition: { duration: 0.5, ease: "easeInOut" },
+          }}
+        >
+          Tutoring Made Easy for Grade 7 to 13
+        </HeroHeading>
         <HeroParagraph>Sign up for a new account today</HeroParagraph>
         <HeroParagraph>
           <Typical

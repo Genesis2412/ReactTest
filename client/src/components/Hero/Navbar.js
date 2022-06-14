@@ -12,12 +12,21 @@ import {
 } from "./NavbarElements";
 import { FaBars } from "react-icons/fa";
 import { useUserAuth } from "../../Context/UserAuthContext";
+import { motion } from "framer-motion";
 
 const Navbar = ({ toggle }) => {
   const { userDetails } = useUserAuth();
   return (
     <>
-      <Nav>
+      <Nav
+        as={motion.nav}
+        initial={{ y: -50, opacity: 0 }}
+        animate={{
+          y: 0,
+          opacity: 1,
+          transition: { duration: 0.7, ease: "easeInOut" },
+        }}
+      >
         <NavbarContainer>
           <NavLogo to="/">MauTutorz</NavLogo>
           <MobileIcon onClick={toggle}>
