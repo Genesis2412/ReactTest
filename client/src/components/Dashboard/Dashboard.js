@@ -22,6 +22,7 @@ import {
   where,
 } from "firebase/firestore";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { motion } from "framer-motion";
 
 const Dashboard = () => {
   const { user, setUserDetails, userDetails, setBookingCount, verifyEmail } =
@@ -134,7 +135,17 @@ const Dashboard = () => {
               sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
             >
               {user?.emailVerified === false && (
-                <Box>
+                <Box
+                  as={motion.div}
+                  animate={{
+                    y: [4, 0, 4],
+                    transition: {
+                      duration: 2,
+                      ease: "linear",
+                      repeat: "Infinity",
+                    },
+                  }}
+                >
                   <Paper
                     sx={{
                       p: 2,
@@ -170,7 +181,17 @@ const Dashboard = () => {
               )}
 
               {userDetails?.profilePic === "" && (
-                <Box>
+                <Box
+                  as={motion.div}
+                  animate={{
+                    y: [4, 0, 4],
+                    transition: {
+                      duration: 2,
+                      ease: "linear",
+                      repeat: "Infinity",
+                    },
+                  }}
+                >
                   <Paper
                     sx={{
                       p: 2,
