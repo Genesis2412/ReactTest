@@ -5,8 +5,6 @@ import {
   Box,
   Avatar,
   Paper,
-  Typography,
-  Button,
   Snackbar,
   Stack,
   Menu,
@@ -207,7 +205,7 @@ const ViewProfile = () => {
     "Savanne",
   ];
 
-  const { user, verifyEmail, userDetails, resetPassword } = useUserAuth();
+  const { user, userDetails, resetPassword } = useUserAuth();
   let userStorageDetails = localStorage.getItem("userStorageDetails");
   let localUserDetails = JSON.parse(userStorageDetails);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -218,16 +216,6 @@ const ViewProfile = () => {
       return;
     }
     setSnackBarOpen(false);
-  };
-
-  const verifyUserEmail = async () => {
-    try {
-      verifyEmail(user);
-      setSnackBarOpen(true);
-      setMessage("A verification has been sent to your email.");
-    } catch (error) {
-      console.log("An error occurred");
-    }
   };
 
   const changePassword = async () => {
@@ -244,58 +232,6 @@ const ViewProfile = () => {
 
   return (
     <>
-      {user?.emailVerified === false && (
-        <Box>
-          <Paper
-            sx={{
-              p: 2,
-              mb: 2,
-              textAlign: "center",
-              backgroundColor: "#FFCC00",
-            }}
-          >
-            <Typography>
-              Please verify your email.
-              <Button
-                size="small"
-                sx={[
-                  {
-                    "&:hover": {
-                      backgroundColor: "#c5c6c7",
-                      color: "#000",
-                    },
-                    backgroundColor: "#45a29e",
-                    color: "#fff",
-                    ml: 2,
-                  },
-                ]}
-                onClick={() => {
-                  verifyUserEmail();
-                }}
-              >
-                Verify Here
-              </Button>
-            </Typography>
-          </Paper>
-        </Box>
-      )}
-      {userDetails?.profilePic === "" && (
-        <Box>
-          <Paper
-            sx={{
-              p: 2,
-              mb: 2,
-              textAlign: "center",
-              backgroundColor: "#FFCC00",
-            }}
-          >
-            <Typography>
-              Please upload your face as your profile picture
-            </Typography>
-          </Paper>
-        </Box>
-      )}
-
       <Box>
         <Paper sx={{ p: 2, boxShadow: 15 }}>
           <Box sx={{ float: "right" }}>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route } from "react-router-dom";
-import Box from "@mui/material/Box";
+import { Routes, Route, Link } from "react-router-dom";
+import { Box, Paper, Typography, Button, Snackbar } from "@mui/material";
 import Drawer from "./Drawer/Drawer";
 import Classes from "./Classes/Classes";
 import ClassDetails from "./Classes/ClassDetails";
@@ -24,8 +24,28 @@ import {
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const Dashboard = () => {
-  const { user, setUserDetails, setBookingCount } = useUserAuth();
+  const { user, setUserDetails, userDetails, setBookingCount, verifyEmail } =
+    useUserAuth();
   const [showLoader, setShowLoader] = useState(true);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
+
+  const verifyUserEmail = async () => {
+    try {
+      verifyEmail(user);
+      setSnackBarOpen(true);
+      setMessage("A verification has been sent to your email.");
+    } catch (error) {
+      console.log("An error occurred");
+    }
+  };
 
   //getting all user details
   useEffect(() => {
@@ -106,29 +126,111 @@ const Dashboard = () => {
       <LoadingSpinner stateLoader={showLoader} />
 
       {!showLoader && (
-        <Box sx={{ display: "flex" }}>
-          <Drawer />
-          <Box
-            component="main"
-            sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
-          >
-            <Routes>
-              <Route path="viewprofile" element={<ViewProfile />} />
-              <Route path="classes" element={<Classes />} />
-              <Route path="classesdetails/*" element={<ClassDetails />} />
-              <Route path="chats" element={<Chats />} />
-              <Route path="videocall" element={<Videocall />} />
-              <Route path="tutors/*" element={<Tutors />} />
-              <Route path="tutors/tutor" element={<TutorProfile />} />
-              <Route path="bookings" element={<Bookings />} />
-              <Route
-                path="classesdetails/assignments/viewsubmissions"
-                element={<ViewSubmissions />}
-              />
-            </Routes>
+        <>
+          <Box sx={{ display: "flex" }}>
+            <Drawer />
+            <Box
+              component="main"
+              sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
+            >
+              {user?.emailVerified === false && (
+                <Box>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      mb: 2,
+                      textAlign: "center",
+                      backgroundColor: "#FFCC00",
+                    }}
+                  >
+                    <Typography>
+                      Please verify your email.
+                      <Button
+                        size="small"
+                        sx={[
+                          {
+                            "&:hover": {
+                              backgroundColor: "#c5c6c7",
+                              color: "#000",
+                            },
+                            backgroundColor: "#45a29e",
+                            color: "#fff",
+                            ml: 2,
+                          },
+                        ]}
+                        onClick={() => {
+                          verifyUserEmail();
+                        }}
+                      >
+                        Verify Here
+                      </Button>
+                    </Typography>
+                  </Paper>
+                </Box>
+              )}
+
+              {userDetails?.profilePic === "" && (
+                <Box>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      mb: 2,
+                      textAlign: "center",
+                      backgroundColor: "#FFCC00",
+                    }}
+                  >
+                    <Typography>
+                      Please upload your face as your profile picture
+                      <Link
+                        to="/dashboard/viewprofile"
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Button
+                          size="small"
+                          sx={[
+                            {
+                              "&:hover": {
+                                backgroundColor: "#c5c6c7",
+                                color: "#000",
+                              },
+                              backgroundColor: "#45a29e",
+                              color: "#fff",
+                              ml: 2,
+                            },
+                          ]}
+                        >
+                          Click Here
+                        </Button>
+                      </Link>
+                    </Typography>
+                  </Paper>
+                </Box>
+              )}
+              <Routes>
+                <Route path="viewprofile" element={<ViewProfile />} />
+                <Route path="classes" element={<Classes />} />
+                <Route path="classesdetails/*" element={<ClassDetails />} />
+                <Route path="chats" element={<Chats />} />
+                <Route path="videocall" element={<Videocall />} />
+                <Route path="tutors/*" element={<Tutors />} />
+                <Route path="tutors/tutor" element={<TutorProfile />} />
+                <Route path="bookings" element={<Bookings />} />
+                <Route
+                  path="classesdetails/assignments/viewsubmissions"
+                  element={<ViewSubmissions />}
+                />
+              </Routes>
+            </Box>
           </Box>
-        </Box>
+        </>
       )}
+      <Snackbar
+        open={snackBarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </>
   );
 };
