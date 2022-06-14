@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import Navbar from "./Navbar";
-import Mobilebar from "./Mobilebar";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Grid, Paper, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import { Logo } from "../GlobalStyles";
 import EventIcon from "@mui/icons-material/Event";
 import SchoolIcon from "@mui/icons-material/School";
@@ -17,20 +16,16 @@ import {
   StudentLMSImg,
   StudentChatImg,
 } from "../GlobalStyles";
-
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const HeroStudent = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggle = () => {
-    setIsOpen(!isOpen);
-  };
   return (
-    <>
-      <Mobilebar isOpen={isOpen} toggle={toggle} />
-      <Navbar toggle={toggle} />
-
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.7 }}
+    >
       <Box sx={{ mt: 20, textAlign: "center" }}>
         <Logo to="/">MauTutorz</Logo>
         <Typography sx={{ mt: 3, fontSize: 25 }}>
@@ -216,7 +211,7 @@ const HeroStudent = () => {
           All rights reserved
         </Typography>
       </Box>
-    </>
+    </motion.div>
   );
 };
 

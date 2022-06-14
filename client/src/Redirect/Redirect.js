@@ -5,10 +5,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
 import Dashboard from "../components/Dashboard/Dashboard";
-import HeroMain from "../components/Hero/HeroMain";
-import HeroSection from "../components/Hero/HeroSelection";
-import HeroStudent from "../components/Hero/HeroStudent";
-import HeroTutor from "../components/Hero/HeroTutor";
+import Home from "../components/Hero/Home";
 
 // Testing
 import Insert from "../components/Test/Insert";
@@ -20,11 +17,7 @@ const Redirect = () => {
     <>
       <UserAuthContextProvider>
         <Routes>
-          <Route path="/" element={<HeroMain />} />
-          <Route path="/select" element={<HeroSection />} />
-          <Route path="/forstudent" element={<HeroStudent />} />
-          <Route path="/fortutor" element={<HeroTutor />} />
-
+          <Route path="/*" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route

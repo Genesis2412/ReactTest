@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Video from "../../videos/videoSelect.mp4";
 import {
   HeroContainer,
@@ -9,36 +9,31 @@ import {
   HeroBtnWrapper,
   HeroButton,
 } from "./HeroElements";
-import Navbar from "./Navbar";
-import Mobilebar from "./Mobilebar";
+import { motion } from "framer-motion";
 
 const HeroSection = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggle = () => {
-    setIsOpen(!isOpen);
-  };
-
   return (
-    <>
-      <Mobilebar isOpen={isOpen} toggle={toggle} />
-      <Navbar toggle={toggle} />
-      <HeroContainer>
-        <HeroBg>
-          <VideoBg autoPlay loop muted src={Video} type="video/mp4" />
-        </HeroBg>
-        <HeroContent>
-          <HeroHeading>Are you a student or a tutor?</HeroHeading>
+    <HeroContainer
+      as={motion.div}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.7 }}
+    >
+      <HeroBg>
+        <VideoBg autoPlay loop muted src={Video} type="video/mp4" />
+      </HeroBg>
+      <HeroContent>
+        <HeroHeading>Are you a student or a tutor?</HeroHeading>
 
-          <HeroBtnWrapper style={{ display: "inline-block" }}>
-            <HeroButton to="/forstudent">Student</HeroButton>
-            <HeroButton to="/fortutor" style={{ marginTop: 30 }}>
-              Tutor
-            </HeroButton>
-          </HeroBtnWrapper>
-        </HeroContent>
-      </HeroContainer>
-    </>
+        <HeroBtnWrapper style={{ display: "inline-block" }}>
+          <HeroButton to="/forstudent">Student</HeroButton>
+          <HeroButton to="/fortutor" style={{ marginTop: 30 }}>
+            Tutor
+          </HeroButton>
+        </HeroBtnWrapper>
+      </HeroContent>
+    </HeroContainer>
   );
 };
 
