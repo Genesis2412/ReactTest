@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  HomeMaterialIcon,
   PeopleMaterialIcon,
   ClassMaterialIcon,
   ChatMaterialIcon,
@@ -23,6 +24,7 @@ import { Badge } from "@mui/material";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { StreamChat } from "stream-chat";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import HomeIcon from "@mui/icons-material/Home";
 
 const Sidebar = () => {
   const {
@@ -71,6 +73,17 @@ const Sidebar = () => {
             onMouseEnter={() => setClick(true)}
             onMouseLeave={() => setClick(false)}
           >
+            <Item
+              onClick={() => {
+                setClick(false);
+                setProfileClick(false);
+              }}
+              to="/dashboard"
+            >
+              <HomeMaterialIcon />
+              <Text clicked={click}>Home</Text>
+            </Item>
+
             <Item
               onClick={() => {
                 setClick(false);
