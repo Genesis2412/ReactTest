@@ -160,6 +160,15 @@ export const FormFooter = styled.h1`
   }
 `;
 
+export const DashboardImgBanner = styled.img`
+  width: 40%;
+  height: auto;
+  @media screen and (max-width: 768px) {
+    margin-top: 10vh;
+    width: 100%;
+  }
+`;
+
 // Empty banner icons
 export const ClassesEmpty = styled.img`
   @media screen and (max-width: 768px) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { Box, Paper, Typography, Button, Snackbar } from "@mui/material";
 import Drawer from "./Drawer/Drawer";
 import Classes from "./Classes/Classes";
@@ -23,6 +23,8 @@ import {
 } from "firebase/firestore";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { motion } from "framer-motion";
+import { Logo, DashboardImgBanner } from "../GlobalStyles";
+import DashboardBanner from "../../images/DashboardBanner.jpeg";
 
 const Dashboard = () => {
   const { user, setUserDetails, userDetails, setBookingCount, verifyEmail } =
@@ -30,6 +32,11 @@ const Dashboard = () => {
   const [showLoader, setShowLoader] = useState(true);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
+
+  const location = useLocation();
+  if (!userDetails?.classes || userDetails?.classes?.length === 0) {
+    console.log("Empty");
+  }
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -134,99 +141,161 @@ const Dashboard = () => {
               component="main"
               sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
             >
-              {user?.emailVerified === false && (
-                <Box
-                  as={motion.div}
-                  animate={{
-                    y: [4, 0, 4],
-                    transition: {
-                      duration: 2,
-                      ease: "linear",
-                      repeat: "Infinity",
-                    },
-                  }}
-                >
-                  <Paper
-                    sx={{
-                      p: 2,
-                      mb: 2,
-                      textAlign: "center",
-                      backgroundColor: "#FFCC00",
-                    }}
-                  >
-                    <Typography>
-                      Please verify your email.
-                      <Button
-                        size="small"
-                        sx={[
-                          {
-                            "&:hover": {
-                              backgroundColor: "#c5c6c7",
-                              color: "#000",
-                            },
-                            backgroundColor: "#45a29e",
-                            color: "#fff",
-                            ml: 2,
-                          },
-                        ]}
-                        onClick={() => {
-                          verifyUserEmail();
+              {location?.pathname === "/dashboard" && (
+                <>
+                  {/* check if email is verified */}
+                  {user?.emailVerified === false && (
+                    <Box
+                      as={motion.div}
+                      animate={{
+                        y: [4, 0, 4],
+                        transition: {
+                          duration: 2,
+                          ease: "linear",
+                          repeat: "Infinity",
+                        },
+                      }}
+                    >
+                      <Paper
+                        sx={{
+                          p: 2,
+                          mb: 2,
+                          textAlign: "center",
+                          backgroundColor: "#FFCC00",
                         }}
                       >
-                        Verify Here
-                      </Button>
-                    </Typography>
-                  </Paper>
-                </Box>
+                        <Typography>
+                          Please verify your email.
+                          <Button
+                            size="small"
+                            sx={[
+                              {
+                                "&:hover": {
+                                  backgroundColor: "#c5c6c7",
+                                  color: "#000",
+                                },
+                                backgroundColor: "#45a29e",
+                                color: "#fff",
+                                ml: 2,
+                              },
+                            ]}
+                            onClick={() => {
+                              verifyUserEmail();
+                            }}
+                          >
+                            Verify Here
+                          </Button>
+                        </Typography>
+                      </Paper>
+                    </Box>
+                  )}
+
+                  {/* check if user has profile picture */}
+                  {userDetails?.profilePic === "" && (
+                    <Box
+                      as={motion.div}
+                      animate={{
+                        y: [4, 0, 4],
+                        transition: {
+                          duration: 2,
+                          ease: "linear",
+                          repeat: "Infinity",
+                        },
+                      }}
+                    >
+                      <Paper
+                        sx={{
+                          p: 2,
+                          mb: 2,
+                          textAlign: "center",
+                          backgroundColor: "#FFCC00",
+                        }}
+                      >
+                        <Typography>
+                          Please upload your face as your profile picture
+                          <Link
+                            to="/dashboard/viewprofile"
+                            style={{ textDecoration: "none" }}
+                          >
+                            <Button
+                              size="small"
+                              sx={[
+                                {
+                                  "&:hover": {
+                                    backgroundColor: "#c5c6c7",
+                                    color: "#000",
+                                  },
+                                  backgroundColor: "#45a29e",
+                                  color: "#fff",
+                                  ml: 2,
+                                },
+                              ]}
+                            >
+                              Click Here
+                            </Button>
+                          </Link>
+                        </Typography>
+                      </Paper>
+                    </Box>
+                  )}
+
+                  {/* check if there are any classes */}
+                  {(!userDetails?.classes ||
+                    userDetails?.classes.length === 0) && (
+                    <Box
+                      sx={{
+                        textAlign: "center",
+                        p: 2,
+                        backgroundColor: "#FFCC00",
+                        borderRadius: 1,
+                        border: "2px solid red",
+                      }}
+                    >
+                      <Typography>
+                        {userDetails?.title +
+                          " " +
+                          userDetails?.name?.firstName +
+                          " " +
+                          userDetails?.name?.lastName}
+                        {", "} you are required to <b>create a class</b> for{" "}
+                        <b>your profile</b> to be <b>displayed</b> on the
+                        booking system.
+                        <Link
+                          to="/dashboard/classes"
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Button
+                            size="small"
+                            sx={[
+                              {
+                                "&:hover": {
+                                  backgroundColor: "#c5c6c7",
+                                  color: "#000",
+                                },
+                                backgroundColor: "#45a29e",
+                                color: "#fff",
+                                ml: 2,
+                              },
+                            ]}
+                          >
+                            Create Here
+                          </Button>
+                        </Link>
+                      </Typography>
+                    </Box>
+                  )}
+
+                  <Box sx={{ textAlign: "center" }}>
+                    <Logo to="/dashboard" style={{ fontSize: 45 }}>
+                      MauTutorz
+                    </Logo>
+                    <Typography>Click Less, Learn More</Typography>
+
+                    <DashboardImgBanner alt={"banner"} src={DashboardBanner} />
+                  </Box>
+                </>
               )}
 
-              {userDetails?.profilePic === "" && (
-                <Box
-                  as={motion.div}
-                  animate={{
-                    y: [4, 0, 4],
-                    transition: {
-                      duration: 2,
-                      ease: "linear",
-                      repeat: "Infinity",
-                    },
-                  }}
-                >
-                  <Paper
-                    sx={{
-                      p: 2,
-                      mb: 2,
-                      textAlign: "center",
-                      backgroundColor: "#FFCC00",
-                    }}
-                  >
-                    <Typography>
-                      Please upload your face as your profile picture
-                      <Link
-                        to="/dashboard/viewprofile"
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Button
-                          size="small"
-                          sx={[
-                            {
-                              "&:hover": {
-                                backgroundColor: "#c5c6c7",
-                                color: "#000",
-                              },
-                              backgroundColor: "#45a29e",
-                              color: "#fff",
-                              ml: 2,
-                            },
-                          ]}
-                        >
-                          Click Here
-                        </Button>
-                      </Link>
-                    </Typography>
-                  </Paper>
-                </Box>
-              )}
               <Routes>
                 <Route path="viewprofile" element={<ViewProfile />} />
                 <Route path="classes" element={<Classes />} />
