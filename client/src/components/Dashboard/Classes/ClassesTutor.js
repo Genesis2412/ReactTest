@@ -221,6 +221,8 @@ const ClassesTutor = () => {
     try {
       let confirmAction = window.confirm("Are you sure to delete?");
       if (confirmAction) {
+        setShowLoader(true);
+
         await deleteSubmittedAssignments(classCode);
         await deleteAssignments(classCode);
         await deleteAnnouncements(classCode);
@@ -228,10 +230,13 @@ const ClassesTutor = () => {
         await deleteBookings(subject, grade, day, time);
         await deleteDoc(doc(db, "createdClasses", classCode));
         await handleUpdateProfile();
+
+        setShowLoader(false);
         setSnackBarOpen(true);
         setMessage("Deleted Successfully");
       }
     } catch (err) {
+      setShowLoader(false);
       setSnackBarOpen(true);
       setMessage("An error occurred, please try again");
     }
