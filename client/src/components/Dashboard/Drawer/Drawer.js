@@ -24,7 +24,6 @@ import { Badge } from "@mui/material";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { StreamChat } from "stream-chat";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
-import HomeIcon from "@mui/icons-material/Home";
 
 const Sidebar = () => {
   const {

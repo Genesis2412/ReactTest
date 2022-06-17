@@ -34,9 +34,6 @@ const Dashboard = () => {
   const [message, setMessage] = useState("");
 
   const location = useLocation();
-  if (!userDetails?.classes || userDetails?.classes?.length === 0) {
-    console.log("Empty");
-  }
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {

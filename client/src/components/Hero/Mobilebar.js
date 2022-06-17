@@ -29,7 +29,7 @@ const Mobilebar = ({ isOpen, toggle }) => {
             </MobilebarLink>
           </MobilebarMenu>
 
-          {!userDetails?.email && (
+          {!userDetails && (
             <>
               <MobilebtnWrapper>
                 <MobilebarRoute to="/login">Sign in</MobilebarRoute>
@@ -40,7 +40,7 @@ const Mobilebar = ({ isOpen, toggle }) => {
             </>
           )}
 
-          {userDetails?.email && (
+          {userDetails && (
             <MobilebtnWrapper style={{ marginTop: 10 }}>
               <MobilebarRoute to="/dashboard">My dashboard</MobilebarRoute>
             </MobilebtnWrapper>

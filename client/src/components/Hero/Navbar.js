@@ -41,7 +41,7 @@ const Navbar = ({ toggle }) => {
             </NavItems>
           </NavMenu>
 
-          {!userDetails?.email && (
+          {!userDetails && (
             <>
               <NavBtn>
                 <NavBtnLink to="/login">Sign In</NavBtnLink>
@@ -52,7 +52,7 @@ const Navbar = ({ toggle }) => {
             </>
           )}
 
-          {userDetails?.email && (
+          {userDetails && (
             <NavBtn>
               <NavBtnLink to="/dashboard">My Dashboard</NavBtnLink>
             </NavBtn>
