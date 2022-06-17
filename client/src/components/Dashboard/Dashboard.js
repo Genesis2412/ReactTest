@@ -313,22 +313,6 @@ const Dashboard = () => {
               </Routes>
             </Box>
           </Box>
-
-          <Box
-            sx={{
-              textAlign: "center",
-              mt: 3,
-              backgroundColor: "#1f2833",
-              p: 1,
-            }}
-          >
-            <Logo to="/dashboard" style={{ color: "#66fcf1", fontSize: 20 }}>
-              MauTutorz
-            </Logo>
-            <Typography sx={{ color: "#fff", mt: 0.5 }}>
-              All rights reserved
-            </Typography>
-          </Box>
         </>
       )}
       <Snackbar

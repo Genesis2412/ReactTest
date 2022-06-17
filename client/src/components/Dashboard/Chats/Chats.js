@@ -74,19 +74,21 @@ const Chats = () => {
     },
   });
 
-  if (authToken && userId) {
-    client.connectUser(
-      {
-        token: authToken,
-        id: userId,
-      },
-      authToken
-    );
-  }
+  useEffect(() => {
+    if (authToken && userId) {
+      client.connectUser(
+        {
+          token: authToken,
+          id: userId,
+        },
+        authToken
+      );
+    }
+  }, [authToken]);
 
   return (
     <>
-      {authToken && userId && (
+      {client?.user && (
         <Box
           sx={{
             display: "flex",
@@ -116,7 +118,7 @@ const Chats = () => {
         </Box>
       )}
 
-      {!authToken && !userId && (
+      {!client?.user && (
         <Box>
           <Box>
             <Paper
