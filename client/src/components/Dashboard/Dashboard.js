@@ -241,49 +241,50 @@ const Dashboard = () => {
 
                   {/* check if there are any classes */}
                   {(!userDetails?.classes ||
-                    userDetails?.classes.length === 0) && (
-                    <Box
-                      sx={{
-                        textAlign: "center",
-                        p: 2,
-                        backgroundColor: "#FFCC00",
-                        borderRadius: 1,
-                        border: "2px solid red",
-                      }}
-                    >
-                      <Typography>
-                        {userDetails?.title +
-                          " " +
-                          userDetails?.name?.firstName +
-                          " " +
-                          userDetails?.name?.lastName}
-                        {", "} you are required to <b>create a class</b> for{" "}
-                        <b>your profile</b> to be <b>displayed</b> on the
-                        booking system.
-                        <Link
-                          to="/dashboard/classes"
-                          style={{ textDecoration: "none" }}
-                        >
-                          <Button
-                            size="small"
-                            sx={[
-                              {
-                                "&:hover": {
-                                  backgroundColor: "#c5c6c7",
-                                  color: "#000",
-                                },
-                                backgroundColor: "#45a29e",
-                                color: "#fff",
-                                ml: 2,
-                              },
-                            ]}
+                    userDetails?.classes.length === 0) &&
+                    userDetails?.accountType === "Tutor" && (
+                      <Box
+                        sx={{
+                          textAlign: "center",
+                          p: 2,
+                          backgroundColor: "#FFCC00",
+                          borderRadius: 1,
+                          border: "2px solid red",
+                        }}
+                      >
+                        <Typography>
+                          {userDetails?.title +
+                            " " +
+                            userDetails?.name?.firstName +
+                            " " +
+                            userDetails?.name?.lastName}
+                          {", "} you are required to <b>create a class</b> for{" "}
+                          <b>your profile</b> to be <b>displayed</b> on the
+                          booking system.
+                          <Link
+                            to="/dashboard/classes"
+                            style={{ textDecoration: "none" }}
                           >
-                            Create Here
-                          </Button>
-                        </Link>
-                      </Typography>
-                    </Box>
-                  )}
+                            <Button
+                              size="small"
+                              sx={[
+                                {
+                                  "&:hover": {
+                                    backgroundColor: "#c5c6c7",
+                                    color: "#000",
+                                  },
+                                  backgroundColor: "#45a29e",
+                                  color: "#fff",
+                                  ml: 2,
+                                },
+                              ]}
+                            >
+                              Create Here
+                            </Button>
+                          </Link>
+                        </Typography>
+                      </Box>
+                    )}
 
                   <Box sx={{ textAlign: "center" }}>
                     <Logo to="/dashboard" style={{ fontSize: 45 }}>
@@ -311,6 +312,22 @@ const Dashboard = () => {
                 />
               </Routes>
             </Box>
+          </Box>
+
+          <Box
+            sx={{
+              textAlign: "center",
+              mt: 3,
+              backgroundColor: "#1f2833",
+              p: 1,
+            }}
+          >
+            <Logo to="/dashboard" style={{ color: "#66fcf1", fontSize: 20 }}>
+              MauTutorz
+            </Logo>
+            <Typography sx={{ color: "#fff", mt: 0.5 }}>
+              All rights reserved
+            </Typography>
           </Box>
         </>
       )}
