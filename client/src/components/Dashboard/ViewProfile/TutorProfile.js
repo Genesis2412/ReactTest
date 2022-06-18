@@ -46,6 +46,7 @@ const TutorProfile = (props) => {
     homeNumber: tutor?.contact?.homeNumber,
     mobileNumber: tutor?.contact?.mobileNumber,
     additionalNumber: tutor?.contact?.additionalNumber,
+    yourDescription: tutor?.description,
     degree: tutor?.qualification?.degree,
     degreeInfo: tutor?.qualification?.degreeInfo,
     teacherQualification: tutor?.qualification?.teacherQualification,
@@ -86,6 +87,7 @@ const TutorProfile = (props) => {
         /^\d+$/,
         "Additional number cannot contain letters or special characters"
       ),
+    yourDescription: Yup.string().required("Description is required"),
     degree: Yup.string().required("Select Yes or No"),
     degreeInfo: Yup.mixed().when("degree", {
       is: "Yes",
@@ -125,6 +127,7 @@ const TutorProfile = (props) => {
           ? values.additionalNumber
           : false,
       },
+      description: values.yourDescription,
       qualification: {
         degree: values.degree,
         degreeInfo: values.degreeInfo ? values.degreeInfo : false,
@@ -538,6 +541,25 @@ const TutorProfile = (props) => {
                     }
                   ></Field>
                 </Grid>
+              </Grid>
+
+              <Grid item xs={12} sm="auto" md={12}>
+                <Field
+                  as={TextField}
+                  name="yourDescription"
+                  label="Your Description"
+                  fullWidth
+                  multiline
+                  inputProps={{ readOnly: editField }}
+                  error={
+                    formikProps.touched.yourDescription &&
+                    Boolean(formikProps.errors.yourDescription)
+                  }
+                  helperText={
+                    formikProps.touched.yourDescription &&
+                    formikProps.errors.yourDescription
+                  }
+                ></Field>
               </Grid>
 
               {/* Qualification */}
