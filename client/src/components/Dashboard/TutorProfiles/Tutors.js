@@ -12,12 +12,15 @@ import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import { useNavigate } from "react-router-dom";
 import { TutorEmpty } from "../../GlobalStyles";
 import TutorProfileBoard from "../../../images/NoExistBanner/TutorProfileBoard.svg";
+import Rating from "@mui/material/Rating";
 
 const Tutors = () => {
   const [profiles, setProfiles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showLoader, setShowLoader] = useState(true);
   const { userDetails } = useUserAuth();
+  const [ratings, setRatings] = useState([]);
+  var ratingsArray = [];
   const navigate = useNavigate();
   let userStorageDetails = localStorage.getItem("userStorageDetails");
   let user = JSON.parse(userStorageDetails);
@@ -46,6 +49,20 @@ const Tutors = () => {
         }
       });
       setProfiles(profileArray);
+      setShowLoader(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    setShowLoader(true);
+    const q = query(collection(db, "ratings"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const newRatings = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      setRatings(newRatings);
       setShowLoader(false);
     });
   }, []);
@@ -270,15 +287,15 @@ const Tutors = () => {
                                 " " +
                                 profile?.name?.lastName}
                             </Typography>
-
-                            <Typography sx={{ fontSize: 16, color: "#c5c6c7" }}>
-                              Teaches:
-                            </Typography>
                             {profile.classes?.map((classx, key) => {
                               return (
                                 <Box key={key}>
                                   <Typography
-                                    sx={{ fontSize: 15, color: "#66fcf1" }}
+                                    sx={{
+                                      fontSize: 15,
+                                      color: "#66fcf1",
+                                      mt: 0.5,
+                                    }}
                                   >
                                     {classx?.subject +
                                       " Grade " +
@@ -287,6 +304,35 @@ const Tutors = () => {
                                 </Box>
                               );
                             })}
+
+                            <Box>
+                              {ratings
+                                ?.filter((rating) => {
+                                  if (profile?.email === rating?.tutorEmail) {
+                                    return rating;
+                                  }
+                                })
+                                ?.map((rating) => {
+                                  ratingsArray.push(rating?.value);
+                                })}
+                              {ratingsArray.length !== 0 && (
+                                <>
+                                  <Rating
+                                    value={
+                                      ratingsArray?.reduce(
+                                        (total, val) => total + val
+                                      ) / ratingsArray?.length || 0
+                                    }
+                                    readOnly
+                                    precision={0.5}
+                                    sx={{ stroke: "#ffffff" }}
+                                  />
+                                  <Typography
+                                    sx={{ color: "yellow" }}
+                                  >{`${ratingsArray?.length} Reviews`}</Typography>
+                                </>
+                              )}
+                            </Box>
                           </Paper>
                         </Box>
                       </Link>
