@@ -88,6 +88,7 @@ const CreateClass = () => {
     description: Yup.string().required("Description is required"),
     day: Yup.string().required("Available Day One is required"),
     time: Yup.string().required("Available Time One is required"),
+    price: Yup.number("You should enter numbers only"),
   });
 
   const classId = uuidv4();
@@ -120,6 +121,7 @@ const CreateClass = () => {
         description: values?.description,
         day: values?.day,
         time: values?.time,
+        price: values?.price,
       });
 
       await updateDoc(doc(db, "tutors", user?.uid), {
@@ -279,6 +281,20 @@ const CreateClass = () => {
                     />
                   </Grid>
                 </Grid>
+
+                <Field
+                  as={TextField}
+                  name="price"
+                  label="Price"
+                  variant="filled"
+                  error={
+                    formikProps.touched.price &&
+                    Boolean(formikProps.errors.price)
+                  }
+                  helperText={
+                    formikProps.touched.price && formikProps.errors.price
+                  }
+                />
 
                 <Button
                   fullWidth
