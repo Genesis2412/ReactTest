@@ -175,9 +175,7 @@ const Register = () => {
             contact: {
               homeNumber: data.homeNumber,
               mobileNumber: data.mobileNumber,
-              additionalNumber: data.additionalNumber
-                ? data.additionalNumber
-                : false,
+              additionalNumber: data.additionalNumber,
             },
             profilePic: "",
           }).then(() => {
@@ -204,20 +202,16 @@ const Register = () => {
             contact: {
               homeNumber: data.homeNumber,
               mobileNumber: data.mobileNumber,
-              additionalNumber: data.additionalNumber
-                ? data.additionalNumber
-                : false,
+              additionalNumber: data.additionalNumber,
             },
 
             qualification: {
               degree: data.degree,
-              degreeInfo: data.degreeInfo ? data.degreeInfo : false,
+              degreeInfo: data.degreeInfo,
               teacherQualification: data.teacherQualification,
-              teacherQualificationInfo: data.teacherQualificationInfo
-                ? data.teacherQualificationInfo
-                : false,
+              teacherQualificationInfo: data.teacherQualificationInfo,
               employed: data.employed,
-              employedInfo: data.employedInfo ? data.employedInfo : false,
+              employedInfo: data.employedInfo,
             },
             profilePic: "",
             classes: [],
