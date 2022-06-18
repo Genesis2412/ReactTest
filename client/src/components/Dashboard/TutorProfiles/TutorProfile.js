@@ -8,6 +8,9 @@ import {
   serverTimestamp,
   getDocs,
   orderBy,
+  setDoc,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { useLocation } from "react-router-dom";
@@ -20,6 +23,7 @@ import {
   Button,
   Snackbar,
 } from "@mui/material";
+import Rating from "@mui/material/Rating";
 import ChatIcon from "@mui/icons-material/Chat";
 import { Logo } from "../../GlobalStyles";
 import { useUserAuth } from "../../../Context/UserAuthContext";
@@ -36,6 +40,7 @@ const TutorProfile = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [showLoader, setShowLoader] = useState(true);
+  const [rating, setRating] = useState(0);
 
   const navigate = useNavigate();
   let userStorageDetails = localStorage.getItem("userStorageDetails");
@@ -183,6 +188,52 @@ const TutorProfile = () => {
     }
   };
 
+  useEffect(() => {
+    setShowLoader(true);
+    const q = query(
+      collection(db, "ratings"),
+      where("tutorEmail", "==", email),
+      where("studentEmail", "==", userDetails?.email)
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const newRatings = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+
+      setRating(newRatings);
+      setShowLoader(false);
+    });
+  }, []);
+
+  console.log(rating[0]?.value);
+
+  const handleRating = async (newRating, tutorEmail, studentEmail) => {
+    setShowLoader(true);
+    try {
+      if (rating[0]?.id) {
+        await updateDoc(doc(db, "ratings", rating[0]?.id), {
+          value: newRating,
+        });
+      } else {
+        await setDoc(doc(collection(db, "ratings")), {
+          tutorEmail: tutorEmail,
+          studentEmail: studentEmail,
+          value: newRating,
+        });
+      }
+
+      setShowLoader(false);
+      setSnackBarOpen(true);
+      setMessage("Ratings added successfully");
+    } catch (error) {
+      console.log(error);
+      setShowLoader(false);
+      setSnackBarOpen(true);
+      setMessage("An error occurred, please try again");
+    }
+  };
+
   return (
     <>
       <LoadingSpinner stateLoader={showLoader} />
@@ -201,15 +252,39 @@ const TutorProfile = () => {
           <Box mt={5} key={profile?.id}>
             <Grid container spacing={4}>
               <Grid item md={4} xs={12}>
-                <Box display="flex" justifyContent="center" alignItems="center">
-                  <Avatar
-                    sx={{
-                      width: 250,
-                      height: 250,
-                    }}
-                    alt={profile?.name?.firstName}
-                    src={profile?.profilePic}
-                  />
+                <Box sx={{ textAlign: "center" }}>
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Avatar
+                      sx={{
+                        width: 250,
+                        height: 250,
+                      }}
+                      alt={profile?.name?.firstName}
+                      src={profile?.profilePic}
+                    />
+                  </Box>
+
+                  <Box mt={1}>
+                    <Typography>
+                      Rate{" "}
+                      {`${profile?.title} ${profile?.name?.firstName} ${profile?.name?.lastName}`}
+                    </Typography>
+                    <Rating
+                      value={rating[0]?.value || 0}
+                      precision={0.5}
+                      onChange={(event, newRating) => {
+                        handleRating(
+                          newRating,
+                          profile?.email,
+                          userDetails?.email
+                        );
+                      }}
+                    />
+                  </Box>
                 </Box>
               </Grid>
               <Grid item md={8} xs={12}>
