@@ -58,6 +58,7 @@ const TutorProfile = () => {
     backgroundColor: "#45a29e",
     color: "#fff",
     marginTop: 4,
+    display: "block",
   };
 
   const typoStyles = {
@@ -241,52 +242,76 @@ const TutorProfile = () => {
                       Description
                     </Typography>
                     <Typography sx={{ fontSize: 15 }}>
-                      Hello {userDetails?.name?.firstName}, I enjoy teaching
+                      {profile?.description ||
+                        `Hello ${userDetails?.name?.firstName}, I enjoy teaching
                       children and watching them grow. I truly believe that
                       teaching should be a fun experience as children learn
                       easily through that way and they will take interest in
-                      learning new things as well. Let's go
+                      learning new things as well. Let's go`}
                     </Typography>
                   </Paper>
-                  <Box mt={2}>
-                    <Paper sx={{ p: 2, boxShadow: 5 }}>
-                      <Typography variant="h3" sx={{ fontSize: 18 }}>
-                        Get in contact:
-                        <Typography sx={{ fontSize: 15 }}>
-                          Call me on:{" "}
-                          <a
-                            href={"tel: " + profile?.contact?.mobileNumber}
-                            style={LinkStyles}
-                          >
-                            {profile?.contact?.mobileNumber}
-                          </a>
-                        </Typography>
-                        <Typography sx={{ fontSize: 15 }}>
-                          Email me on:{" "}
-                          <a
-                            href={"mailto: " + profile.email}
-                            style={LinkStyles}
-                          >
-                            {profile.email}
-                          </a>
-                        </Typography>
-                        <Typography sx={{ fontSize: 15 }}>
-                          Chat with me:{" "}
-                          <Link to="/dashboard/chats">
-                            <ChatIcon
-                              sx={{
-                                color: "#45a29e",
-                                fontSize: 22,
-                                position: "relative",
-                                top: 8,
-                              }}
-                            />
-                          </Link>
-                        </Typography>
-                      </Typography>
-                    </Paper>
-                  </Box>
                 </Box>
+
+                <Box mt={2}>
+                  <Paper sx={{ p: 2, boxShadow: 5 }}>
+                    <Typography variant="h3" sx={{ fontSize: 18 }}>
+                      Qualification
+                    </Typography>
+                    <Typography sx={{ fontSize: 15 }}>
+                      Degree:{" "}
+                      {profile?.qualification?.degreeInfo ||
+                        `No details provided by tutor`}
+                    </Typography>
+                    <Typography sx={{ fontSize: 15 }}>
+                      Employed:{" "}
+                      {profile?.qualification?.employedInfo ||
+                        `No details provided by tutor`}
+                    </Typography>
+
+                    <Typography sx={{ fontSize: 15 }}>
+                      Qualifications:{" "}
+                      {profile?.qualification?.degreeInfo ||
+                        `No details provided by tutor`}
+                    </Typography>
+                  </Paper>
+                </Box>
+
+                <Box mt={2}>
+                  <Paper sx={{ p: 2, boxShadow: 5 }}>
+                    <Typography variant="h3" sx={{ fontSize: 18 }}>
+                      Get in contact:
+                      <Typography sx={{ fontSize: 15 }}>
+                        Call me on:{" "}
+                        <a
+                          href={"tel: " + profile?.contact?.mobileNumber}
+                          style={LinkStyles}
+                        >
+                          {profile?.contact?.mobileNumber}
+                        </a>
+                      </Typography>
+                      <Typography sx={{ fontSize: 15 }}>
+                        Email me on:{" "}
+                        <a href={"mailto: " + profile.email} style={LinkStyles}>
+                          {profile.email}
+                        </a>
+                      </Typography>
+                      <Typography sx={{ fontSize: 15 }}>
+                        Chat with me:{" "}
+                        <Link to="/dashboard/chats">
+                          <ChatIcon
+                            sx={{
+                              color: "#45a29e",
+                              fontSize: 22,
+                              position: "relative",
+                              top: 8,
+                            }}
+                          />
+                        </Link>
+                      </Typography>
+                    </Typography>
+                  </Paper>
+                </Box>
+
                 <Box mt={2}>
                   <Paper sx={{ p: 2, boxShadow: 5 }}>
                     <Typography variant="h3" sx={{ fontSize: 18 }}>
@@ -316,12 +341,18 @@ const TutorProfile = () => {
                                   }}
                                 >
                                   <Typography style={typoStyles}>
-                                    <>
-                                      {availableClass?.day}
-                                      <br />
-                                      {availableClass?.time}
-                                    </>
+                                    {availableClass?.day}
                                   </Typography>
+                                  <Typography>
+                                    {availableClass?.time}
+                                  </Typography>
+                                  {availableClass?.price && (
+                                    <Typography
+                                      sx={{ fontSize: 14, color: "#1f2833" }}
+                                    >
+                                      Rs {availableClass?.price}
+                                    </Typography>
+                                  )}
                                 </Button>
                               </Grid>
                             )}
