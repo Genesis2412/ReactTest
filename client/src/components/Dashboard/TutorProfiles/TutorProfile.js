@@ -206,8 +206,6 @@ const TutorProfile = () => {
     });
   }, []);
 
-  console.log(rating[0]?.value);
-
   const handleRating = async (newRating, tutorEmail, studentEmail) => {
     setShowLoader(true);
     try {
@@ -227,7 +225,6 @@ const TutorProfile = () => {
       setSnackBarOpen(true);
       setMessage("Ratings added successfully");
     } catch (error) {
-      console.log(error);
       setShowLoader(false);
       setSnackBarOpen(true);
       setMessage("An error occurred, please try again");
