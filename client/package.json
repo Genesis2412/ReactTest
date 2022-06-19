@@ -17,6 +17,7 @@
     "buffer": "^6.0.3",
     "ckeditor5-custom-build": "file:./ckeditor5",
     "firebase": "^9.6.5",
+    "firebase-tools": "^11.1.0",
     "formik": "^2.2.9",
     "framer-motion": "^6.2.8",
     "material-ui-popup-state": "^2.0.0",
