@@ -1,16 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
-import {
-  Box,
-  Paper,
-  Grid,
-  TextField,
-  Button,
-  Typography,
-  LinearProgress,
-  Snackbar,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import LinearProgress from "@mui/material/LinearProgress";
+import Snackbar from "@mui/material/Snackbar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import CloseIcon from "@mui/icons-material/Close";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
@@ -425,7 +423,7 @@ const CreateAssignments = () => {
     <>
       <LoadingSpinner stateLoader={showLoader} />
 
-      {userDetails.accountType === "Tutor" && (
+      {userDetails?.accountType === "Tutor" && (
         <>
           <Box sx={{ boxShadow: 5, mt: 3, p: 1 }}>
             <Box sx={{ width: "99%" }}>
@@ -801,7 +799,7 @@ const CreateAssignments = () => {
         </>
       )}
 
-      {userDetails.accountType === "Student" && (
+      {userDetails?.accountType === "Student" && (
         <ViewAssignmentsStudent classCode={classCode} />
       )}
 

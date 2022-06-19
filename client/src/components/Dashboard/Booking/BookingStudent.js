@@ -8,7 +8,11 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
-import { Box, Paper, Button, Typography, Snackbar } from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Snackbar from "@mui/material/Snackbar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
@@ -17,7 +21,7 @@ import StudentBookingBoard from "../../../images/NoExistBanner/StudentBookingBoa
 import { Link } from "react-router-dom";
 
 const BookingStudent = () => {
-  const { user, userDetails } = useUserAuth();
+  const { userDetails } = useUserAuth();
   const [userBookings, setUserBookings] = useState([]);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");

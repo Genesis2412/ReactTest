@@ -20,7 +20,7 @@ import {
   ViewProfileLink,
   AvatarMaterial,
 } from "./DrawerElements";
-import { Badge } from "@mui/material";
+import Badge from "@mui/material/Badge";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { StreamChat } from "stream-chat";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";

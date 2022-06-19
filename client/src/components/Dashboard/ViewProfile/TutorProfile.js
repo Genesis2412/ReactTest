@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { Grid, TextField, Box, MenuItem, Button } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Snackbar from "@mui/material/Snackbar";
 import {
   collection,
   query,
@@ -13,7 +19,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import CloseIcon from "@mui/icons-material/Close";
-import { CircularProgress, Snackbar } from "@mui/material";
+
 import { StreamChat } from "stream-chat";
 
 const TutorProfile = (props) => {

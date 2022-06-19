@@ -10,16 +10,14 @@ import {
   getDocs,
   orderBy,
 } from "firebase/firestore";
-import {
-  Box,
-  Paper,
-  Button,
-  Grid,
-  Snackbar,
-  Avatar,
-  Typography,
-  TextField,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import Snackbar from "@mui/material/Snackbar";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 import { Link, useLocation } from "react-router-dom";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import ChatIcon from "@mui/icons-material/Chat";

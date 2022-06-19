@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Box, Paper, Avatar, Typography, TextField } from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 import { collection, query, onSnapshot, where } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { Link } from "react-router-dom";

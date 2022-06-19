@@ -6,15 +6,13 @@ import { Chat } from "stream-chat-react";
 import { ChannelListContainer, ChannelContainer } from "./exportsFiles";
 import "stream-chat-react/dist/css/index.css";
 import "./Chats.css";
-import {
-  Box,
-  Paper,
-  Grid,
-  Button,
-  TextField,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
 import axios from "axios";
 
 const client = StreamChat.getInstance(process.env.REACT_APP_STREAM_API_KEY);

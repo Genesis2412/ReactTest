@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { useChatContext } from "stream-chat-react";
 import { MemberList } from "./exportsFiles";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, Typography, Button, Snackbar } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 
 const ViewMembers = ({ setIsViewing }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);

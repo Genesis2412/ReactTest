@@ -6,7 +6,7 @@ import {
   TeamChannelPreview,
 } from "./exportsFiles";
 import { Logo } from "../../GlobalStyles";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 
 const customChannelTeamFilter = (channels) => {
   return channels.filter((channel) => channel.type === "team");

@@ -1,16 +1,14 @@
 import { styled } from "@mui/material/styles";
-import {
-  Grid,
-  TextField,
-  Button,
-  MenuItem,
-  List,
-  ListItem,
-  ListItemText,
-  Stepper,
-  Step,
-  StepLabel,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import MenuItem from "@mui/material/MenuItem";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
 import ImageBanner from "../../images/registerBanner.png";
 
 export const BannerContainer = styled(Grid)``;

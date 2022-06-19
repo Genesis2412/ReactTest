@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import { Box, Paper, Typography, Button, Snackbar } from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 import Drawer from "./Drawer/Drawer";
 import Classes from "./Classes/Classes";
 import ClassDetails from "./Classes/ClassDetails";

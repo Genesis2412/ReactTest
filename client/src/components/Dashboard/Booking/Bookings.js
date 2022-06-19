@@ -1,6 +1,6 @@
 import React from "react";
 import { Logo } from "../../GlobalStyles";
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import { Image } from "./BookingElements";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import BookingStudent from "./BookingStudent";

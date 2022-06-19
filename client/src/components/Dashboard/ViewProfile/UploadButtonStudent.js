@@ -11,7 +11,10 @@ import {
   where,
   updateDoc,
 } from "firebase/firestore";
-import { Snackbar, IconButton, Button, CircularProgress } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { StreamChat } from "stream-chat";

@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Grid,
-  Box,
-  Paper,
-  Typography,
-  Button,
-  Snackbar,
-  TextField,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import TextField from "@mui/material/TextField";
 import { db } from "../../../firebase-config";
 import {
   doc,

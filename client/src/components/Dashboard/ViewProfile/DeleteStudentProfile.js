@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import {
-  MenuItem,
-  Box,
-  Typography,
-  Modal,
-  TextField,
-  Button,
-  Snackbar,
-  CircularProgress,
-} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import { useUserAuth } from "../../../Context/UserAuthContext";
 import { db } from "../../../firebase-config";

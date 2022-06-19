@@ -4,7 +4,7 @@ import { Link, NavLink } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import ClassIcon from "@mui/icons-material/Class";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
-import { Avatar } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
 import ChatIcon from "@mui/icons-material/Chat";
 import AddIcon from "@mui/icons-material/Add";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";

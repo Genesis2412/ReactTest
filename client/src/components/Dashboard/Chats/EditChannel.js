@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { useChatContext } from "stream-chat-react";
 import { UserList } from "./exportsFiles";
 import CloseIcon from "@mui/icons-material/Close";
-import { Box, TextField, Typography, Button, Snackbar } from "@mui/material";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 
 const ChannelNameInput = ({ channelName = "", setChannelName }) => {
   const handleChange = (event) => {

@@ -1,5 +1,9 @@
 import { styled } from "@mui/material/styles";
-import { Button, TextField, Grid, Modal, Box } from "@mui/material";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 import CopyrightIcon from "@mui/icons-material/Copyright";
 import ImageBanner from "../../images/ImageBanner.jpg";
 

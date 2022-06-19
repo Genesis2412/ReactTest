@@ -9,7 +9,11 @@ import {
   useChannelStateContext,
   useChatContext,
 } from "stream-chat-react";
-import { Box, Typography, MenuItem, Menu, Snackbar } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import Snackbar from "@mui/material/Snackbar";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PreviewIcon from "@mui/icons-material/Preview";

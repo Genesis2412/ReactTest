@@ -10,15 +10,13 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
-import {
-  Box,
-  Paper,
-  Grid,
-  Avatar,
-  Button,
-  Snackbar,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import Typography from "@mui/material/Typography";
 import CommentIcon from "@mui/icons-material/Comment";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";

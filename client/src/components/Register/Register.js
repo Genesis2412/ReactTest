@@ -6,7 +6,7 @@ import {
   Steps,
   StepLabels,
 } from "./RegisterElements";
-import { Snackbar } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
 import { Logo, BannerQuotes, LoginLink } from "../GlobalStyles";
 import PersonalDetails from "./PersonalDetails";
 import ContactDetails from "./ContactDetails";

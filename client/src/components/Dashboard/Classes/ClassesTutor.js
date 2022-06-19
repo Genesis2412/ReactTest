@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {
-  Grid,
-  Card,
-  Typography,
-  CardContent,
-  CardActionArea,
-  CardMedia,
-  CardActions,
-  Snackbar,
-  Box,
-  MenuItem,
-  Menu,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import Typography from "@mui/material/Typography";
+import CardContent from "@mui/material/CardContent";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardMedia from "@mui/material/CardMedia";
+import CardActions from "@mui/material/CardActions";
+import Snackbar from "@mui/material/Snackbar";
+import Box from "@mui/material/Box";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VideoCallIcon from "@mui/icons-material/VideoCall";

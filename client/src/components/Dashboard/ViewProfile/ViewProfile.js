@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import TutorProfile from "./TutorProfile";
 import StudentProfile from "./StudentProfile";
-import {
-  Box,
-  Avatar,
-  Paper,
-  Snackbar,
-  Stack,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Paper from "@mui/material/Paper";
+import Snackbar from "@mui/material/Snackbar";
+import Stack from "@mui/material/Stack";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import LockIcon from "@mui/icons-material/Lock";

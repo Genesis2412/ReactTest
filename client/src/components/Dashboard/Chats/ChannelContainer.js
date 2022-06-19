@@ -7,7 +7,8 @@ import {
   // TeamMessage,
   ViewMembers,
 } from "./exportsFiles";
-import { Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 
 const ChannelContainer = ({
   isCreating,

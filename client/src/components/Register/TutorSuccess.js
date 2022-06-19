@@ -11,7 +11,7 @@ import {
   SuccessListItemText,
   RegisterButton,
 } from "./RegisterElements";
-import { Alert, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 
 const TutorSuccess = (props) => {
   const handleSubmit = (values) => {

@@ -14,15 +14,13 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase-config";
 import { useLocation } from "react-router-dom";
-import {
-  Grid,
-  Box,
-  Paper,
-  Avatar,
-  Typography,
-  Button,
-  Snackbar,
-} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
 import Rating from "@mui/material/Rating";
 import ChatIcon from "@mui/icons-material/Chat";
 import { Logo } from "../../GlobalStyles";

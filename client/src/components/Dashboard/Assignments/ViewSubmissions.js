@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import {
-  Box,
-  Paper,
-  Button,
-  Typography,
-  Snackbar,
-  Grid,
-  Modal,
-  CircularProgress,
-  TextField,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Snackbar from "@mui/material/Snackbar";
+import Grid from "@mui/material/Grid";
+import Modal from "@mui/material/Modal";
+import CircularProgress from "@mui/material/CircularProgress";
+import TextField from "@mui/material/TextField";
 import { db } from "../../../firebase-config";
 import {
   doc,

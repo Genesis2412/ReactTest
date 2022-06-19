@@ -1,6 +1,9 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Paper, Typography, Grid, Tabs, Tab } from "@mui/material";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid";
 import ClassesDetailsBanner from "../../../images/ClassesDetailsBanner.jpg";
 import { NavLink, Routes, Route } from "react-router-dom";
 import Streams from "../Streams/Streams";
