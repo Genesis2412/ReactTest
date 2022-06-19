@@ -246,6 +246,35 @@ const CreateAssignments = () => {
         setMessage("Please, fill in values correctly");
         return;
       }
+    } else if (
+      !assignmentId &&
+      assignmentValue &&
+      images.length === 0 &&
+      startDate &&
+      startTime &&
+      endDate &&
+      endTime
+    ) {
+      try {
+        await addDoc(collection(db, "assignments"), {
+          title: assignmentValue,
+          classCode: classCode,
+          startDate: startDate,
+          startTime: startTime,
+          endDate: endDate,
+          endTime: endTime,
+          timestamp: serverTimestamp(),
+        });
+        setAssignmentValue("");
+        setStartDate("");
+        setStartTime("");
+        setEndDate("");
+        setEndTime("");
+      } catch (error) {
+        setSnackBarOpen(true);
+        setMessage("An error occurred, please try again");
+        return;
+      }
     } else {
       setSnackBarOpen(true);
       setMessage("Please, fill in values correctly");
