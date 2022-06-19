@@ -12,7 +12,7 @@ import {
 import { useUserAuth } from "../../Context/UserAuthContext";
 
 const Mobilebar = ({ isOpen, toggle }) => {
-  const { userDetails } = useUserAuth();
+  const { user } = useUserAuth();
   return (
     <>
       <MobilebarContainer isOpen={isOpen}>
@@ -29,7 +29,7 @@ const Mobilebar = ({ isOpen, toggle }) => {
             </MobilebarLink>
           </MobilebarMenu>
 
-          {!userDetails && (
+          {!user && (
             <>
               <MobilebtnWrapper>
                 <MobilebarRoute to="/login">Sign in</MobilebarRoute>
@@ -40,7 +40,7 @@ const Mobilebar = ({ isOpen, toggle }) => {
             </>
           )}
 
-          {userDetails && (
+          {user && (
             <MobilebtnWrapper style={{ marginTop: 10 }}>
               <MobilebarRoute to="/dashboard">My dashboard</MobilebarRoute>
             </MobilebtnWrapper>

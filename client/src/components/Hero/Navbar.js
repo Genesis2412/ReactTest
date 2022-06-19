@@ -15,7 +15,7 @@ import { useUserAuth } from "../../Context/UserAuthContext";
 import { motion } from "framer-motion";
 
 const Navbar = ({ toggle }) => {
-  const { userDetails } = useUserAuth();
+  const { user } = useUserAuth();
   return (
     <>
       <Nav
@@ -41,7 +41,7 @@ const Navbar = ({ toggle }) => {
             </NavItems>
           </NavMenu>
 
-          {!userDetails && (
+          {!user && (
             <>
               <NavBtn>
                 <NavBtnLink to="/login">Sign In</NavBtnLink>
@@ -52,7 +52,7 @@ const Navbar = ({ toggle }) => {
             </>
           )}
 
-          {userDetails && (
+          {user && (
             <NavBtn>
               <NavBtnLink to="/dashboard">My Dashboard</NavBtnLink>
             </NavBtn>
