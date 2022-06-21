@@ -60,33 +60,36 @@ const Dashboard = () => {
   useEffect(() => {
     const getUserDetails = async () => {
       setShowLoader(true);
-      if (user.uid) {
-        const studentRef = doc(db, "students", user.uid);
+      if (user?.uid) {
+        const studentRef = doc(db, "students", user?.uid);
         const studentSnap = await getDoc(studentRef);
         if (studentSnap.exists()) {
-          const unsub = onSnapshot(doc(db, "students", user.uid), (doc) => {
+          const unsub = onSnapshot(doc(db, "students", user?.uid), (doc) => {
             if (doc) {
               setUserDetails(doc.data());
               localStorage.setItem(
                 "userStorageDetails",
                 JSON.stringify(doc.data())
               );
-              getStudentBookings(doc.data().email);
+              getStudentBookings(doc?.data()?.email);
             }
             setShowLoader(false);
           });
         } else {
-          const unsub = onSnapshot(doc(db, "tutors", user.uid), async (doc) => {
-            if (doc) {
-              setUserDetails(doc.data());
-              localStorage.setItem(
-                "userStorageDetails",
-                JSON.stringify(doc.data())
-              );
-              getTutorBookings(doc.data().email);
+          const unsub = onSnapshot(
+            doc(db, "tutors", user?.uid),
+            async (doc) => {
+              if (doc) {
+                setUserDetails(doc.data());
+                localStorage.setItem(
+                  "userStorageDetails",
+                  JSON.stringify(doc.data())
+                );
+                getTutorBookings(doc?.data()?.email);
+              }
+              setShowLoader(false);
             }
-            setShowLoader(false);
-          });
+          );
         }
       }
     };
@@ -102,7 +105,7 @@ const Dashboard = () => {
         where("status", "==", "Pending")
       ),
       (querySnapshot) => {
-        setBookingCount(querySnapshot.docs.length);
+        setBookingCount(querySnapshot?.docs?.length);
       }
     );
   };
