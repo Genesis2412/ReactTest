@@ -71,25 +71,25 @@ const DeleteTutorProfile = () => {
       setLoading(true);
       await reauthenticateWithCredential(user, credential)
         .then(async () => {
-          try {
-            await deleteSubmittedAssignments();
-            await deleteAssignments();
-            await deleteAnnouncements();
-            await deleteBookings();
-            await deleteJoinedClasses();
-            await deleteCreatedClasses();
-            await deleteDoc(doc(db, "tutors", user?.uid));
-            await deleteUser(user);
-            await deleteUserChat();
-
-            window.localStorage.removeItem("userStorageDetails");
+          await Promise.all([
+            await deleteSubmittedAssignments(),
+            await deleteAssignments(),
+            await deleteAnnouncements(),
+            await deleteBookings(),
+            await deleteJoinedClasses(),
+            await deleteCreatedClasses(),
+            await deleteDoc(doc(db, "tutors", user?.uid)),
+            await deleteUserChat(),
+          ]).then(async () => {
+            await deleteUser(user).catch((err) => {
+              setSnackBarOpen(true);
+              setMessage("An error occurred, please try again");
+              setLoading(false);
+            });
             navigate("/");
+            window.localStorage.removeItem("userStorageDetails");
             setLoading(false);
-          } catch (error) {
-            setSnackBarOpen(true);
-            setMessage("An error occurred, please try again");
-            setLoading(false);
-          }
+          });
         })
         .catch((err) => {
           if (err.message.includes("auth/wrong-password")) {
@@ -240,6 +240,23 @@ const DeleteTutorProfile = () => {
 
     dataArray.map((values) => {
       return deleteDoc(doc(db, "createdClasses", values));
+    });
+  };
+
+  // delete ratings
+  const deleteRatings = async () => {
+    const dataArray = [];
+    const q = query(
+      collection(db, "ratings"),
+      where("tutorEmail", "==", userDetails?.email)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      dataArray.push(doc.id);
+    });
+
+    dataArray.map((values) => {
+      return deleteDoc(doc(db, "ratings", values));
     });
   };
 

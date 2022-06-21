@@ -71,22 +71,29 @@ const DeleteStudentProfile = () => {
       setLoading(true);
       await reauthenticateWithCredential(user, credential)
         .then(async () => {
-          try {
-            await deleteSubmittedAssignments();
-            await deleteBookings();
-            await deleteJoinedClasses();
-            await deleteDoc(doc(db, "students", user?.uid));
-            await deleteUserChat();
-            await deleteUser(user);
-
-            window.localStorage.removeItem("userStorageDetails");
-            navigate("/");
-            setLoading(false);
-          } catch (error) {
-            setSnackBarOpen(true);
-            setMessage("An error occurred, please try again");
-            setLoading(false);
-          }
+          await Promise.all([
+            await deleteSubmittedAssignments(),
+            await deleteBookings(),
+            await deleteJoinedClasses(),
+            await deleteRatings(),
+            await deleteDoc(doc(db, "students", user?.uid)),
+            await deleteUserChat(),
+          ])
+            .then(async () => {
+              await deleteUser(user).catch((err) => {
+                setSnackBarOpen(true);
+                setMessage("An error occurred, please try again");
+                setLoading(false);
+              });
+              navigate("/");
+              window.localStorage.removeItem("userStorageDetails");
+              setLoading(false);
+            })
+            .catch((err) => {
+              setSnackBarOpen(true);
+              setMessage("An error occurred, please try again");
+              setLoading(false);
+            });
         })
         .catch((err) => {
           if (err.message.includes("auth/wrong-password")) {
@@ -150,6 +157,23 @@ const DeleteStudentProfile = () => {
 
     dataArray.map((values) => {
       return deleteDoc(doc(db, "joinedClasses", values));
+    });
+  };
+
+  // delete ratings
+  const deleteRatings = async () => {
+    const dataArray = [];
+    const q = query(
+      collection(db, "ratings"),
+      where("studentEmail", "==", userDetails?.email)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      dataArray.push(doc.id);
+    });
+
+    dataArray.map((values) => {
+      return deleteDoc(doc(db, "ratings", values));
     });
   };
 
