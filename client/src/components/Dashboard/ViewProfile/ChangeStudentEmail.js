@@ -75,13 +75,29 @@ const ChangeStudentEmail = () => {
           const credential = EmailAuthProvider.credential(user.email, password);
           await reauthenticateWithCredential(user, credential)
             .then(async () => {
-              await updateSubmittedAssignments(email);
-              await updateBookings(email);
-              await updateJoinedClasses(email);
-              await updateProfile(email);
-              await updateStreamEmail(email);
               await updateEmail(user, email)
-                .then(() => {
+                .then(async () => {
+                  await Promise.all([
+                    updateSubmittedAssignments(email),
+                    updateBookings(email),
+                    updateJoinedClasses(email),
+                    updateRatings(email),
+                    updateProfile(email),
+                    updateStreamEmail(email),
+                  ])
+                    .then(() => {
+                      setSnackBarOpen(true);
+                      setMessage("Email changed successfully");
+                      setLoading(false);
+                      setPassword("");
+                      setEmail("");
+                    })
+                    .catch((err) => {
+                      setSnackBarOpen(true);
+                      setMessage("Incorrect Password!");
+                      setLoading(false);
+                    });
+
                   setSnackBarOpen(true);
                   setMessage("Email changed successfully");
                   setLoading(false);
@@ -90,7 +106,7 @@ const ChangeStudentEmail = () => {
                 })
                 .catch((error) => {
                   setSnackBarOpen(true);
-                  setMessage("An error occurred, please try again");
+                  setMessage("Email already taken!");
                   setLoading(false);
                 });
             })
@@ -179,6 +195,26 @@ const ChangeStudentEmail = () => {
     dataArray.map(async (values) => {
       const joinedRef = doc(db, "joinedClasses", values);
       await updateDoc(joinedRef, {
+        studentEmail: newEmail,
+      });
+    });
+  };
+
+  // updateRatings
+  const updateRatings = async (newEmail) => {
+    const dataArray = [];
+    const q = query(
+      collection(db, "ratings"),
+      where("studentEmail", "==", userDetails?.email)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      dataArray.push(doc.id);
+    });
+
+    dataArray.map(async (values) => {
+      const ratingRef = doc(db, "ratings", values);
+      await updateDoc(ratingRef, {
         studentEmail: newEmail,
       });
     });

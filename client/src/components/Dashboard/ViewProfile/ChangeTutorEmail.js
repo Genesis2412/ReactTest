@@ -74,22 +74,32 @@ const ChangeTutorEmail = () => {
           const credential = EmailAuthProvider.credential(user.email, password);
           await reauthenticateWithCredential(user, credential)
             .then(async () => {
-              await updateBookings(email);
-              await updateJoinedClasses(email);
-              await updateCreatedClasses(email);
-              await updateProfile(email);
-              await updateStreamEmail(email);
               await updateEmail(user, email)
-                .then(() => {
-                  setSnackBarOpen(true);
-                  setMessage("Email changed successfully");
-                  setLoading(false);
-                  setPassword("");
-                  setEmail("");
+                .then(async () => {
+                  await Promise.all([
+                    updateBookings(email),
+                    updateJoinedClasses(email),
+                    updateCreatedClasses(email),
+                    updateRatings(email),
+                    updateProfile(email),
+                    updateStreamEmail(email),
+                  ])
+                    .then(() => {
+                      setSnackBarOpen(true);
+                      setMessage("Email changed successfully");
+                      setLoading(false);
+                      setPassword("");
+                      setEmail("");
+                    })
+                    .catch((err) => {
+                      setSnackBarOpen(true);
+                      setMessage("Incorrect Password!");
+                      setLoading(false);
+                    });
                 })
                 .catch((error) => {
                   setSnackBarOpen(true);
-                  setMessage("An error occurred, please try again");
+                  setMessage("Email already taken!");
                   setLoading(false);
                 });
             })
@@ -178,6 +188,26 @@ const ChangeTutorEmail = () => {
     dataArray.map(async (values) => {
       const joinedRef = doc(db, "joinedClasses", values);
       await updateDoc(joinedRef, {
+        tutorEmail: newEmail,
+      });
+    });
+  };
+
+  // updateRatings
+  const updateRatings = async (newEmail) => {
+    const dataArray = [];
+    const q = query(
+      collection(db, "ratings"),
+      where("tutorEmail", "==", userDetails?.email)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      dataArray.push(doc.id);
+    });
+
+    dataArray.map(async (values) => {
+      const ratingRef = doc(db, "ratings", values);
+      await updateDoc(ratingRef, {
         tutorEmail: newEmail,
       });
     });
