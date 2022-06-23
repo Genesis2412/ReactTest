@@ -6,13 +6,22 @@ const mg = mailgun({
 });
 
 const sendEmail = async (req, res) => {
-  const { from, to, subject, text, html } = req.body;
-  const data = { from: from, to: to, subject: subject, text: text, html: html };
+  const { from, to, subject, html } = req.body;
+
+  console.log(req.body);
+
+  const data = {
+    from: from,
+    to: to,
+    subject: subject,
+    html: html,
+  };
 
   try {
     await mg.messages().send(data);
     res.status(200).json({ message: "Email sent" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: error });
   }
 };
