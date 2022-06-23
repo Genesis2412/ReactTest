@@ -6,8 +6,8 @@ const mg = mailgun({
 });
 
 const sendEmail = async (req, res) => {
-  const { from, to, subject, text } = req.body;
-  const data = { from: from, to: to, subject: subject, text: text };
+  const { from, to, subject, text, html } = req.body;
+  const data = { from: from, to: to, subject: subject, text: text, html: html };
 
   try {
     await mg.messages().send(data);
