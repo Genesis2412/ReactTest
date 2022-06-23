@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/auth.js");
+const mailRoutes = require("./routes/mailer.js");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,5 +17,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/mail", mailRoutes);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
