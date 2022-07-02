@@ -46,6 +46,7 @@ import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import moment from "moment";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
+import axios from "axios";
 
 const CreateAssignments = () => {
   const [images, setImages] = useState([]);
@@ -57,7 +58,7 @@ const CreateAssignments = () => {
   const fileInputRef = useRef();
   const [progress, setProgress] = useState(0);
   const location = useLocation();
-  const { classCode } = location.state;
+  const { classCode, classSubject, classGrade } = location.state;
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [assignmentId, setAssignmentId] = useState("");
@@ -136,6 +137,13 @@ const CreateAssignments = () => {
               status: "Not Submitted",
               marks: "Not yet posted",
             });
+            await sendEmail(
+              joinedStudent?.studentFirstName,
+              joinedStudent.studentEmail,
+              assignmentValue,
+              endDate,
+              endTime
+            );
           });
         }
       } catch (error) {
@@ -254,7 +262,7 @@ const CreateAssignments = () => {
       endTime
     ) {
       try {
-        await addDoc(collection(db, "assignments"), {
+        const docRef = await addDoc(collection(db, "assignments"), {
           title: assignmentValue,
           classCode: classCode,
           startDate: startDate,
@@ -263,6 +271,31 @@ const CreateAssignments = () => {
           endTime: endTime,
           timestamp: serverTimestamp(),
         });
+
+        if (joinedStudents?.length !== 0 && assignmentId === "") {
+          joinedStudents.map(async (joinedStudent) => {
+            await setDoc(doc(collection(db, "submittedAssignments")), {
+              classCode: classCode,
+              studentFirstName: joinedStudent?.studentFirstName,
+              studentLastName: joinedStudent?.studentLastName,
+              studentEmail: joinedStudent?.studentEmail,
+              assignmentCode: docRef.id,
+              submittedFileName: [],
+              submittedFileUrl: [],
+              submittedTimestamp: "",
+              status: "Not Submitted",
+              marks: "Not yet posted",
+            });
+            await sendEmail(
+              joinedStudent?.studentFirstName,
+              joinedStudent.studentEmail,
+              assignmentValue,
+              endDate,
+              endTime
+            );
+          });
+        }
+
         setAssignmentValue("");
         setStartDate("");
         setStartTime("");
@@ -278,6 +311,52 @@ const CreateAssignments = () => {
       setMessage("Please, fill in values correctly");
       return;
     }
+  };
+
+  const sendEmail = async (
+    studentName,
+    studentEmail,
+    assignmentDetails,
+    endDate,
+    endTime
+  ) => {
+    const from = userDetails?.email;
+    const to = studentEmail;
+    const subject = "New Assignment: " + classSubject + ", Grade " + classGrade;
+
+    var tutorName =
+      userDetails?.title +
+      " " +
+      userDetails?.name?.firstName +
+      " " +
+      userDetails?.name?.lastName;
+    var studentName = studentName;
+    var assignmentDetails = assignmentDetails;
+    var className = classSubject + ", " + classGrade;
+    var submissionDate = endDate + ", " + endTime;
+
+    var html =
+      "<div style='display: block;margin-left: auto;margin-right: auto;width: 80%;'>" +
+      "<div style='color: #000; padding: 5px; background-color: #c5c6c7; border-radius: 5px; box-shadow: 5px  5px 5px 5px #888888;text-align: center;font-family: Helvetica;'>" +
+      "<a style='font-size: 2.0rem;font-family: Kaushan Script,cursive;color: #000;font-weight: bold;text-decoration: none;cursor: pointer;' href='www.youtube.com'>MauTutorz</a>" +
+      `<p style='font-size: 15px'>Hi ${studentName}</p>` +
+      `<p style='margin-top:15px'>${tutorName} posted a new assignment in ${className}.</p>` +
+      `<p style='text-align:left; padding-left:10px; margin-top:10px'>${assignmentDetails}</p>` +
+      `<p style='text-align:left; padding-left:10px; margin-top:10px'>Submission Date: <span style='color:#008AB6'>${submissionDate}</span></p>` +
+      "<div style='padding-top: 10px;margin-top:15px'><a href='www.youtube.com' style='text-decoration: none; border: 2px solid #45a29e; padding: 2px 5px 2px 5px;border-radius: 20px'>Follow here</a></div>" +
+      "<p style='margin-top:15px'>Contact your tutor for more detail</p>" +
+      "<p style='margin-top:10px'>This is a MauTutorz generated email.</div>" +
+      "</div>";
+    const URL = "https://maututorz.herokuapp.com/mail/sendEmail";
+
+    try {
+      await axios.post(URL, {
+        from,
+        to,
+        subject,
+        html,
+      });
+    } catch (err) {}
   };
 
   const handleUpdate = async (
