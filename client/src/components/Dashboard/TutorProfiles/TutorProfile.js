@@ -418,7 +418,11 @@ const TutorProfile = () => {
                                   </Typography>
                                   {availableClass?.price && (
                                     <Typography
-                                      sx={{ fontSize: 14, color: "#1f2833" }}
+                                      sx={{
+                                        fontSize: 14,
+                                        color: "#FFD700",
+                                        fontWeight: "bold",
+                                      }}
                                     >
                                       Rs {availableClass?.price}
                                     </Typography>
