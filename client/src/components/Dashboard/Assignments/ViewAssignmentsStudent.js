@@ -651,6 +651,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                                 textDecoration: "none",
                                                 color: "#45a29e",
                                                 fontWeight: "bold",
+                                                marginRight: 5,
                                               }}
                                               href={
                                                 submittedAssignment
