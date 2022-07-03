@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import Tooltip from "@mui/material/Tooltip";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -519,21 +520,23 @@ const Streams = () => {
                               >
                                 <Paper sx={{ p: 1 }}>
                                   {userDetails?.accountType === "Tutor" && (
-                                    <RemoveCircleOutlineIcon
-                                      sx={{
-                                        color: "red",
-                                        fontSize: 20,
-                                        float: "right",
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() =>
-                                        handleObjectDelete(
-                                          showFile.id,
-                                          showFilesName,
-                                          showFile.fileUrl[index]
-                                        )
-                                      }
-                                    />
+                                    <Tooltip title="Delete">
+                                      <RemoveCircleOutlineIcon
+                                        sx={{
+                                          color: "red",
+                                          fontSize: 20,
+                                          float: "right",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() =>
+                                          handleObjectDelete(
+                                            showFile.id,
+                                            showFilesName,
+                                            showFile.fileUrl[index]
+                                          )
+                                        }
+                                      />
+                                    </Tooltip>
                                   )}
                                   <a
                                     href={showFile.fileUrl[index]}

@@ -9,6 +9,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Snackbar from "@mui/material/Snackbar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "@mui/material/Tooltip";
 import CloseIcon from "@mui/icons-material/Close";
 import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
@@ -766,21 +767,23 @@ const CreateAssignments = () => {
                                               p: 1,
                                             }}
                                           >
-                                            <RemoveCircleIcon
-                                              sx={{
-                                                color: "red",
-                                                fontSize: 20,
-                                                float: "right",
-                                                cursor: "pointer",
-                                              }}
-                                              onClick={() => {
-                                                handleDeleteOneObject(
-                                                  assignment.id,
-                                                  assignmentFile,
-                                                  assignment.fileUrl[key]
-                                                );
-                                              }}
-                                            />
+                                            <Tooltip title="Delete">
+                                              <RemoveCircleIcon
+                                                sx={{
+                                                  color: "red",
+                                                  fontSize: 20,
+                                                  float: "right",
+                                                  cursor: "pointer",
+                                                }}
+                                                onClick={() => {
+                                                  handleDeleteOneObject(
+                                                    assignment.id,
+                                                    assignmentFile,
+                                                    assignment.fileUrl[key]
+                                                  );
+                                                }}
+                                              />
+                                            </Tooltip>
                                             <Box
                                               sx={{
                                                 display: "flex",
