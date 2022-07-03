@@ -72,20 +72,19 @@ const BookingTutor = () => {
     return classCode;
   };
 
-  const getAssignmentCode = async (subject, grade) => {
+  const getAssignmentCode = async (classCode) => {
     const assignmentCode = [];
 
-    getClassCode(subject, grade).then(async (classCode) => {
-      const q = query(
-        collection(db, "assignments"),
-        where("classCode", "==", classCode)
-      );
-      const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-        assignmentCode.push(doc.id);
-      });
+    const q = query(
+      collection(db, "assignments"),
+      where("classCode", "==", classCode)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      assignmentCode.push(doc.id);
     });
-    setAssignmentCodes(assignmentCode);
+
+    return assignmentCode;
   };
 
   const addToClass = async (
@@ -101,6 +100,7 @@ const BookingTutor = () => {
   ) => {
     let confirmAction = window.confirm("Are you sure to add this student?");
     if (confirmAction) {
+      setShowLoader(true);
       try {
         getClassCode(subject, grade).then(async (classCode) => {
           const joinedRef = collection(db, "joinedClasses");
@@ -124,20 +124,23 @@ const BookingTutor = () => {
             studentProfilePic: studentProfilePic,
           });
 
-          await getAssignmentCode(subject, grade).then(async () => {
-            if (assignmentCodes.length !== 0) {
-              assignmentCodes?.map(async (assignmentCode) => {
+          await getAssignmentCode(classCode).then(async (assignmentCode) => {
+            if (assignmentCode.length !== 0) {
+              assignmentCode?.map(async (assignmentCodei) => {
                 await setDoc(doc(collection(db, "submittedAssignments")), {
                   classCode: classCode,
                   studentFirstName: studentFirstName,
                   studentLastName: studentLastName,
                   studentEmail: studentEmail,
-                  assignmentCode: assignmentCode,
+                  assignmentCode: assignmentCodei,
                   submittedFileName: [],
                   submittedFileUrl: [],
                   submittedTimestamp: "",
                   status: "Not Submitted",
-                  marks: "Not yet posted",
+                  marks: "",
+                  remarks: "",
+                  correctedFileName: [],
+                  correctedUrl: [],
                 });
               });
             }
@@ -151,6 +154,7 @@ const BookingTutor = () => {
           setMessage("Added to Class");
         });
       } catch (err) {
+        setShowLoader(false);
         setSnackBarOpen(true);
         setMessage("An error occurred, please try again");
       }
@@ -180,6 +184,7 @@ const BookingTutor = () => {
   return (
     <>
       <LoadingSpinner stateLoader={showLoader} />
+
       {!showLoader && userBookings.length !== 0 && (
         <Box>
           {userBookings?.map((bookings, key) => {
