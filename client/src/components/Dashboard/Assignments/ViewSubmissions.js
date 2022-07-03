@@ -263,7 +263,7 @@ const ViewSubmissions = () => {
       await handleUpload(submissionDetails[0], submissionDetails[1]);
     }
 
-    if (marks.length === 0 || remarks.length === 0 || images.length === 0) {
+    if (marks.length === 0 && remarks.length === 0 && images.length === 0) {
       setSnackBarOpen(true);
       setMessage("Please, fill your required fields");
       setLoading(false);
@@ -453,6 +453,12 @@ const ViewSubmissions = () => {
                             }
                           }
                         )}
+                        {submittedAssignment?.submittedFileName?.length ===
+                          0 && (
+                          <Typography sx={{ color: "#8C0800" }}>
+                            No Submitted Files
+                          </Typography>
+                        )}
                       </Grid>
 
                       <Grid item md={2} xs={6}>
@@ -499,14 +505,15 @@ const ViewSubmissions = () => {
                             )}
                           </Box>
                         )}
-                        {submittedAssignment?.marks?.length === 0 && (
+                        {!submittedAssignment?.marks && (
                           <Typography>Not yet posted</Typography>
                         )}
                       </Grid>
 
                       <Grid item md={2} xs={6}>
                         <Typography style={HeaderStyle}>Remarks</Typography>
-                        {submittedAssignment?.remarks && (
+
+                        {submittedAssignment?.remarks?.length !== 0 && (
                           <Box sx={{ display: "inline-flex" }}>
                             <Typography>
                               {submittedAssignment?.remarks}
@@ -574,9 +581,8 @@ const ViewSubmissions = () => {
                               );
                             }
                           )}
-                          {!submittedAssignment?.correctedFileName && (
-                            <Typography>No files posted yet</Typography>
-                          )}
+                          {submittedAssignment?.correctedFileName?.length ===
+                            0 && <Typography>No files posted yet</Typography>}
                         </Typography>
                       </Grid>
 
