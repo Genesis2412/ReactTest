@@ -437,7 +437,9 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                 <Typography>
                                   Your Marks:{" "}
                                   <span style={{ color: "blue" }}>
-                                    {submittedAssignment.marks}
+                                    {submittedAssignment?.marks
+                                      ? submittedAssignment?.marks
+                                      : "Not yet posted"}
                                   </span>
                                 </Typography>
                               );
@@ -594,68 +596,77 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                               }}
                               key={index}
                             >
-                              <Box sx={{ p: 1 }}>
-                                <Typography
-                                  sx={{ color: "#0b0c10", fontWeight: "bold" }}
-                                >
-                                  Tutor's Feedback
-                                </Typography>
-
-                                {submittedAssignment?.remarks?.length !== 0 && (
-                                  <Typography
-                                    sx={{ mt: 1, pl: 1, color: "#1f2833" }}
-                                  >
-                                    Your remarks:{" "}
-                                    <span style={{ color: "#006DFF" }}>
-                                      {submittedAssignment?.remarks}
-                                    </span>
-                                  </Typography>
-                                )}
-
-                                {submittedAssignment?.marks?.length !== 0 && (
+                              {(submittedAssignment?.remarks?.length !== 0 ||
+                                submittedAssignment?.marks?.length !== 0 ||
+                                submittedAssignment?.correctedFileName
+                                  ?.length !== 0) && (
+                                <Box sx={{ p: 1 }}>
                                   <Typography
                                     sx={{
-                                      mt: 1,
-                                      pl: 1,
-                                      color: "#1f2833",
+                                      color: "#0b0c10",
+                                      fontWeight: "bold",
                                     }}
                                   >
-                                    Your marks:{" "}
-                                    <span style={{ color: "#0051BD" }}>
-                                      {submittedAssignment?.marks}
-                                    </span>
+                                    Tutor's Feedback
                                   </Typography>
-                                )}
 
-                                {submittedAssignment?.correctedFileName
-                                  ?.length !== 0 && (
-                                  <Typography
-                                    sx={{ mt: 1, pl: 1, color: "#1f2833" }}
-                                  >
-                                    Corrections:{" "}
-                                    {submittedAssignment?.correctedFileName?.map(
-                                      (fileName, valIndex) => {
-                                        return (
-                                          <a
-                                            style={{
-                                              textDecoration: "none",
-                                              color: "#45a29e",
-                                              fontWeight: "bold",
-                                            }}
-                                            href={
-                                              submittedAssignment
-                                                ?.correctedFileUrl[valIndex]
-                                            }
-                                            target={"_blank"}
-                                          >
-                                            {fileName}
-                                          </a>
-                                        );
-                                      }
-                                    )}
-                                  </Typography>
-                                )}
-                              </Box>
+                                  {submittedAssignment?.remarks?.length !==
+                                    0 && (
+                                    <Typography
+                                      sx={{ mt: 1, pl: 1, color: "#1f2833" }}
+                                    >
+                                      Your remarks:{" "}
+                                      <span style={{ color: "#006DFF" }}>
+                                        {submittedAssignment?.remarks}
+                                      </span>
+                                    </Typography>
+                                  )}
+
+                                  {submittedAssignment?.marks?.length !== 0 && (
+                                    <Typography
+                                      sx={{
+                                        mt: 1,
+                                        pl: 1,
+                                        color: "#1f2833",
+                                      }}
+                                    >
+                                      Your marks:{" "}
+                                      <span style={{ color: "#0051BD" }}>
+                                        {submittedAssignment?.marks}
+                                      </span>
+                                    </Typography>
+                                  )}
+
+                                  {submittedAssignment?.correctedFileName
+                                    ?.length !== 0 && (
+                                    <Typography
+                                      sx={{ mt: 1, pl: 1, color: "#1f2833" }}
+                                    >
+                                      Corrections:{" "}
+                                      {submittedAssignment?.correctedFileName?.map(
+                                        (fileName, valIndex) => {
+                                          return (
+                                            <a
+                                              style={{
+                                                textDecoration: "none",
+                                                color: "#45a29e",
+                                                fontWeight: "bold",
+                                              }}
+                                              href={
+                                                submittedAssignment
+                                                  ?.correctedFileUrl[valIndex]
+                                              }
+                                              target={"_blank"}
+                                            >
+                                              {fileName}
+                                            </a>
+                                          );
+                                        }
+                                      )}
+                                    </Typography>
+                                  )}
+                                </Box>
+                              )}
                             </Box>
                           );
                         })}
