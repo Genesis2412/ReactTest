@@ -47,7 +47,6 @@ import moment from "moment";
 import LoadingSpinner from "../../LoadingSpinner/LoadingSpinner";
 import StreamBoard from "../../../images/NoExistBanner/StreamBoard.svg";
 import { StreamEmpty } from "../../GlobalStyles";
-import axios from "axios";
 
 const Streams = () => {
   const location = useLocation();
@@ -63,7 +62,6 @@ const Streams = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showFiles, setShowFiles] = useState([]);
-  const [joinedStudents, setJoinedStudents] = useState([]);
   const [streamCode, setStreamCode] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showLoader, setShowLoader] = useState(true);
@@ -161,15 +159,6 @@ const Streams = () => {
                   return;
                 }
               });
-              if (joinedStudents?.length !== 0) {
-                joinedStudents.map(async (joinedStudent) => {
-                  await sendEmail(
-                    joinedStudent?.studentFirstName,
-                    joinedStudent.studentEmail,
-                    announcementValue
-                  );
-                });
-              }
             }
           );
         })
@@ -194,16 +183,6 @@ const Streams = () => {
             timestamp: serverTimestamp(),
             fileName: [],
             fileUrl: [],
-          }).then(() => {
-            if (joinedStudents?.length !== 0 && streamCode === "") {
-              joinedStudents.map(async (joinedStudent) => {
-                await sendEmail(
-                  joinedStudent?.studentFirstName,
-                  joinedStudent.studentEmail,
-                  announcementValue
-                );
-              });
-            }
           });
         }
         setSnackBarOpen(true);
@@ -221,43 +200,6 @@ const Streams = () => {
       setMessage("Please enter Announcement");
       return;
     }
-  };
-
-  const sendEmail = async (studentName, studentEmail, announcementDetails) => {
-    const from = userDetails?.email;
-    const to = studentEmail;
-    const subject = "New Stream: " + classSubject + ", Grade " + classGrade;
-
-    var tutorName =
-      userDetails?.title +
-      " " +
-      userDetails?.name?.firstName +
-      " " +
-      userDetails?.name?.lastName;
-    var studentName = studentName;
-    var className = classSubject + ", " + classGrade;
-
-    var html =
-      "<div style='display: block;margin-left: auto;margin-right: auto;width: 80%;'>" +
-      "<div style='color: #000; padding: 5px; background-color: #c5c6c7; border-radius: 5px; box-shadow: 5px  5px 5px 5px #888888;text-align: center;font-family: Helvetica;'>" +
-      "<a style='font-size: 2.0rem;font-family: Kaushan Script,cursive;color: #000;font-weight: bold;text-decoration: none;cursor: pointer;' href='www.youtube.com'>MauTutorz</a>" +
-      `<p style='font-size: 15px'>Hi ${studentName}</p>` +
-      `<p style='margin-top:15px'>${tutorName} posted a new stream in ${className}.</p>` +
-      `<p style='text-align:left; padding-left:10px; margin-top:10px'>${announcementDetails}</p>` +
-      "<div style='padding-top: 10px;margin-top:15px'><a href='www.youtube.com' style='text-decoration: none; border: 2px solid #45a29e; padding: 2px 5px 2px 5px;border-radius: 20px'>Follow here</a></div>" +
-      "<p style='margin-top:15px'>Contact your tutor for more detail</p>" +
-      "<p style='margin-top:10px'>This is a MauTutorz generated email.</div>" +
-      "</div>";
-    const URL = "https://maututorz.herokuapp.com/mail/sendEmail";
-
-    try {
-      await axios.post(URL, {
-        from,
-        to,
-        subject,
-        html,
-      });
-    } catch (err) {}
   };
 
   // Delete a stream
@@ -344,23 +286,6 @@ const Streams = () => {
       setShowFiles(newFiles);
       setShowLoader(false);
     });
-  }, []);
-
-  useEffect(() => {
-    const getJoinedStudents = async () => {
-      const q = query(
-        collection(db, "joinedClasses"),
-        where("classCode", "==", classCode)
-      );
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const data = querySnapshot.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        setJoinedStudents(data);
-      });
-    };
-    getJoinedStudents();
   }, []);
 
   return (
