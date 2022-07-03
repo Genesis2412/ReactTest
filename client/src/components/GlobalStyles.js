@@ -256,3 +256,22 @@ export const TutorBannerContainer = styled.img`
     width: 95%;
   }
 `;
+
+// error page
+export const ErrorImage = styled.img`
+  width: 25%;
+  height: auto;
+  animation: moveImage 1s infinite alternate;
+  @media screen and (max-width: 768px) {
+    width: 80%;
+  }
+
+  @keyframes moveImage {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-20px);
+    }
+  }
+`;

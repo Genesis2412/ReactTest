@@ -29,6 +29,7 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { motion } from "framer-motion";
 import { Logo, DashboardImgBanner } from "../GlobalStyles";
 import DashboardBanner from "../../images/DashboardBanner.jpeg";
+import ErrorPage from "../ErrorPage/ErrorPage";
 
 const Dashboard = () => {
   const { user, setUserDetails, userDetails, setBookingCount, verifyEmail } =
@@ -314,6 +315,7 @@ const Dashboard = () => {
                   path="classesdetails/assignments/viewsubmissions"
                   element={<ViewSubmissions />}
                 />
+                <Route path="*" element={<ErrorPage />} />
               </Routes>
             </Box>
           </Box>

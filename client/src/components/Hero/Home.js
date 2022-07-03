@@ -7,6 +7,7 @@ import HeroSection from "./HeroSelection";
 import HeroStudent from "./HeroStudent";
 import HeroTutor from "./HeroTutor";
 import { AnimatePresence } from "framer-motion";
+import ErrorPage from "../ErrorPage/ErrorPage";
 
 const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +28,7 @@ const Home = () => {
           <Route path="/select" element={<HeroSection />} />
           <Route path="/forstudent" element={<HeroStudent />} />
           <Route path="/fortutor" element={<HeroTutor />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </AnimatePresence>
     </>

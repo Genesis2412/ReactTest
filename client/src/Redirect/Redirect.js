@@ -6,6 +6,7 @@ import Login from "../components/Login/Login";
 import Register from "../components/Register/Register";
 import Dashboard from "../components/Dashboard/Dashboard";
 import Home from "../components/Hero/Home";
+import ErrorPage from "../components/ErrorPage/ErrorPage";
 
 // Testing
 import Insert from "../components/Test/Insert";
@@ -27,7 +28,7 @@ const Redirect = () => {
               </ProtectedRoute>
             }
           />
-
+          <Route path="*" element={<ErrorPage />} />
           {/* Test routes */}
           <Route path="/insert" element={<Insert />} />
           <Route path="/read" element={<Read />} />
