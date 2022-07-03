@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid";
 import Modal from "@mui/material/Modal";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
+import Tooltip from "@mui/material/Tooltip";
 import { db } from "../../../firebase-config";
 import {
   doc,
@@ -253,14 +254,18 @@ const ViewSubmissions = () => {
     setLoading(true);
     if (marks.length !== 0) {
       await addMarks(submissionDetails[0], marks);
+      setMarks("");
     }
 
     if (remarks.length !== 0) {
       await addRemarks(submissionDetails[0], remarks);
+      setRemarks("");
     }
 
     if (images.length !== 0) {
       await handleUpload(submissionDetails[0], submissionDetails[1]);
+      setImages((prevState) => []);
+      fileInputRef.current.value = "";
     }
 
     if (marks.length === 0 && remarks.length === 0 && images.length === 0) {
@@ -492,16 +497,22 @@ const ViewSubmissions = () => {
                             </Typography>
                             {submittedAssignment?.marks !==
                               "Not yet posted" && (
-                              <CloseIcon
-                                sx={{ pl: 2, color: "red", cursor: "pointer" }}
-                                onClick={() => {
-                                  deleteMarks(
-                                    submittedAssignment?.id,
-                                    submittedAssignment?.studentFirstName,
-                                    submittedAssignment?.studentLastName
-                                  );
-                                }}
-                              />
+                              <Tooltip title="Delete Marks">
+                                <CloseIcon
+                                  sx={{
+                                    pl: 2,
+                                    color: "red",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => {
+                                    deleteMarks(
+                                      submittedAssignment?.id,
+                                      submittedAssignment?.studentFirstName,
+                                      submittedAssignment?.studentLastName
+                                    );
+                                  }}
+                                />
+                              </Tooltip>
                             )}
                           </Box>
                         )}
@@ -518,16 +529,18 @@ const ViewSubmissions = () => {
                             <Typography>
                               {submittedAssignment?.remarks}
                             </Typography>
-                            <CloseIcon
-                              sx={{ pl: 2, color: "red", cursor: "pointer" }}
-                              onClick={() => {
-                                deleteRemarks(
-                                  submittedAssignment?.id,
-                                  submittedAssignment?.studentFirstName,
-                                  submittedAssignment?.studentLastName
-                                );
-                              }}
-                            />
+                            <Tooltip title="Delete Remarks">
+                              <CloseIcon
+                                sx={{ pl: 2, color: "red", cursor: "pointer" }}
+                                onClick={() => {
+                                  deleteRemarks(
+                                    submittedAssignment?.id,
+                                    submittedAssignment?.studentFirstName,
+                                    submittedAssignment?.studentLastName
+                                  );
+                                }}
+                              />
+                            </Tooltip>
                           </Box>
                         )}
                         {!submittedAssignment?.remarks && (
@@ -558,23 +571,24 @@ const ViewSubmissions = () => {
                                           {fileName}
                                         </a>
                                       </Typography>
-
-                                      <CloseIcon
-                                        sx={{
-                                          pl: 2,
-                                          color: "red",
-                                          cursor: "pointer",
-                                        }}
-                                        onClick={() => {
-                                          handleDeleteFile(
-                                            submittedAssignment?.classCode,
-                                            submittedAssignment?.id,
-                                            fileName,
-                                            submittedAssignment
-                                              ?.correctedFileUrl[key]
-                                          );
-                                        }}
-                                      />
+                                      <Tooltip title="Delete File">
+                                        <CloseIcon
+                                          sx={{
+                                            pl: 2,
+                                            color: "red",
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={() => {
+                                            handleDeleteFile(
+                                              submittedAssignment?.classCode,
+                                              submittedAssignment?.id,
+                                              fileName,
+                                              submittedAssignment
+                                                ?.correctedFileUrl[key]
+                                            );
+                                          }}
+                                        />
+                                      </Tooltip>
                                     </Box>
                                   )}
                                 </Box>

@@ -135,7 +135,10 @@ const CreateAssignments = () => {
               submittedFileUrl: [],
               submittedTimestamp: "",
               status: "Not Submitted",
-              marks: "Not yet posted",
+              marks: "",
+              remarks: "",
+              correctedFileName: [],
+              correctedUrl: [],
             });
           });
         }
