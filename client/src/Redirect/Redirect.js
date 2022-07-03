@@ -8,10 +8,6 @@ import Dashboard from "../components/Dashboard/Dashboard";
 import Home from "../components/Hero/Home";
 import ErrorPage from "../components/ErrorPage/ErrorPage";
 
-// Testing
-import Insert from "../components/Test/Insert";
-import Read from "../components/Test/Read";
-
 const Redirect = () => {
   return (
     <>
@@ -29,9 +25,6 @@ const Redirect = () => {
             }
           />
           <Route path="*" element={<ErrorPage />} />
-          {/* Test routes */}
-          <Route path="/insert" element={<Insert />} />
-          <Route path="/read" element={<Read />} />
         </Routes>
       </UserAuthContextProvider>
     </>
