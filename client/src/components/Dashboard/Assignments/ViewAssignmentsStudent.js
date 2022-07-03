@@ -259,7 +259,7 @@ const ViewAssignmentsStudent = ({ classCode }) => {
     <>
       <LoadingSpinner stateLoader={showLoader} />
 
-      {!showLoader && assignments.length !== 0 && (
+      {!showLoader && assignments?.length !== 0 && (
         <Box
           sx={{
             mt: 2,
@@ -280,8 +280,8 @@ const ViewAssignmentsStudent = ({ classCode }) => {
 
       {assignments
         ?.filter((assignment) => {
-          if (assignment.fileName.length !== 0) {
-            for (let i = 0; i < assignment.fileName.length; i++) {
+          if (assignment?.fileName?.length !== 0) {
+            for (let i = 0; i < assignment?.fileName?.length; i++) {
               if (
                 assignment.fileName[i]
                   .toLowerCase()
@@ -380,40 +380,42 @@ const ViewAssignmentsStudent = ({ classCode }) => {
 
                         <Box>
                           <Grid container item spacing={2} mt={1}>
-                            {assignment?.fileName.map((assignmentFile, key) => {
-                              return (
-                                <Grid item xs={12} md={2}>
-                                  <Paper key={key} sx={{ mt: 1, pl: 1 }}>
-                                    <Box
-                                      sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                      }}
-                                    >
-                                      <a
-                                        href={assignment.fileUrl[key]}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        style={{
-                                          textDecoration: "none",
-                                          color: "#000",
+                            {assignment?.fileName?.map(
+                              (assignmentFile, key) => {
+                                return (
+                                  <Grid item xs={12} md={2}>
+                                    <Paper key={key} sx={{ mt: 1, pl: 1 }}>
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
                                         }}
                                       >
-                                        <Box p={1}>
-                                          <ShowIcons
-                                            fileName={assignmentFile}
-                                          />
-                                          <Typography sx={{ fontSize: 15 }}>
-                                            {assignmentFile}
-                                          </Typography>
-                                        </Box>
-                                      </a>
-                                    </Box>
-                                  </Paper>
-                                </Grid>
-                              );
-                            })}
+                                        <a
+                                          href={assignment.fileUrl[key]}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          style={{
+                                            textDecoration: "none",
+                                            color: "#000",
+                                          }}
+                                        >
+                                          <Box p={1}>
+                                            <ShowIcons
+                                              fileName={assignmentFile}
+                                            />
+                                            <Typography sx={{ fontSize: 15 }}>
+                                              {assignmentFile}
+                                            </Typography>
+                                          </Box>
+                                        </a>
+                                      </Box>
+                                    </Paper>
+                                  </Grid>
+                                );
+                              }
+                            )}
                           </Grid>
                         </Box>
                       </Box>
@@ -625,31 +627,34 @@ const ViewAssignmentsStudent = ({ classCode }) => {
                                   </Typography>
                                 )}
 
-                                <Typography
-                                  sx={{ mt: 1, pl: 1, color: "#1f2833" }}
-                                >
-                                  Corrections:{" "}
-                                  {submittedAssignment?.correctedFileName?.map(
-                                    (fileName, valIndex) => {
-                                      return (
-                                        <a
-                                          style={{
-                                            textDecoration: "none",
-                                            color: "#45a29e",
-                                            fontWeight: "bold",
-                                          }}
-                                          href={
-                                            submittedAssignment
-                                              ?.correctedFileUrl[valIndex]
-                                          }
-                                          target={"_blank"}
-                                        >
-                                          {fileName}
-                                        </a>
-                                      );
-                                    }
-                                  )}
-                                </Typography>
+                                {submittedAssignment?.correctedFileName
+                                  ?.length !== 0 && (
+                                  <Typography
+                                    sx={{ mt: 1, pl: 1, color: "#1f2833" }}
+                                  >
+                                    Corrections:{" "}
+                                    {submittedAssignment?.correctedFileName?.map(
+                                      (fileName, valIndex) => {
+                                        return (
+                                          <a
+                                            style={{
+                                              textDecoration: "none",
+                                              color: "#45a29e",
+                                              fontWeight: "bold",
+                                            }}
+                                            href={
+                                              submittedAssignment
+                                                ?.correctedFileUrl[valIndex]
+                                            }
+                                            target={"_blank"}
+                                          >
+                                            {fileName}
+                                          </a>
+                                        );
+                                      }
+                                    )}
+                                  </Typography>
+                                )}
                               </Box>
                             </Box>
                           );

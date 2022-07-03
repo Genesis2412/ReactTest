@@ -277,6 +277,9 @@ const CreateAssignments = () => {
               submittedTimestamp: "",
               status: "Not Submitted",
               marks: "Not yet posted",
+              remarks: "Not yet posted",
+              correctedFileName: [],
+              correctedUrl: [],
             });
           });
         }
@@ -731,7 +734,9 @@ const CreateAssignments = () => {
                           >
                             <Typography variant={"h4"} sx={{ fontSize: 16 }}>
                               Due on:{" "}
-                              {assignment.endDate + ", " + assignment.endTime}
+                              <span style={{ color: "#FFD700" }}>
+                                {assignment.endDate + ", " + assignment.endTime}
+                              </span>
                             </Typography>
                           </Paper>
 
@@ -741,74 +746,78 @@ const CreateAssignments = () => {
                         </Box>
                       </Grid>
 
-                      <Grid item xs={12} md={4}>
-                        <Box sx={{ boxShadow: 3 }}>
-                          <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
-                            <Typography variant={"h4"} sx={{ fontSize: 16 }}>
-                              Attachments
-                            </Typography>
-                          </Paper>
-                          <Paper sx={{ p: 2 }}>
-                            <Grid container item spacing={2}>
-                              {assignment?.fileName?.map(
-                                (assignmentFile, key) => {
-                                  return (
-                                    <Grid item xs={12} md={6} key={key}>
-                                      <Box>
-                                        <Paper
-                                          sx={{
-                                            p: 1,
-                                          }}
-                                        >
-                                          <RemoveCircleIcon
+                      {assignment?.fileName && (
+                        <Grid item xs={12} md={4}>
+                          <Box sx={{ boxShadow: 3 }}>
+                            <Paper sx={{ p: 1, backgroundColor: "#c5c6c7" }}>
+                              <Typography variant={"h4"} sx={{ fontSize: 16 }}>
+                                Attachments
+                              </Typography>
+                            </Paper>
+                            <Paper sx={{ p: 2 }}>
+                              <Grid container item spacing={2}>
+                                {assignment?.fileName?.map(
+                                  (assignmentFile, key) => {
+                                    return (
+                                      <Grid item xs={12} md={6} key={key}>
+                                        <Box>
+                                          <Paper
                                             sx={{
-                                              color: "red",
-                                              fontSize: 20,
-                                              float: "right",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() => {
-                                              handleDeleteOneObject(
-                                                assignment.id,
-                                                assignmentFile,
-                                                assignment.fileUrl[key]
-                                              );
-                                            }}
-                                          />
-                                          <Box
-                                            sx={{
-                                              display: "flex",
-                                              justifyContent: "center",
-                                              alignItems: "center",
+                                              p: 1,
                                             }}
                                           >
-                                            <a
-                                              href={assignment.fileUrl[key]}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                              style={{
-                                                textDecoration: "none",
-                                                color: "#000",
+                                            <RemoveCircleIcon
+                                              sx={{
+                                                color: "red",
+                                                fontSize: 20,
+                                                float: "right",
+                                                cursor: "pointer",
+                                              }}
+                                              onClick={() => {
+                                                handleDeleteOneObject(
+                                                  assignment.id,
+                                                  assignmentFile,
+                                                  assignment.fileUrl[key]
+                                                );
+                                              }}
+                                            />
+                                            <Box
+                                              sx={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
                                               }}
                                             >
-                                              <ShowIcons
-                                                fileName={assignmentFile}
-                                              />
-                                              <Typography sx={{ fontSize: 15 }}>
-                                                {assignmentFile}
-                                              </Typography>
-                                            </a>
-                                          </Box>
-                                        </Paper>
-                                      </Box>
-                                    </Grid>
-                                  );
-                                }
-                              )}
-                            </Grid>
-                          </Paper>
-                        </Box>
-                      </Grid>
+                                              <a
+                                                href={assignment.fileUrl[key]}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                style={{
+                                                  textDecoration: "none",
+                                                  color: "#000",
+                                                }}
+                                              >
+                                                <ShowIcons
+                                                  fileName={assignmentFile}
+                                                />
+                                                <Typography
+                                                  sx={{ fontSize: 15 }}
+                                                >
+                                                  {assignmentFile}
+                                                </Typography>
+                                              </a>
+                                            </Box>
+                                          </Paper>
+                                        </Box>
+                                      </Grid>
+                                    );
+                                  }
+                                )}
+                              </Grid>
+                            </Paper>
+                          </Box>
+                        </Grid>
+                      )}
                     </Grid>
                   </Paper>
                 </Box>
