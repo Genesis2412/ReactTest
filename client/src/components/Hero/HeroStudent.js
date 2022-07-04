@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -23,8 +23,15 @@ import {
   StudentChatImg,
 } from "../GlobalStyles";
 import { motion } from "framer-motion";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const HeroStudent = () => {
+  const [loaded, setLoaded] = useState({
+    imgOne: false,
+    imgTwo: false,
+    imgThree: false,
+  });
+
   return (
     <>
       <Box sx={{ mt: 20, textAlign: "center" }}>
@@ -244,17 +251,29 @@ const HeroStudent = () => {
       >
         <Box sx={{ backgroundColor: "rgba(0, 0, 0, 0.46)", p: 2 }}>
           <Typography sx={{ fontSize: 25 }}>Bookings</Typography>
-          <StudentBookingImg src={StudentBookingDiagram} alt={"picture"} />
-          <Typography sx={{ mt: 1 }}>
-            This simple booking system allow to search any tutors by Tutor name,
-            grades and subject.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Book your slot provided by your tutor at a single click.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            View all your bookings easily.
-          </Typography>
+          <StudentBookingImg
+            src={StudentBookingDiagram}
+            alt={"picture"}
+            onLoad={() => {
+              setLoaded({ imgOne: true });
+            }}
+          />
+          {loaded?.imgOne === false ? (
+            <CircularProgress color="inherit" />
+          ) : (
+            <>
+              <Typography sx={{ mt: 1 }}>
+                This simple booking system allow to search any tutors by Tutor
+                name, grades and subject.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Book your slot provided by your tutor at a single click.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                View all your bookings easily.
+              </Typography>
+            </>
+          )}
         </Box>
       </Box>
 
@@ -263,28 +282,41 @@ const HeroStudent = () => {
         <Typography sx={{ fontSize: 25 }}>
           Learning Management System
         </Typography>
-        <StudentLMSImg src={StudentLMSDiagram} alt={"picture"} />
-        <Typography sx={{ mt: 1 }}>
-          Manage multiple classes in one central destination.
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          View all your classes streams easily without unnecessary navigations.
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          Need to search for a stream? - Search by any key term you remember
-          from the stream
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          View all your classes assignments easily without unnecessary
-          navigations.
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          Need to search for an assignment? - Search by any key term you
-          remember from the assignment.
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          Submit your assignments reliably and rest back.
-        </Typography>
+        <StudentLMSImg
+          src={StudentLMSDiagram}
+          alt={"picture"}
+          onLoad={() => {
+            setLoaded({ imgTwo: true });
+          }}
+        />
+        {loaded?.imgTwo === false ? (
+          <CircularProgress color="inherit" />
+        ) : (
+          <>
+            <Typography sx={{ mt: 1 }}>
+              Manage multiple classes in one central destination.
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              View all your classes streams easily without unnecessary
+              navigations.
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              Need to search for a stream? - Search by any key term you remember
+              from the stream
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              View all your classes assignments easily without unnecessary
+              navigations.
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              Need to search for an assignment? - Search by any key term you
+              remember from the assignment.
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              Submit your assignments reliably and rest back.
+            </Typography>
+          </>
+        )}
       </Box>
 
       {/* Integrated chat system */}
@@ -301,22 +333,35 @@ const HeroStudent = () => {
       >
         <Box sx={{ backgroundColor: "rgba(0, 0, 0, 0.46)", p: 2 }}>
           <Typography sx={{ fontSize: 25 }}>Chats</Typography>
-          <StudentChatImg src={StudentChatDiagram} alt={"picture"} />
-          <Typography sx={{ mt: 1 }}>
-            Connect and chat with any tutors with our end-to-end encrypted chat
-            system.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Create groups, create direct messages.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Send emojies, gifs, files and many more.
-          </Typography>
+          <StudentChatImg
+            src={StudentChatDiagram}
+            alt={"picture"}
+            onLoad={() => {
+              setLoaded({ imgThree: true });
+            }}
+          />
+          {loaded?.imgThree === false ? (
+            <CircularProgress color="inherit" />
+          ) : (
+            <>
+              <Typography sx={{ mt: 1 }}>
+                Connect and chat with any tutors with our end-to-end encrypted
+                chat system.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Create groups, create direct messages.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Send emojies, gifs, files and many more.
+              </Typography>
+            </>
+          )}
         </Box>
       </Box>
 
       <Box sx={{ mt: 5, textAlign: "center" }}>
         <StudentBanner src={StudentJoinBanner} alt={"banner"} />
+
         <Typography sx={{ mt: 2 }}>
           Student, if you want enjoy the comfort of e-tutoring, be part of the
           MauTutorz family, Let's
