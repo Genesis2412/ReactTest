@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
@@ -30,8 +30,17 @@ import ParallaxOne from "../../images/Hero/ParallaxOne.jpg";
 import ParallaxTwo from "../../images/Hero/ParallaxTwo.jpg";
 import ParallaxThree from "../../images/Hero/ParallaxThree.jpg";
 import { motion } from "framer-motion";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const HeroTutor = () => {
+  const [loaded, setLoaded] = useState({
+    imgOne: false,
+    imgTwo: false,
+    imgThree: false,
+    imgFour: false,
+    imgFive: false,
+  });
+
   return (
     <>
       <Box sx={{ mt: 25, textAlign: "center" }}>
@@ -331,16 +340,29 @@ const HeroTutor = () => {
       >
         <Box sx={{ backgroundColor: "rgba(0, 0, 0, 0.46)", p: 2 }}>
           <Typography sx={{ fontSize: 25 }}>Bookings</Typography>
-          <TutorBookingImg src={TutorBookingDiagram} alt={"picture"} />
-          <Typography sx={{ mt: 1 }}>
-            Control the access to your classes.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Choose to accept or decline student bookings.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Students cannot join any of your classes without your authorisation.
-          </Typography>
+          <TutorBookingImg
+            src={TutorBookingDiagram}
+            alt={"picture"}
+            onLoad={() => {
+              setLoaded({ imgOne: true });
+            }}
+          />
+          {loaded?.imgOne === false ? (
+            <CircularProgress color="success" />
+          ) : (
+            <>
+              <Typography sx={{ mt: 1 }}>
+                Control the access to your classes.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Choose to accept or decline student bookings.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Students cannot join any of your classes without your
+                authorisation.
+              </Typography>
+            </>
+          )}
         </Box>
       </Box>
 
@@ -349,17 +371,30 @@ const HeroTutor = () => {
         <Typography sx={{ fontSize: 25 }}>
           Learning Management System
         </Typography>
-        <TutorLMSImg src={TutorLMSDiagram} alt={"picture"} />
-        <Typography sx={{ mt: 1 }}>
-          Create and Manage multiple classes in one central destination.
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          View all your classes streams easily without unnecessary navigations.
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          Need to search for a stream? - Search by any key term you remember
-          from the stream
-        </Typography>
+        <TutorLMSImg
+          src={TutorLMSDiagram}
+          alt={"picture"}
+          onLoad={() => {
+            setLoaded({ imgTwo: true });
+          }}
+        />
+        {loaded?.imgTwo === false ? (
+          <CircularProgress color="success" />
+        ) : (
+          <>
+            <Typography sx={{ mt: 1 }}>
+              Create and Manage multiple classes in one central destination.
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              View all your classes streams easily without unnecessary
+              navigations.
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              Need to search for a stream? - Search by any key term you remember
+              from the stream
+            </Typography>
+          </>
+        )}
       </Box>
 
       {/* Assignments */}
@@ -378,37 +413,61 @@ const HeroTutor = () => {
           <Typography sx={{ fontSize: 25 }}>
             Manage Assignments - Grading, remarks and share corrected files
           </Typography>
-          <TutorAssignmentImg src={TutorAssignmentDiagram} alt={"picture"} />
-          <Typography sx={{ mt: 1 }}>
-            Create and share your assignment with your students.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            View all your students submissions at ease.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Grade and add remarks easily.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Need to share your student corrected file. Just send it on the
-            submission.
-          </Typography>
+          <TutorAssignmentImg
+            src={TutorAssignmentDiagram}
+            alt={"picture"}
+            onLoad={() => {
+              setLoaded({ imgThree: true });
+            }}
+          />
+          {loaded?.imgThree === false ? (
+            <CircularProgress color="success" />
+          ) : (
+            <>
+              <Typography sx={{ mt: 1 }}>
+                Create and share your assignment with your students.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                View all your students submissions at ease.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Grade and add remarks easily.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Need to share your student corrected file. Just send it on the
+                submission.
+              </Typography>
+            </>
+          )}
         </Box>
       </Box>
 
       {/* Integrated chat system */}
       <Box sx={{ textAlign: "center", mt: 5 }}>
         <Typography sx={{ fontSize: 25 }}>Chats</Typography>
-        <StudentChatImg src={StudentChatDiagram} alt={"picture"} />
-        <Typography sx={{ mt: 1 }}>
-          Connect and chat with any students with our end-to-end encrypted chat
-          system.
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          Create groups, create direct messages.
-        </Typography>
-        <Typography sx={{ mt: 0.5 }}>
-          Send emojies, gifs, files and many more.
-        </Typography>
+        <StudentChatImg
+          src={StudentChatDiagram}
+          alt={"picture"}
+          onLoad={() => {
+            setLoaded({ imgFour: true });
+          }}
+        />
+        {loaded?.imgFour === false ? (
+          <CircularProgress color="success" />
+        ) : (
+          <>
+            <Typography sx={{ mt: 1 }}>
+              Connect and chat with any students with our end-to-end encrypted
+              chat system.
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              Create groups, create direct messages.
+            </Typography>
+            <Typography sx={{ mt: 0.5 }}>
+              Send emojies, gifs, files and many more.
+            </Typography>
+          </>
+        )}
       </Box>
 
       {/* Videocall */}
@@ -425,18 +484,30 @@ const HeroTutor = () => {
       >
         <Box sx={{ backgroundColor: "rgba(0, 0, 0, 0.46)", p: 2 }}>
           <Typography sx={{ fontSize: 25 }}> Videoconferencing</Typography>
-          <TutorVideocallImg src={TutorVideocallDiagram} alt={"picture"} />
-          <Typography sx={{ mt: 1 }}>
-            Carry out your classes with our powerful videoconferencing system
-            allowing about concurrent 100 users.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Chat with participants and create polls.
-          </Typography>
-          <Typography sx={{ mt: 0.5 }}>
-            Get the most from the conferencing system like share screen, record
-            session etc..
-          </Typography>
+          <TutorVideocallImg
+            src={TutorVideocallDiagram}
+            alt={"picture"}
+            onLoad={() => {
+              setLoaded({ imgFive: true });
+            }}
+          />
+          {loaded?.imgFive === false ? (
+            <CircularProgress color="success" />
+          ) : (
+            <>
+              <Typography sx={{ mt: 1 }}>
+                Carry out your classes with our powerful videoconferencing
+                system allowing about concurrent 100 users.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Chat with participants and create polls.
+              </Typography>
+              <Typography sx={{ mt: 0.5 }}>
+                Get the most from the conferencing system like share screen,
+                record session etc..
+              </Typography>
+            </>
+          )}
         </Box>
       </Box>
 
