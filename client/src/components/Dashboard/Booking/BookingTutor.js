@@ -31,7 +31,6 @@ const BookingTutor = () => {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [showLoader, setShowLoader] = useState(true);
-  const [assignmentCodes, setAssignmentCodes] = useState([]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -58,20 +57,6 @@ const BookingTutor = () => {
     }
   };
 
-  const getClassCode = async (subject, grade) => {
-    var classCode = "";
-    const q = query(
-      collection(db, "createdClasses"),
-      where("subject", "==", subject),
-      where("grade", "==", grade)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      classCode = doc.id;
-    });
-    return classCode;
-  };
-
   const getAssignmentCode = async (classCode) => {
     const assignmentCode = [];
 
@@ -89,6 +74,7 @@ const BookingTutor = () => {
 
   const addToClass = async (
     bookingId,
+    classCode,
     subject,
     grade,
     day,
@@ -102,57 +88,56 @@ const BookingTutor = () => {
     if (confirmAction) {
       setShowLoader(true);
       try {
-        getClassCode(subject, grade).then(async (classCode) => {
-          const joinedRef = collection(db, "joinedClasses");
-          await setDoc(doc(joinedRef), {
-            classCode: classCode,
-            subject: subject,
-            grade: grade,
-            day: day,
-            time: time,
-            tutorUpdated: "Yes",
+        const joinedRef = collection(db, "joinedClasses");
+        await setDoc(doc(joinedRef), {
+          classCode: classCode,
+          subject: subject,
+          grade: grade,
+          day: day,
+          time: time,
+          tutorUpdated: "Yes",
 
-            tutorTitle: userDetails?.title,
-            tutorFirstName: userDetails?.name.firstName,
-            tutorLastName: userDetails?.name.lastName,
-            tutorProfilePic: userDetails?.profilePic,
-            tutorEmail: userDetails?.email,
+          tutorTitle: userDetails?.title,
+          tutorFirstName: userDetails?.name.firstName,
+          tutorLastName: userDetails?.name.lastName,
+          tutorProfilePic: userDetails?.profilePic,
+          tutorEmail: userDetails?.email,
 
-            studentFirstName: studentFirstName,
-            studentLastName: studentLastName,
-            studentEmail: studentEmail,
-            studentProfilePic: studentProfilePic,
-          });
-
-          await getAssignmentCode(classCode).then(async (assignmentCode) => {
-            if (assignmentCode.length !== 0) {
-              assignmentCode?.map(async (assignmentCodei) => {
-                await setDoc(doc(collection(db, "submittedAssignments")), {
-                  classCode: classCode,
-                  studentFirstName: studentFirstName,
-                  studentLastName: studentLastName,
-                  studentEmail: studentEmail,
-                  assignmentCode: assignmentCodei,
-                  submittedFileName: [],
-                  submittedFileUrl: [],
-                  submittedTimestamp: "",
-                  status: "Not Submitted",
-                  marks: "",
-                  remarks: "",
-                  correctedFileName: [],
-                  correctedUrl: [],
-                });
-              });
-            }
-          });
-
-          const bookingsRef = doc(db, "bookings", bookingId);
-          await updateDoc(bookingsRef, {
-            status: "Joined",
-          });
-          setSnackBarOpen(true);
-          setMessage("Added to Class");
+          studentFirstName: studentFirstName,
+          studentLastName: studentLastName,
+          studentEmail: studentEmail,
+          studentProfilePic: studentProfilePic,
         });
+
+        await getAssignmentCode(classCode).then(async (assignmentCode) => {
+          if (assignmentCode.length !== 0) {
+            assignmentCode?.map(async (assignmentCodei) => {
+              await setDoc(doc(collection(db, "submittedAssignments")), {
+                classCode: classCode,
+                studentFirstName: studentFirstName,
+                studentLastName: studentLastName,
+                studentEmail: studentEmail,
+                assignmentCode: assignmentCodei,
+                submittedFileName: [],
+                submittedFileUrl: [],
+                submittedTimestamp: "",
+                status: "Not Submitted",
+                marks: "",
+                remarks: "",
+                correctedFileName: [],
+                correctedUrl: [],
+              });
+            });
+          }
+        });
+
+        const bookingsRef = doc(db, "bookings", bookingId);
+        await updateDoc(bookingsRef, {
+          status: "Joined",
+        });
+
+        setSnackBarOpen(true);
+        setMessage("Added to Class");
       } catch (err) {
         setShowLoader(false);
         setSnackBarOpen(true);
@@ -161,7 +146,7 @@ const BookingTutor = () => {
     }
   };
 
-  //reading all tutors details
+  //reading all tutor's pending bookings
   useEffect(() => {
     setShowLoader(true);
     const unsubscribe = onSnapshot(
@@ -207,6 +192,7 @@ const BookingTutor = () => {
                       onClick={() => {
                         addToClass(
                           bookings?.id,
+                          bookings?.classCode,
                           bookings?.subject,
                           bookings?.grade,
                           bookings?.day,

@@ -111,13 +111,12 @@ const TutorProfile = () => {
   }, []);
 
   //check if booking exist
-  const checkBooking = async (tutorEmail, classSubject, classGrade) => {
+  const checkBooking = async (tutorEmail, classCode) => {
     const q = query(
       collection(db, "bookings"),
       where("tutorEmail", "==", tutorEmail),
       where("studentEmail", "==", userDetails?.email),
-      where("subject", "==", classSubject),
-      where("grade", "==", classGrade)
+      where("classCode", "==", classCode)
     );
 
     const querySnapshot = await getDocs(q);
@@ -131,6 +130,7 @@ const TutorProfile = () => {
 
   const addBooking = async (
     tutorEmail,
+    classCode,
     classSubject,
     classGrade,
     classDay,
@@ -149,11 +149,12 @@ const TutorProfile = () => {
         "?"
     );
     if (confirmAction) {
-      checkBooking(tutorEmail, classSubject, classGrade).then(async (value) => {
+      checkBooking(tutorEmail, classCode).then(async (value) => {
         if (value === true) {
           setShowLoader(true);
           try {
             await addDoc(collection(db, "bookings"), {
+              classCode: classCode,
               subject: classSubject,
               grade: classGrade,
               day: classDay,
@@ -403,6 +404,7 @@ const TutorProfile = () => {
                                   onClick={() => {
                                     addBooking(
                                       profile.email,
+                                      availableClass.classCode,
                                       availableClass.subject,
                                       availableClass.grade,
                                       availableClass.day,
