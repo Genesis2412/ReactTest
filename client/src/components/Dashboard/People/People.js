@@ -95,8 +95,7 @@ const People = () => {
     const q = query(
       collection(db, "bookings"),
       where("studentEmail", "==", studentEmail),
-      where("day", "==", classDay),
-      where("time", "==", classTime)
+      where("classCode", "==", classCode)
     );
 
     const querySnapshot = await getDocs(q);

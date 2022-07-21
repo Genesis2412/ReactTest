@@ -60,6 +60,7 @@ const Register = () => {
   const { signUp, user } = useUserAuth();
 
   const createUserChat = async (
+    userId,
     accountType,
     title,
     firstName,
@@ -70,6 +71,7 @@ const Register = () => {
     const URL = "https://maututorz.herokuapp.com/auth/register";
     await axios
       .post(URL, {
+        userId,
         firstName,
         lastName,
         email,
@@ -155,7 +157,7 @@ const Register = () => {
 
     //adding email and password to Firebase Auth
     try {
-      await signUp(data.email, data.password).then((cred) => {
+      await signUp(data.email, data.password).then(async (cred) => {
         //inserting students/parents data in firestore
         if (data.accountType === "Student") {
           const studentsRef = collection(db, "students");
@@ -220,16 +222,17 @@ const Register = () => {
             setIsSubmitting(false);
           });
         }
-      });
 
-      await createUserChat(
-        data.accountType,
-        data.title,
-        data.firstName,
-        data.lastName,
-        data.email,
-        data.password
-      );
+        await createUserChat(
+          cred.user.uid,
+          data.accountType,
+          data.title,
+          data.firstName,
+          data.lastName,
+          data.email,
+          data.password
+        );
+      });
     } catch (err) {
       if (err.message.includes("auth/invalid-email")) {
         setError("Email is not valid");
