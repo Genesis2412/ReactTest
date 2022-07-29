@@ -5,6 +5,7 @@ import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
+import Rating from "@mui/material/Rating";
 import Drawer from "./Drawer/Drawer";
 import Classes from "./Classes/Classes";
 import ClassDetails from "./Classes/ClassDetails";
@@ -37,7 +38,7 @@ const Dashboard = () => {
   const [showLoader, setShowLoader] = useState(true);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [message, setMessage] = useState("");
-
+  const [rating, setRating] = useState(0);
   const location = useLocation();
 
   const handleClose = (event, reason) => {
@@ -87,6 +88,7 @@ const Dashboard = () => {
                   JSON.stringify(doc.data())
                 );
                 getTutorBookings(doc?.data()?.email);
+                getRatings(doc?.data()?.email);
               }
               setShowLoader(false);
             }
@@ -132,6 +134,31 @@ const Dashboard = () => {
         setBookingCount(count);
       }
     );
+  };
+
+  const getRatings = async (tutorEmail) => {
+    setShowLoader(true);
+    const q = query(
+      collection(db, "ratings"),
+      where("tutorEmail", "==", tutorEmail)
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      var avgRating = 0;
+      var queryLength = 0;
+
+      queryLength = querySnapshot?.docs?.length;
+
+      const newRatings = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+      }));
+
+      newRatings.map((newRating) => {
+        avgRating += newRating.value;
+      });
+
+      setRating(avgRating / queryLength);
+      setShowLoader(false);
+    });
   };
 
   return (
@@ -290,6 +317,21 @@ const Dashboard = () => {
                         </Typography>
                       </Box>
                     )}
+
+                  <Box sx={{ textAlign: "center", width: "50%" }}>
+                    {userDetails?.accountType === "Tutor" && (
+                      <Box>
+                        <Paper sx={{ p: 3 }}>
+                          <Typography>My ratings</Typography>
+                          <Rating
+                            value={rating || 0}
+                            precision={0.5}
+                            readOnly
+                          />
+                        </Paper>
+                      </Box>
+                    )}
+                  </Box>
 
                   <Box sx={{ textAlign: "center" }}>
                     <Logo to="/dashboard" style={{ fontSize: 45 }}>
