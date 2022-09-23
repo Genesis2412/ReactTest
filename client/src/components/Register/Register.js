@@ -160,6 +160,9 @@ const Register = () => {
       await signUp(data.email, data.password).then(async (cred) => {
         // Disconnecting from streamChat
         await client.disconnectUser();
+        window.localStorage.removeItem("tkxn");
+        window.localStorage.removeItem("zpxn");
+
         //inserting students/parents data in firestore
         if (data.accountType === "Student") {
           const studentsRef = collection(db, "students");

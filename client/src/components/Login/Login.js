@@ -122,6 +122,9 @@ const Login = () => {
       setError("");
       // Disconnect StreamChat
       await client.disconnectUser();
+      window.localStorage.removeItem("tkxn");
+      window.localStorage.removeItem("zpxn");
+
       //Firebase Login
       try {
         await logIn(values.email, values.password);
