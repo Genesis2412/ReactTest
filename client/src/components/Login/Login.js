@@ -120,6 +120,8 @@ const Login = () => {
     validationSchema: validationSchema,
     onSubmit: async (values, onSubmitProps) => {
       setError("");
+      // Disconnect StreamChat
+      await client.disconnectUser();
       //Firebase Login
       try {
         await logIn(values.email, values.password);

@@ -158,6 +158,8 @@ const Register = () => {
     //adding email and password to Firebase Auth
     try {
       await signUp(data.email, data.password).then(async (cred) => {
+        // Disconnecting from streamChat
+        await client.disconnectUser();
         //inserting students/parents data in firestore
         if (data.accountType === "Student") {
           const studentsRef = collection(db, "students");
